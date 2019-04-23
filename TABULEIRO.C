@@ -24,7 +24,6 @@
  
 #include "LISTA.H"
 #include "LCIRC.H"
-#include "PECAS.H"
  
 //#define MAX_PECAS 4
 
@@ -37,7 +36,7 @@
 *  $TC Tipo de dados: TAB Descritor do tabuleiro de ludo
 *
 ***********************************************************************/
- 
+
 typedef struct Tabuleiro 
 {
     LST_Circular casas ;
@@ -58,8 +57,8 @@ typedef struct TAB_casa
     int cor ;
         /* Indica a cor da casa */
  
-    PEC_tpPeca conteudo ;
-        /* Ponteiro para o conteudo da casa */
+    LIS_tppLista conteudo ;
+        /* Ponteiro para o conteudo da casa, representado por uma lista */
  
     LIS_tppLista retaFinal ;
         /* Ponteiro para a reta final */
@@ -71,7 +70,7 @@ typedef void ( *pFunc ) ( void * ) ; typedef void **ppVoid ;
  
 /***** Protótipo das funções encapsuladas no módulo *****/
  
-static TAB_Casa *CriaCasa ( LIS_tppLista retaFinal , PEC_tpPeca conteudo , int cor ) ;
+static TAB_Casa *CriaCasa ( LIS_tppLista retaFinal, int cor ) ;
 
 static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor ) ;
  
@@ -118,7 +117,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
          
         for( k = 0; k < 12 ; k++ ){
  
-            casa = CriaCasa ( NULL , NULL , BRANCO ) ;
+            casa = CriaCasa ( NULL, BRANCO ) ;
 
             if ( casa == NULL )
             {
@@ -141,7 +140,8 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
             return TAB_CondRetFaltouMemoria ;
         }
 
-        casa = CriaCasa ( pListaSimples , NULL , i ) ;
+        casa = CriaCasa ( pListaSimples, i ) ;
+
         if ( casa == NULL )
         {
             return TAB_CondRetFaltouMemoria ;
@@ -157,7 +157,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
 
         for ( j = 0 ; j < 6 ; j++ ){
  
-            casa = CriaCasa ( NULL , NULL , i ) ;
+            casa = CriaCasa ( NULL, i ) ;
             if ( casa == NULL )
             {
                 return TAB_CondRetFaltouMemoria ;
@@ -200,7 +200,10 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 
     int status ;
 
-    retorno_pec = PEC_ObtemInicio ( pPeca , &status ) ;
+    retorno_pec = PEC_ObtemInicio(pPeca ,&status ) ;
+
+	lista_circular = pTabuleiro->casas;
+
     if ( retorno_pec != PEC_CondRetOK )
         return TAB_CondRetPecaNaoExiste ;
 
@@ -209,6 +212,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 		/*verifica peca na casa inicial*/
 
 	retorno_pec = PEC_ObtemFinal(pPeca, &status);
+
 	if ( retorno_pec != PEC_CondRetOK )
         return TAB_CondRetPecaNaoExiste ;
 
@@ -224,7 +228,8 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 		do {
 
 			LIS_ObterValor ( lista_simples , ( ppVoid ) &aux ) ;
-			if ( aux->conteudo == pPeca ) {
+
+			if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK) {
 				pTabuleiro->estaNaRetaFinal = 1 ;      /*para indicar que entrou na reta final*/
 				return TAB_CondRetOK ;
 			}
@@ -240,7 +245,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
     
     do {
         
-        if ( aux->conteudo == pPeca ) {
+        if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK ) {
             pTabuleiro->estaNaRetaFinal = 0 ;	/* nao esta na reta final */
             return TAB_CondRetOK ;
         }
@@ -259,7 +264,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 *  Função: TAB  &Obter Peça Casa
 *  ****/
 
-TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca *pPeca )
+TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, LIS_tppLista *pListaPeca )
 {
     TAB_Casa *casa ;
     LST_Circular lista_circular ;
@@ -273,7 +278,7 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca *pPeca
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se estiver na reta final */
 
-    *pPeca = casa->conteudo ;
+    *pListaPeca = casa->conteudo ;
 
     return TAB_CondRetOK ; 
 
@@ -356,7 +361,8 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se a peca esta na reta final */
     
-    casa->conteudo = NULL ;
+	LIS_ProcurarValor(casa->conteudo, (void *) pPeca);
+	LIS_ExcluirElemento(casa->conteudo);
 
     PEC_AtualizaFinalPeca ( pPeca , 0) ;
 
@@ -393,14 +399,9 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se o corrente estiver na reta final */
 
-    if ( casa->conteudo != NULL ) 
-        TAB_RetiraPecaCasa ( pTabuleiro , casa->conteudo ) ;
-		/* come QUALQUER peca que estiver na casa */
-    
-
     PEC_AtualizaInicioPeca ( pPeca, 0 ) ;
 
-    casa->conteudo = pPeca ;
+	LIS_InserirElementoApos(casa->conteudo, (void *) pPeca);
 
     return TAB_CondRetOK ;
 
@@ -499,21 +500,27 @@ TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
 *  Função: TAB  &Criar Casa
 *  ****/
 
-static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , PEC_tpPeca conteudo , int cor )
+static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , int cor )
 {
     TAB_Casa *nv ;
+
+	LIS_tppLista pListaConteudo;
+
+	LIS_tpCondRet retorno_lis ;
      
     nv  = (TAB_Casa *) malloc ( sizeof ( TAB_Casa ) ) ;
      
     if( nv == NULL ){
         return NULL ;
     }
+
+	retorno_lis = LIS_CriarLista( ( pFunc ) PEC_DestroiPeca , &pListaConteudo ) ;
  
     nv->cor = cor ;
  
     nv->retaFinal = retaFinal ;
  
-    nv->conteudo = conteudo ;
+    nv->conteudo = pListaConteudo ;
  
     return nv ;
 
@@ -557,7 +564,7 @@ static void LiberarCasa ( TAB_Casa *pCasa )
  
     if ( pCasa->conteudo != NULL )
     {
-        PEC_DestroiPeca ( pCasa->conteudo ) ;
+        LIS_DestruirLista( pCasa->conteudo ) ;
     }
      
     pCasa = NULL ;
@@ -565,3 +572,10 @@ static void LiberarCasa ( TAB_Casa *pCasa )
 }   /* Fim função: TAB  &Liberar Casa */
 
 /*********** Fim do módulo de implementação: TAB Modulo Tabuleiro **********/
+
+int main()
+{
+	printf("spius");
+
+	getchar();
+}

@@ -210,11 +210,11 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *  $FC Função: TAB  &Obter Peça Casa
 *
 *  $ED Descrição da função
-*     Obtem uma peça dentro de uma casa no tabuleiro.
+*     Obtem as peças da casa corrente do tabuleiro.
 *
 *  $EP Parâmetros
 *     pTabuleiro - ponteiro para tabuleiro passado como referencia.
-*     pPeca - ponteiro para lugar a ser aramzenado dados da Peça   
+*     pListaPeca - ponteiro para lugar a ser aramzenado dados da Peça da casa   
 *
 *  $FV Valor retornado
 *     TAB_CondRetOK - se peça procurada foi encontrada.
@@ -227,7 +227,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *
 *  Fim Assertivas de Entrada TAB_ObterPecaCasa */
 
-TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, PEC_tpPeca *pPeca ) ;
+TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, LIS_tppLista *pListaPeca ) ;
 
 /*  Assertiva de Saida TAB_ObterPecaCasa
 *   O ponteiro pPeca deverá ser modificado.
