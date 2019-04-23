@@ -42,7 +42,7 @@ typedef struct Tabuleiro
 {
     LST_Circular casas ;
         /* Ponteiro para a lista de casas */
-    int flag ;
+    int estaNaRetaFinal ;
         /* Indica se a casa corrente esta na reta final: 1 caso verdadeiro 0 caso falso */
  
 } TAB_TabuleiroLudo ;
@@ -108,6 +108,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
     }
  
     retorno_lst = LST_CriaLista ( &pListaCirc , ( pFunc ) LiberarCasa ) ;
+
     if ( retorno_lst != LST_CondRetOK )
     {
         return TAB_CondRetFaltouMemoria ;
@@ -134,6 +135,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
         }/* cria 12 casas neutras para o trajeto circular */
  
         retorno_lis = LIS_CriarLista( ( pFunc ) LiberarCasa , &pListaSimples ) ;
+
         if ( retorno_lis != LIS_CondRetOK )
         {
             return TAB_CondRetFaltouMemoria ;
@@ -171,7 +173,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
     }
  
     (*pTabuleiro)->casas = pListaCirc ;
-    (*pTabuleiro)->flag = 0 ;
+    (*pTabuleiro)->estaNaRetaFinal = 0 ;
     
     return TAB_CondRetOK ;
  
@@ -223,7 +225,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 
 			LIS_ObterValor ( lista_simples , ( ppVoid ) &aux ) ;
 			if ( aux->conteudo == pPeca ) {
-				pTabuleiro->flag = 1 ;      /*para indicar que entrou na reta final*/
+				pTabuleiro->estaNaRetaFinal = 1 ;      /*para indicar que entrou na reta final*/
 				return TAB_CondRetOK ;
 			}
 
@@ -239,7 +241,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
     do {
         
         if ( aux->conteudo == pPeca ) {
-            pTabuleiro->flag = 0 ;	/* nao esta na reta final */
+            pTabuleiro->estaNaRetaFinal = 0 ;	/* nao esta na reta final */
             return TAB_CondRetOK ;
         }
 
@@ -266,7 +268,7 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, PEC_tpPeca *pPeca
     lista_circular = pTabuleiro->casas ;
     LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
 
-    if ( pTabuleiro->flag  ) {
+    if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se estiver na reta final */
@@ -295,7 +297,7 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
     lista_circular = pTabuleiro->casas ;
     LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
     
-    if ( pTabuleiro->flag  ) {
+    if ( pTabuleiro->estaNaRetaFinal  ) {
 
         lista_simples = casa->retaFinal ;
         retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n ) ;
@@ -321,7 +323,7 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
         retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n - 1 ) ;
         if ( retorno_lis == LIS_CondRetFimLista )
             return TAB_CondRetFimTabuleiro ;
-        pTabuleiro->flag = 1 ;
+        pTabuleiro->estaNaRetaFinal = 1 ;
     }/* caso tenha passado pela casa de saida da cor */
 
     return TAB_CondRetOK ;
@@ -349,7 +351,7 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
     LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
 
-    if ( pTabuleiro->flag  ) {
+    if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se a peca esta na reta final */
@@ -386,7 +388,7 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
     lista_circular = pTabuleiro->casas ;
     LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
 
-    if ( pTabuleiro->flag  ) {
+    if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
         LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
     }/* se o corrente estiver na reta final */
@@ -435,7 +437,7 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       
     LIS_tppLista lista_simples ;
     LIS_tpCondRet retorno_lis ;
     
-    if ( pTabuleiro->flag ) {
+    if ( pTabuleiro->estaNaRetaFinal ) {
         lista_circular = pTabuleiro->casas ;
         LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
         
@@ -535,7 +537,7 @@ static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
         LST_AvancarElementoCorrente ( lista_circular , 1 ) ;
         LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
     }
-    pTabuleiro->flag = 0 ;
+    pTabuleiro->estaNaRetaFinal = 0 ;
 
 }  /* Fim função: TAB  &Ir Reta Final Cor */
 
