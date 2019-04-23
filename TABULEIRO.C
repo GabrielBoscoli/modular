@@ -133,12 +133,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
  
         }/* cria 12 casas neutras para o trajeto circular */
  
-        retorno_lis = LIS_CriarLista( ( pFunc ) LiberarCasa , &pListaSimples ) ;
-
-        if ( retorno_lis != LIS_CondRetOK )
-        {
-            return TAB_CondRetFaltouMemoria ;
-        }
+        pListaSimples =  LIS_CriarLista( ( pFunc ) LiberarCasa) ;
 
         casa = CriaCasa ( pListaSimples, i ) ;
 
@@ -223,11 +218,12 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 
 		LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
 		lista_simples = casa->retaFinal ;
-		LIS_IrInicioLista ( lista_simples ) ;
+		IrInicioLista ( lista_simples ) ;
     
 		do {
 
-			LIS_ObterValor ( lista_simples , ( ppVoid ) &aux ) ;
+			aux = (TAB_Casa*) LIS_ObterValor ( lista_simples ) ;
+			IrInicioLista(aux->conteudo);
 
 			if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK) {
 				pTabuleiro->estaNaRetaFinal = 1 ;      /*para indicar que entrou na reta final*/
@@ -244,7 +240,9 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
     aux = casa ;
     
     do {
-        
+
+        IrInicioLista(aux->conteudo);
+
         if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK ) {
             pTabuleiro->estaNaRetaFinal = 0 ;	/* nao esta na reta final */
             return TAB_CondRetOK ;
@@ -271,11 +269,11 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, LIS_tppLista *pLi
     LIS_tppLista lista_simples ;
     
     lista_circular = pTabuleiro->casas ;
-    LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+    LST_ObterValor ( lista_circular , ( ppVoid ) &casa );
 
     if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
-        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
+        casa = (TAB_Casa*) LIS_ObterValor ( lista_simples ) ;
     }/* se estiver na reta final */
 
     *pListaPeca = casa->conteudo ;
@@ -324,7 +322,7 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
 
     if ( n != 0 ) {
         lista_simples = casa->retaFinal ;
-        LIS_IrInicioLista ( lista_simples ) ;
+        IrInicioLista ( lista_simples ) ;
         retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n - 1 ) ;
         if ( retorno_lis == LIS_CondRetFimLista )
             return TAB_CondRetFimTabuleiro ;
@@ -358,9 +356,10 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
     if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
-        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
+        casa = (TAB_Casa*) LIS_ObterValor ( lista_simples) ;
     }/* se a peca esta na reta final */
     
+	IrInicioLista(casa->conteudo);
 	LIS_ProcurarValor(casa->conteudo, (void *) pPeca);
 	LIS_ExcluirElemento(casa->conteudo);
 
@@ -396,7 +395,7 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
     if ( pTabuleiro->estaNaRetaFinal  ) {
         lista_simples = casa->retaFinal ;
-        LIS_ObterValor ( lista_simples , ( ppVoid ) &casa ) ;
+        casa = (TAB_Casa*)LIS_ObterValor ( lista_simples ) ;
     }/* se o corrente estiver na reta final */
 
     PEC_AtualizaInicioPeca ( pPeca, 0 ) ;
@@ -410,10 +409,10 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Ir Início Cor
+*  Função: TAB  &Ir Casa Saída Cor
 *  ****/
  
-TAB_CondRet TAB_IrInicioCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
+TAB_CondRet TAB_IrCasaSaidaCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
 {
     LST_Circular lista_circular ;
 
@@ -428,8 +427,26 @@ TAB_CondRet TAB_IrInicioCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
 
     return TAB_CondRetOK ;
 
-}   /* Fim função: TAB  &Ir Inicio Cor */
+}   /* Fim função: TAB  &Ir Casa Saida Cor */
 
+/***************************************************************************
+*
+*  Função: TAB  &Destroi Tabuleiro
+*  ****/
+ 
+TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
+{
+ 
+    LST_DestruirLista ( pTabuleiro->casas ) ;
+ 
+    return TAB_CondRetOK ;
+ 
+} /* Fim função: TAB  &Destroi Tabuleiro */
+
+/***************************************************************************
+*
+*  Função: TAB  &É Casa Final
+*  ****/
 
 TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       //verifica se casa corrente é a casa final
 {
@@ -456,41 +473,7 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       
 
     return TAB_CondRetOK ;
 
-}   
-
- 
-/***************************************************************************
-*
-*  Função: TAB  &Lanca Dado
-*  ****/
- 
-TAB_CondRet TAB_LancaDado ( int * pValor )
-{
-  
-    int ValorAleatorio ;
-  
-    srand ( (unsigned) time ( NULL ) ) ;
-    ValorAleatorio = ( rand() % 6 ) + 1 ;
-      
-    * pValor = ValorAleatorio ;
-  
-    return TAB_CondRetOK ;
-  
-} /* Fim função: TAB  &Lanca Dado */
-
-/***************************************************************************
-*
-*  Função: TAB  &Destroi Tabuleiro
-*  ****/
- 
-TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
-{
- 
-    LST_DestruirLista ( pTabuleiro->casas ) ;
- 
-    return TAB_CondRetOK ;
- 
-} /* Fim função: TAB  &Destroi Tabuleiro */
+}  /* Fim função: TAB  &É Casa Final */
  
  
 /****************  Código das funções encapsuladas no módulo  **********************/
@@ -505,8 +488,6 @@ static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , int cor )
     TAB_Casa *nv ;
 
 	LIS_tppLista pListaConteudo;
-
-	LIS_tpCondRet retorno_lis ;
      
     nv  = (TAB_Casa *) malloc ( sizeof ( TAB_Casa ) ) ;
      
@@ -514,7 +495,7 @@ static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , int cor )
         return NULL ;
     }
 
-	retorno_lis = LIS_CriarLista( ( pFunc ) PEC_DestroiPeca , &pListaConteudo ) ;
+	pListaConteudo = LIS_CriarLista( ( pFunc ) PEC_DestroiPeca) ;
  
     nv->cor = cor ;
  
@@ -572,10 +553,3 @@ static void LiberarCasa ( TAB_Casa *pCasa )
 }   /* Fim função: TAB  &Liberar Casa */
 
 /*********** Fim do módulo de implementação: TAB Modulo Tabuleiro **********/
-
-int main()
-{
-	printf("spius");
-
-	getchar();
-}

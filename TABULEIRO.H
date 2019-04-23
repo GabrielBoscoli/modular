@@ -112,36 +112,6 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 *  Fim Assertiva de Saida TAB_CriaTabuleiro_Ludo */
 
-
-/***********************************************************************
-*
-*  $FC Função: TAB  &Gera Valor
-*
-*  $ED Descrição da função
-*     Gera valor de 1 a 6 de um dado.
-*
-*  $EP Parâmetros
-*      * pValor -  ponteiro para endereço onde será armazenado o valor
-*                    o valor aleatório gerado pelo dado.
-*
-*  $FV Valor retornado
-*     TAB_CondRetOK - Se valor está dentro do padrão (Número de 1 a 6)    
-*   
-***********************************************************************/
-
-/* Assertiva de Entrada TAB_LancaDado
-*  Endereço passado como parâmetro deve fazer referência correta.
-*
-*  Fim Assertiva de Entrada TAB_LancaDado */
-
-TAB_CondRet TAB_LancaDado ( int * pValor ) ;
-
-/* Assertiva de Saida TAB_LancaDado
-*  O valor gerado deverá ser corretamente armazenado em pValor.
-*  A funcao retorna um TAB_CondRet.
-*
-*  Fim Assertiva de Saida TAB_LancaDado */
-
 /***********************************************************************
 *
 *  $FC Função: TAB  &Destroi tabuleiro
@@ -244,7 +214,7 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, LIS_tppLista *pListaPeca 
 *
 *  $EP Parâmetros
 *     pTabuleiro - ponteiro para tabuleiro passado como referencia.
-*     cor - informação da cor da casa para qual será avançada. 
+*     cor - informação da cor da peca que pretende avancar. 
 *     n - numero inteiro de casas a ser avançadas. 
 *
 *  $FV Valor retornado
@@ -333,14 +303,14 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 
 /***********************************************************************
 *
-*  $FC Função: TAB  &Ir Inicio Cor
+*  $FC Função: TAB  &Ir Casa Saída Cor
 *
 *  $ED Descrição da função
-*     Dado uma cor, vai ao inicio de seu percurso no tabuleiro.
+*     Dado uma cor, vai à sua casa de saída no tabuleiro.
 *
 *  $EP Parâmetros
 *     pTabuleiro - ponteiro para tabuleiro passado como referencia.
-*     cor - valor correspondente a cor que se deseja ir ao inicio.
+*     cor - valor correspondente a cor que se deseja ir à casa de saída.
 *
 *  $FV Valor retornado
 *     TAB_CondRetOK - se peça procurada foi encontrada.
@@ -348,19 +318,19 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-/* Assertivas de entrada TAB_IrInicioCor
+/* Assertivas de entrada TAB_IrCasaSaidaCor
 *  Existir um tabuleiro ja criado.
 *  A cor passada como parâmetro deverá ser válida (cor entre 0 e 3).
 *
-*  Fim Assertivas de Entrada TAB_IrInicioCor */
+*  Fim Assertivas de Entrada TAB_IrCasaSaidaCor */
 
-TAB_CondRet TAB_IrInicioCor ( TAB_tpLudo pTabuleiro , int cor ) ;
+TAB_CondRet TAB_IrCasaSaidaCor ( TAB_tpLudo pTabuleiro , int cor ) ;
 
-/*  Assertiva de Saida TAB_IrInicioCor
-*   A função deverá ir ao inicio do percurso da cor.
+/*  Assertiva de Saida TAB_IrCasaSaidaCor
+*   A função deverá ir à casa inicial referente a cor.
 *   A funcao retorna um TAB_CondRet
 *
-*   Fim Assertiva de Saida TAB_IrInicioCor */
+*   Fim Assertiva de Saida TAB_IrCasaSaidaCor */
 
 /***********************************************************************
 *
@@ -391,37 +361,6 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_tpLudo pTabuleiro , int * n ) ;
 *   A funcao retorna um TAB_CondRet
 *
 *   Fim Assertiva de Saida TAB_EhCasaFinal */
-
-/***********************************************************************
-*
-*  $FC Função: TAB  &Exibe Tabuleiro
-*
-*  $ED Descrição da função
-*     Exibe na tela o tabuleiro de Ludo.
-*
-*  $EP Parâmetros
-*     pTabuleiro - ponteiro para tabuleiro passado como referencia.
-*     pPeca - ponteiro para peca.
-*     num_jogadores - numero de jogadores 
-*
-*  $FV Valor retornado
-*     TAB_CondRetOK - se peça procurada foi encontrada.
-*
-***********************************************************************/
-
-/* Assertivas de entrada TAB_ExibeTabuleiro
-*  Existir um tabuleiro ja criado.
-*  Vetor de peças inicializado.
-*  Numero de jogadores válido e coerete com a criação das peças. 
-*
-*  Fim Assertivas de Entrada TAB_ExibeTabuleiro */
-
-TAB_CondRet TAB_ExibeTabuleiro ( TAB_tpLudo pTabuleiro , PEC_tpPeca *pPeca , int num_jogadores ) ;
-
-/*  Assertiva de Saida TAB_ExibeTabuleiro
-*   A funcao retorna um TAB_CondRet
-*
-*   Fim Assertiva de Saida TAB_ExibeTabuleiro */
 
 #undef TABULEIRO_EXT
 

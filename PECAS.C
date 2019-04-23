@@ -220,7 +220,7 @@ PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_Peca * pPeca , int voltaCompleta)
 *  Função: PEC  &Atualiza se a Peca esta na casa inicial
 *  ****/
 
-PEC_CondRet PEC_AtualizaInicio ( PEC_Peca * pPeca , int inicio) 
+PEC_CondRet PEC_AtualizaInicioPeca ( PEC_Peca * pPeca , int inicio) 
 {
 
 	if(pPeca==NULL)
