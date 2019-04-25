@@ -1,0 +1,90 @@
+// Script:    TestePeca.script
+// Autor:     Gabriel Boscoli
+// Data:      02/set/2018
+// Propósito: Testar todas as operações do módulo peca. 
+
+
+==Inicializando valores
+=declararparm OK int 0
+=declararparm CorInvalida int 2
+=declararparm PecaNaoExiste int 3
+=declararparm ArgumentoInvalido int 4
+
+=declararparm Vermelho int 0
+=declararparm Amarelo int 1
+=declararparm Verde int 2
+=declararparm Azul int 3
+=declararparm Turquesa int 4
+
+=declararparm Falso int 0
+=declararparm Verdadeiro int 1
+=declararparm Medio int 2
+
+==Destruir peca que nao existe
+=destruirpeca PecaNaoExiste
+
+==Obter cor de peca que nao existe
+=obtercor PecaNaoExiste
+
+==Obtem final de peca que nao existe
+=obterfinal PecaNaoExiste
+
+==Obtem inicio de peca que nao existe
+=obterinicio PecaNaoExiste
+
+==Obtem volta completa de peca que nao existe
+=obtervolta PecaNaoExiste
+
+==Atualiza final de peca que nao existe
+=atualizafinal Verdadeiro PecaNaoExiste
+=atualizafinal Falso PecaNaoExiste
+
+==Atualiza inicio de peca que nao existe
+=atualizainicio Verdadeiro PecaNaoExiste
+=atualizainicio Falso PecaNaoExiste
+
+==Atualiza volta de peca que nao existe
+=atualizavolta Verdadeiro PecaNaoExiste
+=atualizavolta Falso PecaNaoExiste
+
+==Criar peca com cor que nao existe
+=criarpeca Turquesa CorInvalida
+
+==Criar peca com sucesso
+=criarpeca Vermelho OK
+=criarpeca Amarelo OK
+=criarpeca Verde OK
+=criarpeca Azul OK
+
+==Obter cor com sucesso
+=obtercor OK
+
+==Obter final com sucesso
+=obterfinal OK
+
+==Obter inicio com sucesso
+=obterinicio OK
+
+==Obter volta completa com sucesso
+=obtervolta OK
+
+==Ataliza final com sucesso
+=atualizafinal Verdadeiro OK
+=atualizafinal Falso OK
+
+==Ataliza inicio com sucesso
+=atualizainicio Verdadeiro OK
+=atualizainicio Falso OK
+
+==Ataliza volta com sucesso
+=atualizavolta Verdadeiro OK
+=atualizavolta Falso OK
+
+==Ataliza final com argumento invalido
+=atualizafinal Medio ArgumentoInvalido
+
+==Ataliza inicio com argumento invalido
+=atualizainicio Medio ArgumentoInvalido
+
+==Ataliza volta com argumento invalido
+=atualizavolta Medio ArgumentoInvalido

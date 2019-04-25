@@ -1,30 +1,28 @@
 #if ! defined ( PEC_ )
 #define PEC_
-
 /***************************************************************************
+*  $MCD Módulo de definição: PEC Módulo Peças
 *
-*  $MCD Módulo de definição: PEC Módulo de Peça
-*
-*  Arquivo gerado:              PECAS.H  
+*  Arquivo gerado:              PECAS.H
 *  Letras identificadoras:      PEC
 *
-*  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
-*  Gestor:  Professor Alessandro Garcia
-*  Autores: lr -> Lucas Rodrigues
+*  Projeto: Disciplina INF 1301
+*  Gestor:  DI/PUC-Rio, Professor Alessandro Garcia
+*  Autores: gb - Gabriel Boscoli
 *
-*  $HA Histórico de evolução:
-*     Versão |  Autor  |      Data     |    Observações
-*       2    |   lr    |  28/set/2016  | término desenvolvimento
-*       1    |   lr    |  28/set/2016  | início desenvolvimento
+* $HA Histórico de evolução:
+*     Versão    Autor       Data          Observações
+*	   2.00      gb      24/04/2019   término, revisão e aperfeiçoamento
+*      1.00      gb      22/04/2019   início desenvolvimento, implementação de
+*									  funções básicas
 *
 *  $ED Descrição do módulo
 *     Cria uma Peça.
 *     Destroi uma Peça.
-*     Obtem, dado uma Peça, informações sobre ela.
+*     Obtem informações sobre uma Peça.
 *     Atualiza as informações de uma Peça.
 *
-*
-**************************************************************************/
+***************************************************************************/
 
 #if defined( PEC_OWN )
 #define PEC_EXT
@@ -95,280 +93,274 @@ typedef enum {
 *  $FC Função: PEC &Criar PEC
 *
 *  $ED Descrição da função
-*     Cria uma peça.
+*		Cria uma peça.
 *
 *  $EP Parametros
-*  * pPeça - ponteiro para peça a ser criada
-* 	 cor   - cor da peça
+*		* pPeça - ponteiro para peça a ser criada
+* 		cor   - cor da peça
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetFaltaMemoria - se faltou memoria
-*     PEC_CondRetJaExiste - Se peca ja existe
-*     PEC_CondRetCorInvalida - se a cor passada não for entre 0 e 3
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetFaltaMemoria - se faltou memoria
+*		PEC_CondRetCorInvalida - se a cor passada não for entre 0 e 3
+*
+*  $EAE Assertivas de entrada
+*		Deve existir memoria para criacao da peca
+*		A cor dada deve ser um int de 0 a 3
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A peca é criada e referenciada por pPeca
+*		SE PEC_CondRetFaltaMemoria
+*			A peca não é criada
+*			pPeca = NULL
+*		SE PEC_CondRetCorInvalida
+*			A peca não é criada
+*			pPeca permanece com o mesmo valor de entrada
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_CriaPeca
-*  Existir mémoria para criacao da peça
-*  A cor dada (int) tem que ser entre 0 e 3
-*
-*  Fim Assertiva de Entrada PEC_CriaPeca */
-
 PEC_CondRet PEC_CriaPeca ( PEC_tpPeca * pPeca, int cor ) ;
-
-/* Assertivas de Saida PEC_CriaPeca
-*  A memoria referente a estrutura da peca tem que ser alocada
-*  Para todo pPeca criado, pPeca->cor entre 0 e 3
-*  A funcao retornara um PEC_CondRet
-*
-*  Fim Assertiva de Saida PEC_CriaPeca */
 
 /***********************************************************************
 *
 *  $FC função: PEC &Destruir peça
 *
 *  $ED Descrição da função
-*     Destroi uma peça.
+*		Destroi uma peça.
 *
 *  $EP Parametros
-*   *pPeca  -  peca a ser destruida.
+*		pPeca  -  peca a ser destruida.
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NULL )
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A peca é destruida
+*			Memoria alocada para a peca é liberada
+*		SE PEC_CondRetNaoExiste
+*			Nada acontece
+*
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_DestroiPeca
-*  Existir peça ja criada (para todo pPeca , pPeca != NULL)
-*
-*  Fim Assertiva de Entrada PEC_DestroiPeca */
-
 PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
- 
-/* Assertiva de Saida PEC_DestroiPeca
-*  A peca deve ser destruida (para todo pPeca , pPeca = NULL)
-*  A memoria alocada para peca deve ser liberada 
-*  A funcao retorna um PEC_CondRet
-*
-*  Fim Assertiva de Saida PEC_DestroiPeca */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Obtem cor
 *
 *  $ED Descrição da função
-*     Dada uma peça, informa sua cor.
+*		Dada uma peça, informa sua cor.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber a cor
-*  * cor - ponteiro passado para receber a cor
+*		pPeca - peça que procura saber a cor
+*		* cor - ponteiro passado para receber a cor
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NUll)
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A cor da peca, int de 0 a 3, é armazenada na variavel cor
+*		SE PEC_CondRetNaoExiste
+*			A variavel cor continua com seu valor original
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_ObtemCor
-*  Deve existir uma cor valida na peca (para todo pPeca, pPeca->cor entre 0 e 3)
-*
-*  Fim Assertiva de Entrada PEC_ObtemCor */
-
 PEC_CondRet PEC_ObtemCor ( PEC_tpPeca pPeca , int * cor ) ;
-
-/*  Assertiva de Saida PEC_ObtemCor
-*   Deverá ser retornado uma cor válida (inteiro entre 0 e 3)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemCor */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Obtem final
 *
 *  $ED Descrição da função
-*     Dada uma peça, informa se está na casa final.
+*		Dada uma peça, informa se está na reta final.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber o final
-*  * final - ponteiro passado para receber o final
+*		pPeca - peça que procura saber o final
+*		* final - ponteiro passado para receber o final
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NUll)
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			final é 0 caso a peca nao esteja na reta final e 1 caso contrario
+*		SE PEC_CondRetNaoExiste
+*			A variavel final continua com seu valor original
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_ObtemFinal
-*  Deve existir um valor final valido na peca
-*
-*  Fim Assertiva de Entrada PEC_ObtemFinal */
-
 PEC_CondRet PEC_ObtemFinal ( PEC_tpPeca pPeca , int * final ) ;
-
-/*  Assertiva de Saida PEC_ObtemFinal
-*   Deverá ser retornado um final válido (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemFinal */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Obtem inicio
 *
 *  $ED Descrição da função
-*     Dada uma peça, informa se está na casa inicial.
+*		Dada uma peça, informa se está na casa inicial.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber o inicio
-*  * inicio - ponteiro passado para receber o inicio
+*		pPeca - peça que procura saber o inicio
+*		* inicio - ponteiro passado para receber o inicio
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NUll)
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			inicio é 0 caso a peca nao esteja na casa inicial e 1 caso contrario
+*		SE PEC_CondRetNaoExiste
+*			A variavel inicio continua com seu valor original
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_ObtemInicio
-*  Deve existir um valor de inicio valido na peca
-*
-*  Fim Assertiva de Entrada PEC_ObtemInicio */
-
 PEC_CondRet PEC_ObtemInicio ( PEC_tpPeca pPeca , int * inicio ) ;
-
-/*  Assertiva de Saida PEC_ObtemInicio
-*   Deverá ser retornado um status válido (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemInicio */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Obtem volta completa
 *
 *  $ED Descrição da função
-*     Dada uma peça, informa se realizou uma volta completa.
+*		Dada uma peça, informa se realizou uma volta completa.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber a volta completa
-*  * inicio - ponteiro passado para receber a volta completa
+*		pPeca - peça que procura saber a volta completa
+*		* inicio - ponteiro passado para receber a volta completa
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NUll)
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			voltaCompleta é 0 caso a peca tenha realizado uma volta e 1 caso contrario
+*		SE PEC_CondRetNaoExiste
+*			A variavel voltaCompleta continua com seu valor original
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_ObtemVoltaCompleta
-*  Deve existir um valor de inicio valido na peca
-*
-*  Fim Assertiva de Entrada PEC_ObtemVoltaCompleta */
-
 PEC_CondRet PEC_ObtemVoltaCompleta ( PEC_tpPeca pPeca , int * voltaCompleta ) ;
-
-/*  Assertiva de Saida PEC_ObtemVoltaCompleta
-*   Deverá ser retornado um status válido (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_ObtemVoltaCompleta */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Atualiza final peça
 *
 *  $ED Descrição da função
-*     Dado uma peça, atualiza o final da peça.
+*		Dado uma peça, atualiza se ela esta na reta final ou nao.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber a cor
-*   final - atualizar se peça está no estágio final
+*		pPeca - peça que procura saber a cor
+*		final - valor atualizado de final
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetArgumentoInvalido - se final dado está invalido
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetArgumentoInvalido - se final dado está invalido
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NULL)
+*		final deve ser um int 0, caso peca esteja na reta final, ou 1, caso contrario
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A peca é atualizada com o novo valor de final
+*		SE NAO
+*			A peca não é atualizada
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_AtualizaFinalPeca
-*  Deve existir um valor final valido na peca
-*  A peça deve existir antes de chamar a função.
-*
-*  Fim Assertiva de Entrada PEC_AtualizaFinalPeca */
-
 PEC_CondRet PEC_AtualizaFinalPeca ( PEC_tpPeca pPeca , int final) ;
-
-/*  Assertiva de Saida PEC_AtualizaFinalPeca
-*   Deverá ser atualizado um final válido (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_AtualizaFinalPeca */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Atualiza volta peça
 *
 *  $ED Descrição da função
-*     Dado uma peça, atualiza a volta da peça.
+*		Dado uma peça, atualiza se a peca realizou uma volta ou nao.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber a cor
-*   volta - atualizar se peça já completou uma volta
+*		pPeca - peça que procura saber a cor
+*		volta - valor atualizado de volta
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetArgumentoInvalido - se volta dado está invalido
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetArgumentoInvalido - se volta dado está invalido
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NULL)
+*		volta deve ser um int 0, caso peca realizou uma volta, ou 1, caso contrario
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A peca é atualizada com o novo valor de volta
+*		SE NAO
+*			A peca não é atualizada
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_AtualizaVoltaPeca
-*  Deve existir um valor volta valido na peca
-*  A peça deve existir antes de chamar a função.
-*
-*  Fim Assertiva de Entrada PEC_AtualizaVoltaPeca */
-
 PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_tpPeca pPeca , int volta) ;
-
-/*  Assertiva de Saida PEC_AtualizaVoltaPeca
-*   Deverá ser atualizado uma volta válida (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_AtualizaVoltaPeca */
 
 /***********************************************************************
 *
 *  $FC Função: PEC  &Atualiza inicio peça
 *
 *  $ED Descrição da função
-*     Dado uma peça, atualiza o inicio da peça.
+*		Dado uma peça, atualiza se a peca esta na casa inicial ou nao.
 *
 *  $EP Parametros
-*   pPeca - peça que procura saber a cor
-*   inicio - atualizar se peça está nas casas iniciais
+*		pPeca - peça que procura saber a cor
+*		inicio - valor atualizado de inicio
 *
 *  $FV Valor retornado
-*     PEC_CondRetOK - se ocorreu tudo certo
-*     PEC_CondRetArgumentoInvalido - se inicio dado está invalido
-*     PEC_CondRetNaoExiste - se peca nao existe
+*		PEC_CondRetOK - se ocorreu tudo certo
+*		PEC_CondRetArgumentoInvalido - se inicio dado está invalido
+*		PEC_CondRetNaoExiste - se peca nao existe
+*
+*  $EAE Assertivas de entrada
+*		pPeca deve ser uma peca existente (pPeca != NULL)
+*		inicio deve ser um int 0, caso peca esteja na casa inicial, ou 1, caso contrario
+*
+*  $EAE Assertivas de saída
+*		SE PEC_CondRetOK
+*			A peca é atualizada com o novo valor de inicio
+*		SE NAO
+*			A peca não é atualizada
+*
 *
 ***********************************************************************/
 
-/* Assertivas de Entrada PEC_AtualizaInicioPeca
-*  Deve existir um valor inicio valido na peca
-*  A peça deve existir antes de chamar a função.
-*
-*  Fim Assertiva de Entrada PEC_AtualizaInicioPeca */
-
 PEC_CondRet PEC_AtualizaInicioPeca ( PEC_tpPeca pPeca , int inicio) ;
-
-/*  Assertiva de Saida PEC_AtualizaVoltaPeca
-*   Deverá ser atualizado um inicio válido (inteiro 1 ou 0)
-*   A funcao retorna um PEC_CondRet
-*
-*   Fim Assertiva de Saida PEC_AtualizaInicioPeca */
 
 #undef PEC_EXT
 

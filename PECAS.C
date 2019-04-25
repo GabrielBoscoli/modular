@@ -4,14 +4,18 @@
 *  Arquivo gerado:              PECAS.C
 *  Letras identificadoras:      PEC
 *
-*  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
-*  Gestor:  Professor Alessandro Garcia
-*  Autores: lr - Lucas Rodrigues
+*  Projeto: Disciplina INF 1301
+*  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
+*  Autores: gb - Gabriel Boscoli
 *
 *  $HA Histórico de evolução:
-*     Versão |  Autor   |      Data     |    Observações
-*       2    |   lr     |  28/set/2016  | término desenvolvimento
-*       1    |   lr     |  28/set/2016  | início desenvolvimento	
+*     Versão     Autor        Data         Observações
+*      2.00       gb       24/04/2019   término, revisão e aperfeiçoamento
+*      1.00       gb       22/04/2019   início desenvolvimento, implementação
+*										de funções básicas
+*
+* $ED Descrição do módulo
+*     Este módulo contém a implementação das funções definidas em PECAS.h.
 *
 ***************************************************************************/
 
@@ -19,13 +23,15 @@
 #include <stdlib.h>
 
 #include "PECAS.H"
-#define PECAS_OWN
-#undef PECAS_OWN
+#define	 PECAS_OWN
+#undef	 PECAS_OWN
 
 /***********************************************************************
 *
-*  $TC Tipo de dados: LST Descritor da lista
+*  $TC Tipo de dados: PEC Descritor da peça
 *
+*  $ED Descrição do tipo
+*     Descreve a organização e estrutura de uma peça
 *
 ***********************************************************************/
 
@@ -35,7 +41,7 @@ typedef struct Peca {
 	    /* Cor definida entre 0 e 3 */
 
 	int final;
-	    /* Se a peça está na casa final do jogo (1) ou não (0) */
+	    /* Se a peça está na reta final do jogo (1) ou não (0) */
 
 	int inicio;
         /* Se a peça está nas casas iniciais (1) ou não (0) */
@@ -52,7 +58,7 @@ typedef struct Peca {
 *  Função: PEC  &Criar Peca
 *  ****/
 
-PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int cor ) 
+PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int cor )
 {
 	if ( cor < 0 || cor > 3 )
 	{
@@ -169,7 +175,7 @@ PEC_CondRet PEC_ObtemVoltaCompleta ( PEC_Peca * pPeca , int * voltaCompleta)
 
 /***************************************************************************
 *
-*  Função: PEC  &Atualiza se a Peca esta na casa final
+*  Função: PEC  &Atualiza se a Peca esta na reta final
 *  ****/
 
 PEC_CondRet PEC_AtualizaFinalPeca ( PEC_Peca * pPeca , int final) 
@@ -189,11 +195,11 @@ PEC_CondRet PEC_AtualizaFinalPeca ( PEC_Peca * pPeca , int final)
 
 	return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Atualiza Peca */
+} /* Fim função: PEC  &Atualiza Final Peca */
 
 /***************************************************************************
 *
-*  Função: PEC  &Atualiza volta completa da Peca
+*  Função: PEC  &Atualiza se a Peca deu uma volta
 *  ****/
 
 PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_Peca * pPeca , int voltaCompleta) 
@@ -213,7 +219,7 @@ PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_Peca * pPeca , int voltaCompleta)
 
 	return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Atualiza volta completa da Peca */
+} /* Fim função: PEC  &Atualiza se a Peca deu uma volta */
 
 /***************************************************************************
 *
