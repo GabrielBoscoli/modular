@@ -1,0 +1,82 @@
+==Inicializar valores
+=declararparm OK int 0
+=declararparm NaoAchou int 1
+=declararparm ListaVazia int 3
+=declararparm ListaNaoExiste int 4
+
+=declararparm valor1 int 0
+=declararparm valor2 int 1
+=declararparm valor3 int 2
+
+==Remover elemento de uma lista que nao existe
+=removerelemento valor1 ListaNaoExiste
+
+==Destruir lista que nao existe
+=destruirlista ListaNaoExiste
+
+==Esvaziar lista que nao existe
+=esvaziarlista ListaNaoExiste
+
+==Buscar elemento em uma lista que nao existe
+=buscarelemento valor1 ListaNaoExiste
+
+==Inserir elemento em lista que nao existe
+=inserirelementoesq valor1 ListaNaoExiste
+=inserirelementodir valor1 ListaNaoExiste
+
+==Obter valor corrente de uma lista que nao existe
+=obtervalor ListaNaoExiste
+
+==Avancar elemento corrente em uma lista que nao existe
+=avancarelementocorrente 1 ListaNaoExiste
+
+==Criar lista com sucesso
+=criarlistac OK
+
+==Remover elemento de lista vazia
+=removerelemento valor1 ListaVazia
+
+==Buscar elemento em uma lista vazia
+=buscarelemento valor1 ListaVazia
+
+==Obter valor de uma lista vazia
+=obtervalor ListaVazia
+
+==Avancar elemento corrente em uma lista vazia
+=avancarelementocorrente 1 ListaVazia
+
+==Esvaziar lista vazia
+=esvaziarlista ListaVazia
+
+==Inserir elemento a esquerda com sucesso
+=inserirelementoesq valor1 OK
+
+==Buscar elemento que não está na lista
+=buscarelemento valor3 NaoAchou
+=buscarelemento valor2 NaoAchou
+
+==Buscar elemento com sucesso
+=buscarelemento valor1 OK
+
+==Obter valor com sucesso
+=obtervalor OK
+
+==Remover elemento que não está na lista
+=removerelemento valor3 NaoAchou
+=removerelemento valor2 NaoAchou
+
+==Remover elemento com sucesso
+=removerelemento valor1 OK
+
+==Inserir elemento a direita com sucesso
+=inserirelementodir valor1 OK
+=inserirelementodir valor2 OK
+
+==Avancar elemento corrente com sucesso
+=avancarelementocorrente 1 OK
+
+==Esvaziar lista com sucesso
+=esvaziarlista OK
+
+==Destruir lista com sucesso
+=destruirlista OK

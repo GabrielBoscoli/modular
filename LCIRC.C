@@ -1,20 +1,22 @@
 /***************************************************************************
- *  $MCI Módulo de implementação: LST  Lista duplamente encadeada circular
+ *  $MCI Módulo de implementação: LST Módulo lista circular duplamente
+ *													encadeada genérica
  *
- *  Arquivo gerado:              LCIRC.c
+ *  Arquivo gerado:              LCIRC.C
  *  Letras identificadoras:      LST
  *
- *  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
- *  Gestor:  Professor Alessandro Garcia
- *  Autores: lr, dcr, rvc
+ *  Projeto: Disciplina INF 1301
+ *  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
+ *  Autores: gb - Gabriel Boscoli
  *
  *  $HA Histórico de evolução:
- *    Versão |  Autor  |      Data     |    Observações
- *      5    |   rvc   |  14/out/2016  |  finalização desenvolvimento
- *		4    |   rvc   |  14/out/2016  |  ajustes de desenvolvimento
- *      3    |   lr    |  25/set/2016  |  formalização do módulo
- *		2    |   rvc   |  24/set/2016  |  ajustes de desenvolvimento
- *	    1    |   dcr   |  17/set/2016  |  início desenvolvimento
+ *    Versão   Autor        Data         Observações
+ *     2.00     gb       20/04/2019    término, revisão e aperfeiçoamento
+ *	   1.00     gb       19/04/2019    inicio desenvolvimento, implementação
+ *									   funções básicas
+ *
+ *  $ED Descrição do módulo
+ *     Este módulo contém a implementação das funções definidas em LCIRC.H.
  *
  ***************************************************************************/
 
@@ -32,6 +34,8 @@
  *
  *  $TC Tipo de dados: LST Elemento da lista
  *
+ *  $ED Descrição do tipo
+ *     Descreve a organização e estrutura de um elemento da lista
  *
  ***********************************************************************/
 
@@ -52,6 +56,8 @@ typedef struct tagElemLista {
  *
  *  $TC Tipo de dados: LST Descritor da lista
  *
+ *  $ED Descrição do tipo
+ *     Descreve a organização e estrutura da lista
  *
  ***********************************************************************/
 
@@ -70,7 +76,6 @@ typedef struct LST_tpCircular {
 
 
 /*****  Dados encapsulados no módulo  *****/
-
 
 /***** Protótipo das funções encapsuladas no módulo *****/
 
@@ -114,6 +119,11 @@ LST_CondRet LST_RemoveElemento ( LST_tppCircular *pLista, void * elemento )
     LST_Elem * pElem    ;
     LST_CondRet retorno ;
 
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
+
     if ( ( retorno = LST_BuscaElemento ( pLista , elemento ) ) != LST_CondRetOK )
     {
         return retorno ;
@@ -130,7 +140,9 @@ LST_CondRet LST_RemoveElemento ( LST_tppCircular *pLista, void * elemento )
     {
         pLista->pElemCorr = NULL ;
     }
+
     LiberarElemento( pLista , pElem ) ;
+
     return LST_CondRetOK ;
     
 } /* Fim função: LST  &Remove Elemento */
@@ -142,6 +154,10 @@ LST_CondRet LST_RemoveElemento ( LST_tppCircular *pLista, void * elemento )
 
 LST_CondRet LST_DestruirLista ( LST_tppCircular *pLista )
 {
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
 
     LST_EsvaziarLista( pLista ) ;
 
@@ -160,9 +176,14 @@ LST_CondRet LST_EsvaziarLista( LST_tppCircular *pLista )
     LST_Elem * pElem ;
     LST_Elem * pProx ;
 
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
+
     if( pLista->pElemCorr == NULL )
     {
-        return LST_CondRetVazia ;
+        return LST_CondRetListaVazia ;
     }
     
     pElem = pLista->pElemCorr ;
@@ -189,10 +210,15 @@ LST_CondRet LST_EsvaziarLista( LST_tppCircular *pLista )
 LST_CondRet LST_BuscaElemento ( LST_tppCircular *pLista , void * valor )
 {
     LST_Elem * pElem ;
+
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
     
     if ( pLista->pElemCorr == NULL )
     {
-        return LST_CondRetVazia;
+        return LST_CondRetListaVazia;
     }
     
     pElem = pLista->pElemCorr ;
@@ -208,7 +234,7 @@ LST_CondRet LST_BuscaElemento ( LST_tppCircular *pLista , void * valor )
         
     } while ( pElem != pLista->pElemCorr ) ;
 
-    return LST_CondRetNaoEncontrou;
+    return LST_CondRetNaoAchou;
     
 } /* Fim função: LST  &Procurar elemento na lista */
 
@@ -221,6 +247,11 @@ LST_CondRet LST_InsereElemEsquerda ( LST_tppCircular * pLista, void * valor )
 {
     LST_Elem *pElem ;
     LST_Elem *p     ;
+
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
 
     pElem = CriaElemento( pLista ,  valor ) ;
     
@@ -261,6 +292,12 @@ LST_CondRet LST_InsereElemDireita ( LST_tppCircular *pLista , void * valor )
 {
     LST_Elem *pElem ;
     LST_Elem * p ;
+
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
+
     pElem = CriaElemento ( pLista , valor ) ;
 
     if ( pElem == NULL )
@@ -296,10 +333,14 @@ LST_CondRet LST_InsereElemDireita ( LST_tppCircular *pLista , void * valor )
 
 LST_CondRet LST_ObterValor ( LST_tppCircular *pLista , void ** valor )
 {
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
 
     if( pLista->pElemCorr == NULL )
     {
-        return LST_CondRetVazia ;
+        return LST_CondRetListaVazia ;
     }
 
     *valor = pLista->pElemCorr->valor ;
@@ -316,10 +357,15 @@ LST_CondRet LST_ObterValor ( LST_tppCircular *pLista , void ** valor )
 LST_CondRet LST_AvancarElementoCorrente ( LST_tppCircular *pLista , int num )
 {
     LST_Elem *pElem ;
+
+	if(pLista == NULL)
+	{
+		return LST_CondRetListaNaoExiste;
+	}
     
     if( pLista->pElemCorr == NULL )
     {
-        return LST_CondRetVazia ;
+        return LST_CondRetListaVazia ;
     }
 
     pElem = pLista->pElemCorr ;
@@ -369,6 +415,8 @@ void LiberarElemento ( LST_tppCircular *pLista , LST_Elem  * pElem )
 
 	pElem->valor = NULL ;
     pLista->numElem-- ;
+
+	free(pElem);
     
 } /* Fim função: LST  -Liberar elemento da lista */
 
