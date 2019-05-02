@@ -1,34 +1,27 @@
 #if ! defined( TABULEIRO_ )
 #define TABULEIRO_
-
 /***************************************************************************
 *
-*  $MCD Módulo de definição: TAB  Tabuleiro
+*  $MCD Módulo de definição: Módulo Tabuleiro
 *
 *  Arquivo gerado:              TABULEIRO.H
 *  Letras identificadoras:      TAB
 *
-*  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
-*  Gestor:  Professor Alessandro Garcia
-*  Autores: lr - Lucas Rodrigues 
+*  Projeto: Disciplina INF 1301
+*  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
+*  Autores: gb - Gabriel Boscoli 
 *
 *  $HA Histórico de evolução:
-*     Versão |  Autor  |      Data     |    Observações
-*       2    |   lr    |  16/out/2016  | finalização de desenvolvimento
-*       1    |   lr    |  28/set/2016  | início desenvolvimento
+*     Versão   Autor        Data         Observações
+*      2.00     gb       28/04/2019   finalização do desenvolvimento
+*      1.00     gb       26/04/2019   início do desenvolvimento
 *
 *  $ED Descrição do módulo
-*     Implementa um tabuleiro de ludo.
+*     Este módulo implementa um tabuleiro de ludo.
 *     O tabuleiro possui uma cabeça encapsulando o seu estado.
 *     É possivel criar um tabuleiro, deletar um tabuleiro,
 *     inserir peca em um tabuleiro, mover peca de um tabuleiro,
-*     e gera valor aleatório representando o dado.
-*
-*     Observacao importante: O modulo do tabuleiro não se importa
-*     com as regras do jogo de ludo, o modulo do jogo apenas chamará as 
-*     funções do tabuleiro caso essas regras sejam previamente testadas, 
-*     por exemplo: o jogo avaliará se o jogador poderá mover a peça para
-*     uma casa X, caso ele puder ele chama o modulo tabuleiro.
+*     e obter informações sobre as casas do tabuleiro.
 *   
 ***************************************************************************/
 
@@ -45,7 +38,6 @@
 /***********************************************************************
 *
 *  $TC Tipo de dados: TAB Condições de retorno
-*
 *
 *  $ED Descrição do tipo
 *     Condições de retorno das funções do tabuleiro
@@ -364,7 +356,7 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_tpLudo pTabuleiro , int * n ) ;
 
 #undef TABULEIRO_EXT
 
-/*********** Fim do módulo de definição: TAB Modulo Tabuleiro **********/
+/*********** Fim do módulo de definição: TAB Módulo Tabuleiro **********/
 
 #else
 #endif

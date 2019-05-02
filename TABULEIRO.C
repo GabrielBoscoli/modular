@@ -1,21 +1,22 @@
 /***************************************************************************
-*  $MCI Módulo de implementação: TAB  Tabuleiro
+*  $MCI Módulo de implementação: Módulo Tabuleiro
 *
 *  Arquivo gerado:              TABULEIRO.c
 *  Letras identificadoras:      TAB
 *
-*  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
-*  Gestor:  Professor Alessandro Garcia
-*  Autores: rvc - Rodrigo Villardi Cortezi
+*  Projeto: Disciplina INF 1301
+*  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
+*  Autores: gb - Gabriel Boscoli
 *
 *  $HA Histórico de evolução:
-*     Versão |  Autor  |      Data     |    Observações
-*       2    |   rvc   |  13/out/2016  |  finalização de desenvolvimento
-*       1    |   rvc   |  30/set/2016  |  início desenvolvimento
+*     Versão   Autor        Data         Observações
+*      2.00     gb       28/04/2019    finalização de desenvolvimento
+*      1.00     gb       26/04/2019    início do desenvolvimento
+*
+*  $ED Descrição do módulo
+*	  Este módulo contém a implementação das funções definidas em TABULEIRO.H.
 *
 ***************************************************************************/
- 
-#define BRANCO 5
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,8 +25,6 @@
  
 #include "LISTA.H"
 #include "LCIRC.H"
- 
-//#define MAX_PECAS 4
 
 #define TABULEIRO_OWN
 #include "TABULEIRO.H"
@@ -33,7 +32,11 @@
  
 /***********************************************************************
 *
-*  $TC Tipo de dados: TAB Descritor do tabuleiro de ludo
+*  $TC Tipo de dados: TAB Descritor do cabeça do tabuleiro
+*
+*  $ED Descrição do tipo
+*	  Descreve a organização e estrutura do tabuleiro.
+*	  A cabeça do tabuleiro é o ponto de acesso para determinado tabuleiro.
 *
 ***********************************************************************/
 
@@ -42,13 +45,16 @@ typedef struct Tabuleiro
     LST_Circular casas ;
         /* Ponteiro para a lista de casas */
     int estaNaRetaFinal ;
-        /* Indica se a casa corrente esta na reta final: 1 caso verdadeiro 0 caso falso */
+        /* Indica se a casa corrente esta na reta final: 1 caso verdadeiro, 0 caso falso */
  
 } TAB_TabuleiroLudo ;
  
 /***********************************************************************
 *
-*  $TC Tipo de dados: TAB Descritor da casa
+*  $TC Tipo de dados: TAB Descritor da casa do tabuleiro
+*
+*  $ED Descrição do tipo
+*	  Descreve a organização e estrutura das casas do tabuleiro
 *
 ***********************************************************************/
  
@@ -65,25 +71,31 @@ typedef struct TAB_casa
  
 } TAB_Casa ;
 
+/***** Dados encapsulados no módulo *****/
 
-typedef void ( *pFunc ) ( void * ) ; typedef void **ppVoid ;
+	typedef void ( *pFunc ) ( void * ) ;
+		/* ponteiro para função void */
+
+	typedef void **ppVoid ;
+		/* ponteiro para ponteiro void */
+
+	#define BRANCO 5
+		/* define a cor branco como o int 5 */
  
 /***** Protótipo das funções encapsuladas no módulo *****/
  
-static TAB_Casa *CriaCasa ( LIS_tppLista retaFinal, int cor ) ;
+	static TAB_Casa *CriaCasa ( LIS_tppLista retaFinal, int cor ) ;
 
-static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor ) ;
+	static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor ) ;
  
-static void LiberarCasa ( TAB_Casa *pCasa ) ;
- 
+	static void LiberarCasa ( TAB_Casa *pCasa ) ;
  
 /*****  Código das funções exportadas pelo módulo  *****/
  
 /*************************************************************************** 
 *
-*  Função: TAB  &Criar tabuleiro
+*  Função: TAB Criar tabuleiro
 *  ****/
- 
  
 TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )  
 {   
@@ -172,11 +184,11 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_TabuleiroLudo **pTabuleiro )
     
     return TAB_CondRetOK ;
  
-} /* Fim função: TAB  &Criar tabuleiro */
+} /* Fim função: TAB Criar tabuleiro */
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Procura Peça
+*  Função: TAB Procura uma peça no tabuleiro
 *  ****/
 
 TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )        
@@ -255,11 +267,11 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 
     return TAB_CondRetNaoEncontrouPeca ;
    
-}  /* Fim função: TAB  &Procura Peça */
+}  /* Fim função: TAB Procura uma peca no tabuleiro */
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Obter Peça Casa
+*  Função: TAB Obter as peças que estão na casa
 *  ****/
 
 TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, LIS_tppLista *pListaPeca )
@@ -280,11 +292,11 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, LIS_tppLista *pLi
 
     return TAB_CondRetOK ; 
 
-}   /* Fim função: TAB  &Obter Peça Casa */
+}   /* Fim função: TAB Obter as peças que estão na casa */
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Avança Casa
+*  Função: TAB Avança Casa
 *  ****/
 
 TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
@@ -318,7 +330,7 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
         LST_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
         n-- ;
 
-    }/* avanca ate chegar na casa de saida da cor ou acabar o movimento*/
+    }/* avanca ate chegar na casa de saida da cor ou acabar o movimento */
 
     if ( n != 0 ) {
         lista_simples = casa->retaFinal ;
@@ -331,11 +343,11 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
 
     return TAB_CondRetOK ;
 
-}   /* Fim função: TAB  &Avança Casa */
+}   /* Fim função: TAB Avança Casa */
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Retira Peça Casa
+*  Função: TAB Retira uma peça da casa
 *  ****/
 
 TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) 
@@ -371,11 +383,11 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
     return TAB_CondRetOK ;
 
-}   /* Fim função: TAB  &Retira Peça Casa */
+}   /* Fim função: TAB Retira uma peça da casa */
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Insere Peça Casa
+*  Função: TAB Insere uma peça na casa
 *  ****/
 
 TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca ) 
@@ -404,12 +416,12 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
 
     return TAB_CondRetOK ;
 
-}  /* Fim função: TAB  &Insere Peça Casa */
+}  /* Fim função: TAB Insere uma peça na casa */
 
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Ir Casa Saída Cor
+*  Função: TAB Ir para a casa de saída da cor
 *  ****/
  
 TAB_CondRet TAB_IrCasaSaidaCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
@@ -427,11 +439,11 @@ TAB_CondRet TAB_IrCasaSaidaCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
 
     return TAB_CondRetOK ;
 
-}   /* Fim função: TAB  &Ir Casa Saida Cor */
+}   /* Fim função: TAB Ir para a casa de saída da cor */
 
 /***************************************************************************
 *
-*  Função: TAB  &Destroi Tabuleiro
+*  Função: TAB Destroi Tabuleiro
 *  ****/
  
 TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
@@ -441,14 +453,14 @@ TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
  
     return TAB_CondRetOK ;
  
-} /* Fim função: TAB  &Destroi Tabuleiro */
+} /* Fim função: TAB Destroi Tabuleiro */
 
 /***************************************************************************
 *
-*  Função: TAB  &É Casa Final
+*  Função: TAB Verifica se é casa final
 *  ****/
 
-TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       //verifica se casa corrente é a casa final
+TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )
 {
     TAB_Casa *casa ;
     LST_Circular lista_circular ;
@@ -473,14 +485,14 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )       
 
     return TAB_CondRetOK ;
 
-}  /* Fim função: TAB  &É Casa Final */
+}  /* Fim função: TAB Verifica se é casa final */
  
  
 /****************  Código das funções encapsuladas no módulo  **********************/
  
 /*************************************************************************** 
 *
-*  Função: TAB  &Criar Casa
+*  Função: TAB Criar Casa
 *  ****/
 
 static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , int cor )
@@ -505,12 +517,12 @@ static TAB_Casa * CriaCasa ( LIS_tppLista retaFinal , int cor )
  
     return nv ;
 
-}  /* Fim função: TAB  &Criar Casa */
+}  /* Fim função: TAB Criar Casa */
 
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Ir Reta Final Cor
+*  Função: TAB Ir Reta Final Cor
 *  ****/
 
 static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
@@ -527,12 +539,12 @@ static void IrRetaFinalCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
     }
     pTabuleiro->estaNaRetaFinal = 0 ;
 
-}  /* Fim função: TAB  &Ir Reta Final Cor */
+}  /* Fim função: TAB Ir Reta Final Cor */
 
 
 /*************************************************************************** 
 *
-*  Função: TAB  &Liberar Casa
+*  Função: TAB Liberar Casa
 *  ****/
 
 static void LiberarCasa ( TAB_Casa *pCasa ) 
@@ -550,6 +562,6 @@ static void LiberarCasa ( TAB_Casa *pCasa )
      
     pCasa = NULL ;
 
-}   /* Fim função: TAB  &Liberar Casa */
+}   /* Fim função: TAB Liberar Casa */
 
 /*********** Fim do módulo de implementação: TAB Modulo Tabuleiro **********/
