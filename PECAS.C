@@ -74,7 +74,7 @@ PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int cor )
 
 	(*pPeca)->cor    = cor ;
 	(*pPeca)->final  = 0   ;
-	(*pPeca)->inicio = 0 ;
+	(*pPeca)->inicio = 1 ;
 	(*pPeca)->voltaCompleta = 0 ;
 
 	return PEC_CondRetOK ;
