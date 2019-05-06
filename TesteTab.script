@@ -6,6 +6,7 @@
 =declararparm CorInvalida int 5
 =declararparm FimTabuleiro int 6
 =declararparm TabuleiroNaoExiste int 7
+=declararparm AvancoInvalido int 8
 
 =declararparm PecaNULL int 0
 =declararparm Peca1 int 1
@@ -78,16 +79,18 @@
 =avancarcasa Azul 1122 FimTabuleiro
 =avancarcasa Verde 78 FimTabuleiro
 =avancarcasa Amarelo 324 FimTabuleiro
-=avancarcasa Vermelho -203 FimTabuleiro
-=avancarcasa Azul -1122 FimTabuleiro
-=avancarcasa Verde -78 FimTabuleiro
-=avancarcasa Amarelo -324 FimTabuleiro
 
 ==Avancar casa com sucesso
 =avancarcasa Vermelho 2 OK
 =avancarcasa Azul 4 OK
 =avancarcasa Verde 5 OK
 =avancarcasa Amarelo 17 OK
+
+==Avancar casa com valor invalido
+=avancarcasa Vermelho -2 AvancoInvalido
+=avancarcasa Azul -4 AvancoInvalido
+=avancarcasa Verde -5 AvancoInvalido
+=avancarcasa Amarelo -17 AvancoInvalido
 
 ==Retirar peca que esta na casa inicial
 =retirapecacasa Peca1 PecaCasaInicial

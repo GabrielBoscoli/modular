@@ -67,8 +67,11 @@
           TAB_CondRetFimTabuleiro,
           /* Chegou ao final do tabuleiro */
 
-		  TAB_CondRetTabuleiroNaoExiste
+		  TAB_CondRetTabuleiroNaoExiste,
 		  /* Tabuleiro não foi criado */
+
+		  TAB_CondRetAvancoInvalido
+		  /* número de casas para avancar é inválido */
    
    } TAB_CondRet ;
 
@@ -215,6 +218,7 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, LIS_tppLista *pListaPeca 
 *		TAB_CondRetCorInvalida - caso a cor passada seja inválida.
 *		TAB_CondRetFimTabuleiro - caso tenha chegado ao "fim" do tabuleiro.
 *		TAB_CondRetTabuleiroNaoExiste - se tabuleiro nao existe.
+*		TAB_CondRetAvancoInvalido - se o numero de casa para avancar é negativo.
 *
 *  $EAE Assertivas de entrada
 *		pTabuleiro deve ser um tabuleiro existente (pTabuleiro != NULL)
