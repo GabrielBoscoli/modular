@@ -69,6 +69,7 @@ typedef void * pVoid ;
 *	  =lancardado   				   CondRetEsp
 *	  =destruirtab   				   CondRetEsp
 *     =ehcasafinal                     IndPeca CondRetEsp
+*	  =inicializarcontexto
 *
 ***********************************************************************/
 
