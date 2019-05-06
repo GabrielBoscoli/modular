@@ -207,6 +207,11 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
 
     int status ;
 
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
+
     retorno_pec = PEC_ObtemInicio(pPeca ,&status ) ;
 
 	lista_circular = pTabuleiro->casas;
@@ -215,7 +220,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPeca )
         return TAB_CondRetPecaNaoExiste ;
 
     if ( status == 1 )
-        return TAB_CondRetPecaMorta ; 
+        return TAB_CondRetPecaCasaInicial; 
 		/*verifica peca na casa inicial*/
 
 	retorno_pec = PEC_ObtemFinal(pPeca, &status);
@@ -279,6 +284,11 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_TabuleiroLudo *pTabuleiro, LIS_tppLista *pLi
     TAB_Casa *casa ;
     LST_Circular lista_circular ;
     LIS_tppLista lista_simples ;
+
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
     
     lista_circular = pTabuleiro->casas ;
     LST_ObterValor ( lista_circular , ( ppVoid ) &casa );
@@ -305,6 +315,11 @@ TAB_CondRet TAB_AvancaCasa ( TAB_TabuleiroLudo *pTabuleiro , int cor , int n )
     LST_Circular lista_circular ;
     LIS_tppLista lista_simples ;
     LIS_tpCondRet retorno_lis ;
+
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
 
     if ( cor < 0 || cor > 3 )
         return TAB_CondRetCorInvalida ;
@@ -357,6 +372,11 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
     TAB_Casa *casa ;
     TAB_CondRet retorno_tab ;
 
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
+
     retorno_tab = TAB_ProcuraPeca ( pTabuleiro , pPeca ) ;
 
     if ( retorno_tab != TAB_CondRetOK )
@@ -373,7 +393,7 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
     
 	IrInicioLista(casa->conteudo);
 	LIS_ProcurarValor(casa->conteudo, (void *) pPeca);
-	LIS_ExcluirElemento(casa->conteudo);
+	/*LIS_ExcluirElemento(casa->conteudo);*/
 
     PEC_AtualizaFinalPeca ( pPeca , 0) ;
 
@@ -397,6 +417,11 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_TabuleiroLudo *pTabuleiro , PEC_tpPeca pPec
     TAB_Casa *casa ;
     PEC_CondRet retorno_pec ;
     int cor ;
+
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
 
     retorno_pec = PEC_ObtemCor ( pPeca , &cor ) ;
     if ( retorno_pec != PEC_CondRetOK )
@@ -428,6 +453,11 @@ TAB_CondRet TAB_IrCasaSaidaCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
 {
     LST_Circular lista_circular ;
 
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
+
     if ( cor < 0 || cor > 3 )
         return TAB_CondRetCorInvalida ;
 
@@ -448,6 +478,10 @@ TAB_CondRet TAB_IrCasaSaidaCor ( TAB_TabuleiroLudo *pTabuleiro , int cor )
  
 TAB_CondRet TAB_DestruirTabuleiro ( TAB_TabuleiroLudo *pTabuleiro )
 {
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
  
     LST_DestruirLista ( pTabuleiro->casas ) ;
  
@@ -466,6 +500,11 @@ TAB_CondRet TAB_EhCasaFinal ( TAB_TabuleiroLudo *pTabuleiro , int *cond )
     LST_Circular lista_circular ;
     LIS_tppLista lista_simples ;
     LIS_tpCondRet retorno_lis ;
+
+	if (pTabuleiro == NULL)
+	{
+		return TAB_CondRetTabuleiroNaoExiste;
+	}
     
     if ( pTabuleiro->estaNaRetaFinal ) {
         lista_circular = pTabuleiro->casas ;
