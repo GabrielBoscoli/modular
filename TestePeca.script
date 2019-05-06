@@ -88,3 +88,6 @@
 
 ==Ataliza volta com argumento invalido
 =atualizavolta Medio ArgumentoInvalido
+
+==Destruir peca com sucesso
+=destruirpeca OK
