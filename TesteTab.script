@@ -31,8 +31,8 @@
 ==Procurar peca em um tabuleiro que nao existe
 =procurarpeca PecaNULL TabuleiroNaoExiste
 
-==Obter peca de um tabuleiro que nao existe
-=obterpecacasa TabuleiroNaoExiste
+==Obter conteudo de um tabuleiro que nao existe
+=obterconteudocasa TabuleiroNaoExiste
 
 ==Avancar casa em um tabuleiro que nao existe
 =avancarcasa Vermelho 1 TabuleiroNaoExiste
@@ -67,8 +67,8 @@
 =procurarpeca Peca3 PecaCasaInicial
 =procurarpeca Peca4 PecaCasaInicial
 
-==Obter pecas de uma casa
-=obterpecacasa OK
+==Obter conteudo de uma casa
+=obterconteudocasa OK
 
 ==Avancar casa com peca de cor invalida
 =avancarcasa Turquesa 32 CorInvalida
@@ -109,7 +109,7 @@
 =ircasasaidacor Azul OK
 
 ==Verifica se é casa final com sucesso
-=ehcasafinal OK
+=verificacasafinal OK
 
 ==Insere peca com sucesso
 =inserirpecacasa Peca1 OK

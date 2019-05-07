@@ -17,10 +17,12 @@
 *									  funções básicas
 *
 *  $ED Descrição do módulo
-*     Cria uma Peça.
-*     Destroi uma Peça.
-*     Obtem informações sobre uma Peça.
-*     Atualiza as informações de uma Peça.
+*	  Este módulo implementa uma peça de um jogo de tabuleiro.
+*	  Podem existir n peças em operação simultaneamente.
+*     É possivel criar uma peça,
+*     destroir uma peça,
+*     obter informações sobre uma peça e
+*     atualizar as informações de uma peça.
 *
 ***************************************************************************/
 
@@ -34,12 +36,11 @@
 
 /* Tipo referência para uma peça */
 
-typedef struct Peca * PEC_tpPeca; 
+typedef struct PEC_tagPeca * PEC_tppPeca; 
 
 /***********************************************************************
 *
 *  $TC Tipo de dados: PEC condições de retorno
-*
 *
 *  $ED Descrição do tipo
 *     Condições de retorno das funções da peça
@@ -70,9 +71,8 @@ typedef enum {
 *
 *  $TC Tipo de dados: PEC condições de retorno
 *
-*
 *  $ED Descrição do tipo
-*     Possiveis cores para os jogadores e suas peças
+*     Possiveis cores para as peças
 *
 ***********************************************************************/
 
@@ -121,7 +121,7 @@ typedef enum {
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_CriaPeca ( PEC_tpPeca * pPeca, int cor ) ;
+PEC_CondRet PEC_CriarPeca ( PEC_tppPeca * pPeca, int cor ) ;
 
 /***********************************************************************
 *
@@ -151,7 +151,7 @@ PEC_CondRet PEC_CriaPeca ( PEC_tpPeca * pPeca, int cor ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
+PEC_CondRet PEC_DestruirPeca ( PEC_tppPeca pPeca ) ;
 
 /***********************************************************************
 *
@@ -162,7 +162,7 @@ PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
 *
 *  $EP Parametros
 *		pPeca - peça que procura saber a cor
-*		* cor - ponteiro passado para receber a cor
+*		pCor - ponteiro passado para receber a cor
 *
 *  $FV Valor retornado
 *		PEC_CondRetOK - se ocorreu tudo certo
@@ -180,7 +180,7 @@ PEC_CondRet PEC_DestroiPeca ( PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_ObtemCor ( PEC_tpPeca pPeca , int * cor ) ;
+PEC_CondRet PEC_ObterCor ( PEC_tppPeca pPeca , int * pCor ) ;
 
 /***********************************************************************
 *
@@ -191,7 +191,7 @@ PEC_CondRet PEC_ObtemCor ( PEC_tpPeca pPeca , int * cor ) ;
 *
 *  $EP Parametros
 *		pPeca - peça que procura saber o final
-*		* final - ponteiro passado para receber o final
+*		pFinal - ponteiro passado para receber o final
 *
 *  $FV Valor retornado
 *		PEC_CondRetOK - se ocorreu tudo certo
@@ -209,7 +209,7 @@ PEC_CondRet PEC_ObtemCor ( PEC_tpPeca pPeca , int * cor ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_ObtemFinal ( PEC_tpPeca pPeca , int * final ) ;
+PEC_CondRet PEC_ObterFinal ( PEC_tppPeca pPeca , int * pFinal ) ;
 
 /***********************************************************************
 *
@@ -220,7 +220,7 @@ PEC_CondRet PEC_ObtemFinal ( PEC_tpPeca pPeca , int * final ) ;
 *
 *  $EP Parametros
 *		pPeca - peça que procura saber o inicio
-*		* inicio - ponteiro passado para receber o inicio
+*		pInicio - ponteiro passado para receber o inicio
 *
 *  $FV Valor retornado
 *		PEC_CondRetOK - se ocorreu tudo certo
@@ -238,7 +238,7 @@ PEC_CondRet PEC_ObtemFinal ( PEC_tpPeca pPeca , int * final ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_ObtemInicio ( PEC_tpPeca pPeca , int * inicio ) ;
+PEC_CondRet PEC_ObterInicio ( PEC_tppPeca pPeca , int * pInicio ) ;
 
 /***********************************************************************
 *
@@ -249,7 +249,7 @@ PEC_CondRet PEC_ObtemInicio ( PEC_tpPeca pPeca , int * inicio ) ;
 *
 *  $EP Parametros
 *		pPeca - peça que procura saber a volta completa
-*		* inicio - ponteiro passado para receber a volta completa
+*		pVoltaCompleta - ponteiro passado para receber a volta completa
 *
 *  $FV Valor retornado
 *		PEC_CondRetOK - se ocorreu tudo certo
@@ -267,7 +267,7 @@ PEC_CondRet PEC_ObtemInicio ( PEC_tpPeca pPeca , int * inicio ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_ObtemVoltaCompleta ( PEC_tpPeca pPeca , int * voltaCompleta ) ;
+PEC_CondRet PEC_ObterVoltaCompleta ( PEC_tppPeca pPeca , int * pVoltaCompleta ) ;
 
 /***********************************************************************
 *
@@ -298,7 +298,7 @@ PEC_CondRet PEC_ObtemVoltaCompleta ( PEC_tpPeca pPeca , int * voltaCompleta ) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_AtualizaFinalPeca ( PEC_tpPeca pPeca , int final) ;
+PEC_CondRet PEC_AtualizarFinalPeca ( PEC_tppPeca pPeca , int final) ;
 
 /***********************************************************************
 *
@@ -329,7 +329,7 @@ PEC_CondRet PEC_AtualizaFinalPeca ( PEC_tpPeca pPeca , int final) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_tpPeca pPeca , int volta) ;
+PEC_CondRet PEC_AtualizarVoltaPeca ( PEC_tppPeca pPeca , int volta) ;
 
 /***********************************************************************
 *
@@ -360,7 +360,7 @@ PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_tpPeca pPeca , int volta) ;
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_AtualizaInicioPeca ( PEC_tpPeca pPeca , int inicio) ;
+PEC_CondRet PEC_AtualizarInicioPeca ( PEC_tppPeca pPeca , int inicio) ;
 
 #undef PEC_EXT
 

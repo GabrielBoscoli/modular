@@ -1,5 +1,5 @@
 /***************************************************************************
-*  $MCI Módulo de implementação: TPEC Módulo de teste de peças
+*  $MCI Módulo de implementação: TPEC Teste peça
 *
 *  Arquivo gerado:              TESTPEC.C
 *  Letras identificadoras:      TPEC
@@ -17,19 +17,6 @@
 *     Este modulo contém as funções específicas para o teste do
 *     módulo peças. Ilustra como redigir um interpretador de comandos
 *     de teste específicos utilizando o arcabouço de teste para C.
-*
-*  $EIU Interface com o usuário pessoa
-*     Comandos de teste específicos para testar o módulo peças:
-*
-*     =criarpeca        - chama a função PEC_CriaPeca()
-*     =destruirpeca		- chama a função PEC_DestroiPeca()
-*     =obtercor			- chama a função PEC_ObtemCor()
-*     =obterfinal       - chama a função PEC_ObtemFinal()
-*     =obterinicio		- chama a função PEC_ObtemInicio()
-*     =obtervolta		- chama a função PEC_ObtemVolta()
-*     =atualizafinal	- chama a função PEC_AtualizaFinalPeca()
-*     =atualizainicio   - chama a função PEC_AtualizaInicioPeca()
-*     =atualizavolta	- chama a função PEC_AtualizaVoltaPeca()
 *
 ***************************************************************************/
 
@@ -60,17 +47,29 @@
 
 /***********************************************************************
 *
-*  $FC Função: TPEC Efetuar operações de teste específicas para peças
+*  $FC Função: TPEC Testar peça
 *
 *  $ED Descrição da função
 *     Efetua os diversos comandos de teste específicos para o módulo
-*     peças sendo testado.
+*     peça sendo testado.
 *
 *  $EP Parâmetros
 *     $P ComandoTeste - String contendo o comando
 *
 *  $FV Valor retornado
 *     Ver TST_tpCondRet definido em TST_ESPC.H
+*
+*     Comandos disponíveis:
+*
+*     =criarpeca				CondRetEsp
+*     =destruirpeca				CondRetEsp
+*     =obtercor					CondRetEsp
+*     =obterfinal				CondRetEsp
+*     =obterinicio              CondRetEsp
+*     =obtervolta               CondRetEsp
+*     =atualizafinal            Valor CondRetEsp
+*     =atualizainicio           Valor CondRetEsp
+*     =atualizavolta            Valor CondRetEsp
 *
 ***********************************************************************/
 
@@ -81,7 +80,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 	int CondRetEsp    = -1 ;
 	int CondRetObtido = -1 ;
 	int auxiliar = -1 ;
-	static PEC_tpPeca peca = NULL;
+	static PEC_tppPeca peca = NULL;
 
 	/* Testar Criar */
 
@@ -93,7 +92,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm;
 		}
 
-		CondRetObtido = PEC_CriaPeca ( &peca, cor ) ;
+		CondRetObtido = PEC_CriarPeca ( &peca, cor ) ;
 
 		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado") ;
 
@@ -111,7 +110,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			return TST_CondRetParm ;
 		}
 
-		CondRetObtido = PEC_DestroiPeca ( peca ) ;
+		CondRetObtido = PEC_DestruirPeca ( peca ) ;
 		peca = NULL ;
 
 		return TST_CompararInt (CondRetEsp, CondRetObtido, "Retorno errado") ;
@@ -131,7 +130,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_ObtemCor( peca, &cor ) ;
+            CondRetObtido = PEC_ObterCor( peca, &cor ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
@@ -151,7 +150,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_ObtemFinal( peca, &auxiliar ) ;
+            CondRetObtido = PEC_ObterFinal( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
@@ -171,7 +170,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_ObtemInicio( peca, &auxiliar ) ;
+            CondRetObtido = PEC_ObterInicio( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
@@ -190,7 +189,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = PEC_ObtemVoltaCompleta( peca, &auxiliar ) ;
+            CondRetObtido = PEC_ObterVoltaCompleta( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
@@ -210,7 +209,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_AtualizaFinalPeca( peca, auxiliar) ;
+            CondRetObtido = PEC_AtualizarFinalPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Atualiza Peca." ) ;
@@ -230,7 +229,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_AtualizaInicioPeca( peca, auxiliar) ;
+            CondRetObtido = PEC_AtualizarInicioPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Atualiza Peca." ) ;
@@ -250,7 +249,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             }
 
 
-            CondRetObtido = PEC_AtualizaVoltaPeca( peca, auxiliar) ;
+            CondRetObtido = PEC_AtualizarVoltaPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Atualiza Peca." ) ;
@@ -261,4 +260,4 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 			
 }  /* Fim função: TPEC &Testar peça */
 
-/********** Fim do módulo de implementação: TPEC Teste lista de símbolos **********/
+/********** Fim do módulo de implementação: TPEC Teste peça **********/

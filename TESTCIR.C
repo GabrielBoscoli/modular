@@ -1,8 +1,8 @@
 /***************************************************************************
-*  $MCI Módulo de implementação: TLST Teste lista circular
+*  $MCI Módulo de implementação: TLISCIR Teste lista circular
 *
 *  Arquivo gerado:              TESTCIR.C
-*  Letras identificadoras:      TLST
+*  Letras identificadoras:      TLISCIR
 *
 *  Projeto: Disciplina INF 1301
 *  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
@@ -30,29 +30,29 @@
 
 #include    "LCIRC.H"
 
-/* Tabela dos nomes dos comandos de teste específicos */
-            
-#define CRIAR_LISTAC_CMD                  "=criarlistac"             
-#define REMOVE_ELEMENTO_CMD               "=removerelemento"          
-#define DESTRUIR_LISTA_CMD                "=destruirlista"           
-#define ESVAZIAR_LISTA_CMD                "=esvaziarlista"           
-#define BUSCAR_ELEMENTO_CMD               "=buscarelemento"          
-#define INSERIR_ELEMENTO_ESQ_CMD          "=inserirelementoesq"      
-#define INSERIR_ELEMENTO_DIR_CMD          "=inserirelementodir"      
-#define OBTER_VALOR_CMD                   "=obtervalor"              
-#define AVANCAR_ELEMENTO_CORRENTE_CMD     "=avancarelementocorrente" 
-
 typedef void ** ppVoid ;
 
-/***** Protótipos das funções encapuladas no módulo *****/
+#define VALOR_1 1
+#define VALOR_2 1
+#define VALOR_3 1
 
-   static void DestruirValor( void * pValor ) ;
+/* Tabela dos nomes dos comandos de teste específicos */
+            
+#define CRIAR_LISTAC_CMD				"=criarlistac"             
+#define EXCLUIR_ELEMENTO_CMD            "=excluirelemento"          
+#define DESTRUIR_LISTA_CMD              "=destruirlista"           
+#define ESVAZIAR_LISTA_CMD              "=esvaziarlista"           
+#define PROCURAR_ELEMENTO_CMD           "=procurarelemento"          
+#define INSERIR_ELEMENTO_ANTES_CMD      "=inserirelementoantes"      
+#define INSERIR_ELEMENTO_APOS_CMD       "=inserirelementoapos"      
+#define OBTER_VALOR_CMD                 "=obtervalor"              
+#define AVANCAR_ELEMENTO_CORRENTE_CMD   "=avancarelementocorrente" 
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
 /***********************************************************************
 *
-*  $FC Função: TLST Efetuar operações de teste específicas para lista circular
+*  $FC Função: TLISCIR Testar lista circular
 *
 *  $ED Descrição da função
 *     Efetua os diversos comandos de teste específicos para o módulo
@@ -78,8 +78,6 @@ typedef void ** ppVoid ;
 *
 ***********************************************************************/
 
-/***********************************************************************/
-
 	TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 	{
 
@@ -91,9 +89,9 @@ typedef void ** ppVoid ;
 		int indiceValores = -1;
 		int* auxiliar;
 
-		static int valores[3] = {1, 2, 3};
+		static int valores[3] = {VALOR_1, VALOR_2, VALOR_3};
 
-		static LST_Circular listaCircular = NULL;
+		static LISCIR_tppListaCircular listaCircular = NULL;
 		
 	/* Testar Criar Lista Circular */
 
@@ -107,7 +105,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
             
-            CondRetObtido = LST_CriaLista( &listaCircular, NULL ) ;
+            CondRetObtido = LISCIR_CriarLista( &listaCircular, NULL ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Criar Lista Circular." ) ;
@@ -117,7 +115,7 @@ typedef void ** ppVoid ;
 
 	/* Testar Remover Elemento */
 
-         else if ( strcmp( ComandoTeste , REMOVE_ELEMENTO_CMD ) == 0 )
+         else if ( strcmp( ComandoTeste , EXCLUIR_ELEMENTO_CMD ) == 0 )
          {
 
             numLidos = LER_LerParametros( "ii" , &indiceValores, &CondRetEsp ) ;
@@ -127,7 +125,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }    
 
-            CondRetObtido = LST_RemoveElemento( listaCircular, &valores[indiceValores] ) ;
+            CondRetObtido = LISCIR_ExcluirElemento( listaCircular, &valores[indiceValores] ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Remover Elemento." ) ;
@@ -147,7 +145,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = LST_DestruirLista( listaCircular ) ;
+            CondRetObtido = LISCIR_DestruirLista( listaCircular ) ;
 			listaCircular = NULL ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
@@ -168,7 +166,7 @@ typedef void ** ppVoid ;
 				return TST_CondRetParm ;
 			}
         
-			CondRetObtido = LST_EsvaziarLista( listaCircular ) ;
+			CondRetObtido = LISCIR_EsvaziarLista( listaCircular ) ;
         			
 			return TST_CompararInt( CondRetEsp , CondRetObtido ,
                     "Condicao de retorno errada ao Esvaziar Lista." ) ;
@@ -178,7 +176,7 @@ typedef void ** ppVoid ;
                     
 	/* Testar Buscar Elemento */	
     
-        else if ( strcmp( ComandoTeste , BUSCAR_ELEMENTO_CMD ) == 0 )
+        else if ( strcmp( ComandoTeste , PROCURAR_ELEMENTO_CMD ) == 0 )
         {
     
 			numLidos = LER_LerParametros( "ii" , &indiceValores, &CondRetEsp ) ;
@@ -188,7 +186,7 @@ typedef void ** ppVoid ;
 				return TST_CondRetParm ;
 			}
 
-			CondRetObtido = LST_BuscaElemento( listaCircular, &valores[indiceValores] ) ;
+			CondRetObtido = LISCIR_ProcurarValor( listaCircular, &valores[indiceValores] ) ;
     			
 			return TST_CompararInt( CondRetEsp , CondRetObtido ,
                     "Condicao de retorno errada ao Buscar Elemento." ) ;
@@ -198,7 +196,7 @@ typedef void ** ppVoid ;
                 
 	/* Testar Inserir Elemento a Esquerda */
   
-           else if ( strcmp( ComandoTeste , INSERIR_ELEMENTO_ESQ_CMD ) == 0 )
+           else if ( strcmp( ComandoTeste , INSERIR_ELEMENTO_ANTES_CMD ) == 0 )
            {
   
               numLidos = LER_LerParametros( "ii" , &indiceValores, &CondRetEsp ) ;
@@ -208,7 +206,7 @@ typedef void ** ppVoid ;
                  return TST_CondRetParm ;
               }
 
-              CondRetObtido = LST_InsereElemEsquerda( listaCircular, (void *) &valores[indiceValores] ) ;
+              CondRetObtido = LISCIR_InserirElementoAntes( listaCircular, (void *) &valores[indiceValores] ) ;
 
               return TST_CompararInt( CondRetEsp , CondRetObtido ,
                        "Condicao de retorno errada ao Inserir Elemento a Esquerda." ) ;
@@ -218,7 +216,7 @@ typedef void ** ppVoid ;
               
 	/* Testar Inserir Elemento a Direita */
 
-         else if ( strcmp( ComandoTeste , INSERIR_ELEMENTO_DIR_CMD ) == 0 )
+         else if ( strcmp( ComandoTeste , INSERIR_ELEMENTO_APOS_CMD ) == 0 )
          {
 
             numLidos = LER_LerParametros( "ii", &indiceValores, &CondRetEsp ) ;
@@ -228,7 +226,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = LST_InsereElemDireita( listaCircular, (void *) &valores[indiceValores] ) ;
+            CondRetObtido = LISCIR_InserirElementoApos( listaCircular, (void *) &valores[indiceValores] ) ;
 
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Inserir Elemento a Direita." ) ;
@@ -248,7 +246,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = LST_ObterValor( listaCircular, (ppVoid) &auxiliar ) ;
+            CondRetObtido = LISCIR_ObterValor( listaCircular, (ppVoid) &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Obter Valor." ) ;
@@ -267,7 +265,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = LST_AvancarElementoCorrente( listaCircular, num ) ;
+            CondRetObtido = LISCIR_AvancarElementoCorrente( listaCircular, num ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Avançar Elemento Corrente." ) ;
@@ -276,23 +274,6 @@ typedef void ** ppVoid ;
             
       return TST_CondRetNaoConhec ;
 
-	} /* Fim função: TLST &Testar lista circular */
-
-
-/*****  Código das funções encapsuladas no módulo  *****/
-
-
-/***********************************************************************
-*
-*  $FC Função: TLST - Destruir valor
-*
-***********************************************************************/
-
-   void DestruirValor( void * pValor )
-   {
-		int* auxiliar = (int*) pValor;
-		free( auxiliar ) ;
-
-   } /* Fim função: TLST -Destruir valor */
+	} /* Fim função: TLISCIR &Testar lista circular */
  
-/********** Fim do módulo de implementação: TLST Teste lista circular **********/
+/********** Fim do módulo de implementação: TLISCIR Teste lista circular **********/

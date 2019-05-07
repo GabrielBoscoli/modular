@@ -1,9 +1,8 @@
 /***************************************************************************
- *  $MCI Módulo de implementação: LST Módulo lista circular duplamente
- *													encadeada genérica
+ *  $MCI Módulo de implementação: LISCIR Lista Duplamente Encadeada Circular
  *
  *  Arquivo gerado:              LCIRC.C
- *  Letras identificadoras:      LST
+ *  Letras identificadoras:      LISCIR
  *
  *  Projeto: Disciplina INF 1301
  *  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
@@ -32,372 +31,371 @@
 
 /***********************************************************************
  *
- *  $TC Tipo de dados: LST Elemento da lista
+ *  $TC Tipo de dados: LISCIR Elemento da lista
  *
  *  $ED Descrição do tipo
- *     Descreve a organização e estrutura de um elemento da lista
+ *     Descreve a organização e estrutura de um elemento da lista.
  *
  ***********************************************************************/
 
-typedef struct tagElemLista {
+	typedef struct tagElemLista {
     
-    void * valor ;
-    /* Ponteiro para o valor contido no elemento */
+		void * valor ;
+		/* Ponteiro para o valor contido no elemento */
     
-    struct tagElemLista * ant ;
-    /* Ponteiro para o elemento predecessor */
+		struct tagElemLista * ant ;
+		/* Ponteiro para o elemento predecessor */
     
-    struct tagElemLista * prox ;
-    /* Ponteiro para o elemento sucessor */
+		struct tagElemLista * prox ;
+		/* Ponteiro para o elemento sucessor */
     
-} LST_Elem ;
+	} tpElemLista ;
 
 /***********************************************************************
  *
- *  $TC Tipo de dados: LST Descritor da lista
+ *  $TC Tipo de dados: LISCIR Descritor da cabeça da lista
  *
  *  $ED Descrição do tipo
- *     Descreve a organização e estrutura da lista
+ *     Descreve a organização e estrutura da lista.
+ *	   A cabeça da lista é o ponto de acesso para determinada lista.
  *
  ***********************************************************************/
 
-typedef struct LST_tpCircular {
+	typedef struct LISCIR_tagListaCircular {
     
-    LST_Elem * pElemCorr ;
-      /* Ponteiro para o elemento corrente */
+		tpElemLista * pElemCorr ;
+		  /* Ponteiro para o elemento corrente */
     
-    int numElem ;
- 	  /* Numero de elementos da lista */
+		int numElem ;
+ 		  /* Numero de elementos da lista */
     
-    void ( * ExcluirValor ) ( void * pValor ) ;
-      /* Ponteiro para a função de destruição do valor contido em um elemento */
+		void ( * ExcluirValor ) ( void * pValor ) ;
+		  /* Ponteiro para a função de destruição do valor contido em um elemento */
 
-} LST_tppCircular ;
-
-
-/*****  Dados encapsulados no módulo  *****/
+	} LISCIR_tpListaCircular ;
 
 /***** Protótipo das funções encapsuladas no módulo *****/
 
-static void LiberarElemento ( LST_tppCircular *pLista , LST_Elem  * pElem ) ;
+	static void LiberarElemento ( LISCIR_tpListaCircular *pLista , tpElemLista  * pElem ) ;
 
-static LST_Elem * CriaElemento ( LST_tppCircular * pLista , void * valor ) ;
+	static tpElemLista * CriaElemento ( LISCIR_tpListaCircular * pLista , void * valor ) ;
 
-static void LimparCabeca ( LST_tppCircular *pLista ) ;
+	static void LimparCabeca ( LISCIR_tpListaCircular *pLista ) ;
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
 /***************************************************************************
  *
- *  Função: LST  &Criar lista
+ *  Função: LISCIR  &Criar lista
  *  ****/
 
-LST_CondRet LST_CriaLista ( LST_tppCircular **pLista, void ( * ExcluirValor ) ( void *pValor ) )
-{
+	LISCIR_CondRet LISCIR_CriarLista ( LISCIR_tpListaCircular **pLista, void ( * ExcluirValor ) ( void *pValor ) )
+	{
 
-    *pLista = ( LST_tppCircular *) malloc ( sizeof ( LST_tppCircular ) ) ;
+		*pLista = ( LISCIR_tpListaCircular *) malloc ( sizeof ( LISCIR_tpListaCircular ) ) ;
     
-    if ( *pLista == NULL )
-    {
-        return LST_CondRetMemoriaCheia ;
-    }
+		if ( *pLista == NULL )
+		{
+			return LISCIR_CondRetMemoriaCheia ;
+		}
     
-    LimparCabeca ( *pLista ) ;
-    (*pLista)->ExcluirValor = ExcluirValor ;
+		LimparCabeca ( *pLista ) ;
+		(*pLista)->ExcluirValor = ExcluirValor ;
 
-    return 	LST_CondRetOK ;
+		return 	LISCIR_CondRetOK ;
     
-} /* Fim função: LST  &Criar lista */
+	} /* Fim função: LISCIR  &Criar lista */
 
 /***************************************************************************
  *
- *  Função: LST  &Remove Elemento
+ *  Função: LISCIR  &Remove Elemento
  *  ****/
 
-LST_CondRet LST_RemoveElemento ( LST_tppCircular *pLista, void * elemento )
-{
-    LST_Elem * pElem    ;
-    LST_CondRet retorno ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_ExcluirElemento ( LISCIR_tpListaCircular *pLista, void * pElemento )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		tpElemLista * pElem    ;
+		LISCIR_CondRet retorno ;
 
-    if ( ( retorno = LST_BuscaElemento ( pLista , elemento ) ) != LST_CondRetOK )
-    {
-        return retorno ;
-    }
-    pElem = pLista->pElemCorr ;
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
+
+		if ( ( retorno = LISCIR_ProcurarValor ( pLista , pElemento ) ) != LISCIR_CondRetOK )
+		{
+			return retorno ;
+		}
+
+		pElem = pLista->pElemCorr ;
     
-    if ( pElem->ant != pElem )
-    {
-        pElem->ant->prox = pElem->prox ;
-        pElem->prox->ant = pElem->ant  ;
-        pLista->pElemCorr   = pElem->ant  ;
-    }
-    else
-    {
-        pLista->pElemCorr = NULL ;
-    }
+		if ( pElem->ant != pElem )
+		{
+			pElem->ant->prox = pElem->prox ;
+			pElem->prox->ant = pElem->ant  ;
+			pLista->pElemCorr   = pElem->ant  ;
+		}
+		else
+		{
+			pLista->pElemCorr = NULL ;
+		}
 
-    LiberarElemento( pLista , pElem ) ;
+		LiberarElemento( pLista , pElem ) ;
 
-    return LST_CondRetOK ;
+		return LISCIR_CondRetOK ;
     
-} /* Fim função: LST  &Remove Elemento */
+	} /* Fim função: LISCIR  &Remove Elemento */
 
 /***************************************************************************
  *
- *  Função: LST  &Destruir lista
+ *  Função: LISCIR  &Destruir lista
  *  ****/
 
-LST_CondRet LST_DestruirLista ( LST_tppCircular *pLista )
-{
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_DestruirLista ( LISCIR_tpListaCircular *pLista )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
 
-    LST_EsvaziarLista( pLista ) ;
+		LISCIR_EsvaziarLista( pLista ) ;
 
-    return LST_CondRetOK;
+		return LISCIR_CondRetOK;
     
-} /* Fim função: LST  &Destruir lista */
+	} /* Fim função: LISCIR  &Destruir lista */
 
 /***************************************************************************
  *
- *  Função: LST  &Esvaziar lista
+ *  Função: LISCIR  &Esvaziar lista
  *  ****/
 
-LST_CondRet LST_EsvaziarLista( LST_tppCircular *pLista )
-{
-    
-    LST_Elem * pElem ;
-    LST_Elem * pProx ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_EsvaziarLista( LISCIR_tpListaCircular *pLista )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+    
+		tpElemLista * pElem ;
+		tpElemLista * pProx ;
 
-    if( pLista->pElemCorr == NULL )
-    {
-        return LST_CondRetListaVazia ;
-    }
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
+
+		if( pLista->pElemCorr == NULL )
+		{
+			return LISCIR_CondRetListaVazia ;
+		}
     
-    pElem = pLista->pElemCorr ;
+		pElem = pLista->pElemCorr ;
     
-    do
-    {
-        pProx = pElem->prox ;
-        LiberarElemento( pLista , pElem ) ;
-        pElem = pProx ;
+		do
+		{
+			pProx = pElem->prox ;
+			LiberarElemento( pLista , pElem ) ;
+			pElem = pProx ;
         
-    } while ( pElem != pLista->pElemCorr ) ;
+		} while ( pElem != pLista->pElemCorr ) ;
     
-    LimparCabeca( pLista ) ;
+		LimparCabeca( pLista ) ;
 
-    return LST_CondRetOK;
+		return LISCIR_CondRetOK;
     
-} /* Fim função: LST  &Esvaziar lista */
+	} /* Fim função: LISCIR  &Esvaziar lista */
 
 /***************************************************************************
  *
- *  Função: LST  &Procurar elemento na lista
+ *  Função: LISCIR  &Procurar elemento na lista
  *  ****/
 
-LST_CondRet LST_BuscaElemento ( LST_tppCircular *pLista , void * valor )
-{
-    LST_Elem * pElem ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_ProcurarValor ( LISCIR_tpListaCircular *pLista , void * pValor )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		tpElemLista * pElem ;
+
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
     
-    if ( pLista->pElemCorr == NULL )
-    {
-        return LST_CondRetListaVazia;
-    }
+		if ( pLista->pElemCorr == NULL )
+		{
+			return LISCIR_CondRetListaVazia;
+		}
     
-    pElem = pLista->pElemCorr ;
+		pElem = pLista->pElemCorr ;
     
-    do
-    {
-        if ( pElem->valor == valor )
-        {
-            pLista->pElemCorr = pElem ;
-            return LST_CondRetOK ;
-        }
-        pElem = pElem->prox ;
+		do
+		{
+			if ( pElem->valor == pValor )
+			{
+				pLista->pElemCorr = pElem ;
+				return LISCIR_CondRetOK ;
+			}
+			pElem = pElem->prox ;
         
-    } while ( pElem != pLista->pElemCorr ) ;
+		} while ( pElem != pLista->pElemCorr ) ;
 
-    return LST_CondRetNaoAchou;
+		return LISCIR_CondRetNaoAchou;
     
-} /* Fim função: LST  &Procurar elemento na lista */
+	} /* Fim função: LISCIR  &Procurar elemento na lista */
 
 /***************************************************************************
  *
- *  Função: LST  &Inserir elemento à esquerda
+ *  Função: LISCIR  &Inserir elemento à esquerda
  *  ****/
 
-LST_CondRet LST_InsereElemEsquerda ( LST_tppCircular * pLista, void * valor )
-{
-    LST_Elem *pElem ;
-    LST_Elem *p     ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_InserirElementoAntes ( LISCIR_tpListaCircular * pLista, void * pValor )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		tpElemLista *pElem ;
+		tpElemLista *p     ;
 
-    pElem = CriaElemento( pLista ,  valor ) ;
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
+
+		pElem = CriaElemento( pLista ,  pValor ) ;
     
-    if ( pElem == NULL )
-    {
-        return LST_CondRetMemoriaCheia ;
-    }
+		if ( pElem == NULL )
+		{
+			return LISCIR_CondRetMemoriaCheia ;
+		}
 
-    p = pLista->pElemCorr ;
+		p = pLista->pElemCorr ;
 
-    if ( p == NULL )
-    {
-        pElem->ant = pElem->prox = pElem ;
-    }
+		if ( p == NULL )
+		{
+			pElem->ant = pElem->prox = pElem ;
+		}
     
-    else
-    {
-        p->ant->prox = pElem  ;
-        pElem->ant   = p->ant ;
-        pElem->prox  = p      ;
-        p->ant       = pElem  ;
-    }
+		else
+		{
+			p->ant->prox = pElem  ;
+			pElem->ant   = p->ant ;
+			pElem->prox  = p      ;
+			p->ant       = pElem  ;
+		}
 
-    pLista->pElemCorr = pElem ;
-    pLista->numElem++ ;
+		pLista->pElemCorr = pElem ;
+		pLista->numElem++ ;
 
 
-    return LST_CondRetOK ;
+		return LISCIR_CondRetOK ;
     
-} /* Fim função: LST  &Inserir elemento à esquerda */
+	} /* Fim função: LISCIR  &Inserir elemento à esquerda */
 
 /***************************************************************************
  *
- *  Função: LST  &Inserir elemento à direita
+ *  Função: LISCIR  &Inserir elemento à direita
  *  ****/
 
-LST_CondRet LST_InsereElemDireita ( LST_tppCircular *pLista , void * valor )
-{
-    LST_Elem *pElem ;
-    LST_Elem * p ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_InserirElementoApos ( LISCIR_tpListaCircular *pLista , void * pValor )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		tpElemLista *pElem ;
+		tpElemLista * p ;
 
-    pElem = CriaElemento ( pLista , valor ) ;
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
 
-    if ( pElem == NULL )
-    {
-        return LST_CondRetMemoriaCheia ;
-    }
+		pElem = CriaElemento ( pLista , pValor ) ;
+
+		if ( pElem == NULL )
+		{
+			return LISCIR_CondRetMemoriaCheia ;
+		}
     
-    p = pLista->pElemCorr ;
+		p = pLista->pElemCorr ;
 
-    if ( p == NULL )
-    {
-        pElem->ant = pElem->prox = pElem ;
-    }
+		if ( p == NULL )
+		{
+			pElem->ant = pElem->prox = pElem ;
+		}
     
-    else
-    {
-        p->prox->ant = pElem   ;
-        pElem->ant   = p       ;
-        pElem->prox  = p->prox ;
-        p->prox      = pElem   ;
-    }
-    pLista->pElemCorr = pElem ;
-    pLista->numElem++ ;
+		else
+		{
+			p->prox->ant = pElem   ;
+			pElem->ant   = p       ;
+			pElem->prox  = p->prox ;
+			p->prox      = pElem   ;
+		}
+		pLista->pElemCorr = pElem ;
+		pLista->numElem++ ;
 
-    return LST_CondRetOK ;
+		return LISCIR_CondRetOK ;
     
-} /* Fim função: LST  &Inserir elemento à direita */
+	} /* Fim função: LISCIR  &Inserir elemento à direita */
 
 /***************************************************************************
  *
- *  Função: LST  &Obter valor
+ *  Função: LISCIR  &Obter valor
  *  ****/
 
-LST_CondRet LST_ObterValor ( LST_tppCircular *pLista , void ** valor )
-{
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_ObterValor ( LISCIR_tpListaCircular *pLista , void ** ppValor )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
 
-    if( pLista->pElemCorr == NULL )
-    {
-        return LST_CondRetListaVazia ;
-    }
+		if( pLista->pElemCorr == NULL )
+		{
+			return LISCIR_CondRetListaVazia ;
+		}
 
-    *valor = pLista->pElemCorr->valor ;
+		*ppValor = pLista->pElemCorr->valor ;
 
-    return LST_CondRetOK ;
+		return LISCIR_CondRetOK ;
     
-}/* Fim função: LST  &Obter valor */
+	}/* Fim função: LISCIR  &Obter valor */
 
 /***************************************************************************
  *
- *  Função: LST  &Avançar Elemento Corrente
+ *  Função: LISCIR  &Avançar Elemento Corrente
  *  ****/
 
-LST_CondRet LST_AvancarElementoCorrente ( LST_tppCircular *pLista , int num )
-{
-    LST_Elem *pElem ;
-
-	if(pLista == NULL)
+	LISCIR_CondRet LISCIR_AvancarElementoCorrente ( LISCIR_tpListaCircular *pLista , int num )
 	{
-		return LST_CondRetListaNaoExiste;
-	}
+		tpElemLista *pElem ;
+
+		if(pLista == NULL)
+		{
+			return LISCIR_CondRetListaNaoExiste;
+		}
     
-    if( pLista->pElemCorr == NULL )
-    {
-        return LST_CondRetListaVazia ;
-    }
+		if( pLista->pElemCorr == NULL )
+		{
+			return LISCIR_CondRetListaVazia ;
+		}
 
-    pElem = pLista->pElemCorr ;
+		pElem = pLista->pElemCorr ;
 
-    if ( num > 0 )
-    {
-        while( num )
-        {
-            pElem = pElem->prox ;
-            num-- ;
-        }
-    }
-    else if ( num < 0 )
-    {
-        while( num )
-        {
-            pElem = pElem->ant ;
-            num++ ;
-        }
-    }
+		if ( num > 0 )
+		{
+			while( num )
+			{
+				pElem = pElem->prox ;
+				num-- ;
+			}
+		}
+		else if ( num < 0 )
+		{
+			while( num )
+			{
+				pElem = pElem->ant ;
+				num++ ;
+			}
+		}
 
-    pLista->pElemCorr = pElem ;
+		pLista->pElemCorr = pElem ;
 
-    return LST_CondRetOK ;
+		return LISCIR_CondRetOK ;
     
-}/* Fim função: LST  &Avançar Elemento Corrente */
+	}/* Fim função: LISCIR  &Avançar Elemento Corrente */
 
 /*****  Código das funções encapsuladas no módulo  *****/
 
 /***********************************************************************
  *
- *  $FC Função: LST  -Liberar elemento da lista
+ *  $FC Função: LISCIR  -Liberar elemento da lista
  *
  *  $ED Descrição da função
  *     Elimina os espaços apontados pelo valor do elemento e o
@@ -405,61 +403,58 @@ LST_CondRet LST_AvancarElementoCorrente ( LST_tppCircular *pLista , int num )
  *
  ***********************************************************************/
 
-void LiberarElemento ( LST_tppCircular *pLista , LST_Elem  * pElem )
-{
-    if ( ( pLista->ExcluirValor != NULL ) && ( pElem->valor != NULL )    )
-    {
-        pLista->ExcluirValor( pElem->valor ) ;
+	void LiberarElemento ( LISCIR_tpListaCircular *pLista , tpElemLista  * pElem )
+	{
+		if ( ( pLista->ExcluirValor != NULL ) && ( pElem->valor != NULL )    )
+		{
+			pLista->ExcluirValor( pElem->valor ) ;
 
-    } /* if */
+		} /* if */
 
-	pElem->valor = NULL ;
-    pLista->numElem-- ;
+		pElem->valor = NULL ;
+		pLista->numElem-- ;
 
-	free(pElem);
+		free(pElem);
     
-} /* Fim função: LST  -Liberar elemento da lista */
+	} /* Fim função: LISCIR  -Liberar elemento da lista */
 
 /***********************************************************************
  *
- *  $FC Função: LST  -Cria elemento da lista
- *
- *  $ED Descrição da função
- *     Cria elemento da lista e inicializa os valores contidos nele.
+ *  $FC Função: LISCIR  -Cria elemento da lista
  *
  ***********************************************************************/
 
-LST_Elem * CriaElemento ( LST_tppCircular * pLista , void * valor )
-{
-    LST_Elem * pElem ;
+	tpElemLista * CriaElemento ( LISCIR_tpListaCircular * pLista , void * valor )
+	{
+		tpElemLista * pElem ;
     
-    pElem = ( LST_Elem * ) malloc ( sizeof ( LST_Elem ) ) ;
-    if ( pElem == NULL )
-    {
-        return NULL ;
-    }
+		pElem = ( tpElemLista * ) malloc ( sizeof ( tpElemLista ) ) ;
+		if ( pElem == NULL )
+		{
+			return NULL ;
+		}
     
-	pLista = NULL ;
+		pLista = NULL ;
 
-    pElem->valor = valor ;
-    pElem->prox  = NULL  ;
-    pElem->ant   = NULL  ;
+		pElem->valor = valor ;
+		pElem->prox  = NULL  ;
+		pElem->ant   = NULL  ;
     
-    return pElem ;
+		return pElem ;
     
-} /* Fim função: LST  &Cria elemento da lista */
+	} /* Fim função: LISCIR  -Cria elemento da lista */
 
 /***********************************************************************
  *
- *  $FC Função: LST  -Limpar a cabeça da lista
+ *  $FC Função: LISCIR  -Limpar a cabeça da lista
  *
  ***********************************************************************/
 
-void LimparCabeca ( LST_tppCircular *pLista )
-{
-    pLista->pElemCorr = NULL ;
-    pLista->numElem  = 0    ;
+	void LimparCabeca ( LISCIR_tpListaCircular *pLista )
+	{
+		pLista->pElemCorr = NULL ;
+		pLista->numElem  = 0    ;
     
-} /* Fim função: LST  -Limpar a cabeça da lista */
+	} /* Fim função: LISCIR  -Limpar a cabeça da lista */
 
-/********** Fim do módulo de implementação: LST  Lista duplamente encadeada circular **********/
+/********** Fim do módulo de implementação: LISCIR  Lista Duplamente Encadeada Circular **********/

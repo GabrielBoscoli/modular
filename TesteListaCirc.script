@@ -9,7 +9,7 @@
 =declararparm valor3 int 2
 
 ==Remover elemento de uma lista que nao existe
-=removerelemento valor1 ListaNaoExiste
+=excluirelemento valor1 ListaNaoExiste
 
 ==Destruir lista que nao existe
 =destruirlista ListaNaoExiste
@@ -18,11 +18,11 @@
 =esvaziarlista ListaNaoExiste
 
 ==Buscar elemento em uma lista que nao existe
-=buscarelemento valor1 ListaNaoExiste
+=procurarelemento valor1 ListaNaoExiste
 
 ==Inserir elemento em lista que nao existe
-=inserirelementoesq valor1 ListaNaoExiste
-=inserirelementodir valor1 ListaNaoExiste
+=inserirelementoantes valor1 ListaNaoExiste
+=inserirelementoapos valor1 ListaNaoExiste
 
 ==Obter valor corrente de uma lista que nao existe
 =obtervalor ListaNaoExiste
@@ -34,10 +34,10 @@
 =criarlistac OK
 
 ==Remover elemento de lista vazia
-=removerelemento valor1 ListaVazia
+=excluirelemento valor1 ListaVazia
 
 ==Buscar elemento em uma lista vazia
-=buscarelemento valor1 ListaVazia
+=procurarelemento valor1 ListaVazia
 
 ==Obter valor de uma lista vazia
 =obtervalor ListaVazia
@@ -49,28 +49,28 @@
 =esvaziarlista ListaVazia
 
 ==Inserir elemento a esquerda com sucesso
-=inserirelementoesq valor1 OK
+=inserirelementoantes valor1 OK
 
 ==Buscar elemento que não está na lista
-=buscarelemento valor3 NaoAchou
-=buscarelemento valor2 NaoAchou
+=procurarelemento valor3 NaoAchou
+=procurarelemento valor2 NaoAchou
 
 ==Buscar elemento com sucesso
-=buscarelemento valor1 OK
+=procurarelemento valor1 OK
 
 ==Obter valor com sucesso
 =obtervalor OK
 
 ==Remover elemento que não está na lista
-=removerelemento valor3 NaoAchou
-=removerelemento valor2 NaoAchou
+=excluirelemento valor3 NaoAchou
+=excluirelemento valor2 NaoAchou
 
 ==Remover elemento com sucesso
-=removerelemento valor1 OK
+=excluirelemento valor1 OK
 
 ==Inserir elemento a direita com sucesso
-=inserirelementodir valor1 OK
-=inserirelementodir valor2 OK
+=inserirelementoapos valor1 OK
+=inserirelementoapos valor2 OK
 
 ==Avancar elemento corrente com sucesso
 =avancarelementocorrente 1 OK

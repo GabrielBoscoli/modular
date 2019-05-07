@@ -1,5 +1,5 @@
 /***************************************************************************
-*  $MCI Módulo de implementação: PEC Módulo Peças
+*  $MCI Módulo de implementação: PEC Módulo Peça
 *
 *  Arquivo gerado:              PECAS.C
 *  Letras identificadoras:      PEC
@@ -35,214 +35,214 @@
 *
 ***********************************************************************/
 
-typedef struct Peca {
+	typedef struct PEC_tagPeca {
 
-	int cor ;
-	    /* Cor definida entre 0 e 3 */
+		int cor ;
+			/* Cor definida entre 0 e 3 */
 
-	int final;
-	    /* Se a peça está na reta final do jogo (1) ou não (0) */
+		int final;
+			/* Se a peça está na reta final do jogo (1) ou não (0) */
 
-	int inicio;
-        /* Se a peça está nas casas iniciais (1) ou não (0) */
+		int inicio;
+			/* Se a peça está nas casas iniciais (1) ou não (0) */
 
-	int voltaCompleta;
-		/* Se a peça já completou uma volta (1) ou não (0) */
+		int voltaCompleta;
+			/* Se a peça já completou uma volta (1) ou não (0) */
 
-} PEC_Peca;
+	} PEC_tpPeca;
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
 /***************************************************************************
 *
-*  Função: PEC  &Criar Peca
+*  Função: PEC Criar Peca
 *  ****/
 
-PEC_CondRet PEC_CriaPeca ( PEC_Peca ** pPeca, int cor )
-{
-	if ( cor < 0 || cor > 3 )
+	PEC_CondRet PEC_CriarPeca ( PEC_tpPeca ** pPeca, int cor )
 	{
-		return PEC_CondRetCorInvalida ;
-	}
+		if ( cor < 0 || cor > 3 )
+		{
+			return PEC_CondRetCorInvalida ;
+		}
 
-	*pPeca = ( PEC_Peca * ) malloc ( sizeof ( PEC_Peca ) ) ;
+		*pPeca = ( PEC_tpPeca * ) malloc ( sizeof ( PEC_tpPeca ) ) ;
 
-	if ( *pPeca == NULL ) 
-	{
-		return PEC_CondRetFaltaMemoria ;
-	}
+		if ( *pPeca == NULL ) 
+		{
+			return PEC_CondRetFaltaMemoria ;
+		}
 
-	(*pPeca)->cor    = cor ;
-	(*pPeca)->final  = 0   ;
-	(*pPeca)->inicio = 1 ;
-	(*pPeca)->voltaCompleta = 0 ;
+		(*pPeca)->cor    = cor ;
+		(*pPeca)->final  = 0   ;
+		(*pPeca)->inicio = 1 ;
+		(*pPeca)->voltaCompleta = 0 ;
 
-	return PEC_CondRetOK ;
+		return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Criar Peca */
+	} /* Fim função: PEC Criar Peca */
 
 /***************************************************************************
 *
-*  Função: PEC  &Destroi Peca
+*  Função: PEC Destroi Peca
 *  ****/
 
-PEC_CondRet PEC_DestroiPeca ( PEC_Peca * pPeca )
-{
-	if ( pPeca == NULL )
-		return PEC_CondRetNaoExiste ;
+	PEC_CondRet PEC_DestruirPeca ( PEC_tpPeca * pPeca )
+	{
+		if ( pPeca == NULL )
+			return PEC_CondRetNaoExiste ;
 	
-	free( pPeca );
+		free( pPeca );
 
-	return PEC_CondRetOK ;
+		return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Destroi Peca */
-
-
-/***************************************************************************
-*
-*  Função: PEC  &Obtem cor
-*  ****/
-
-PEC_CondRet PEC_ObtemCor ( PEC_Peca * pPeca , int * cor )
-{
-	if(pPeca==NULL)
-	{
-		return PEC_CondRetNaoExiste;
-	}
-
-	* cor    = pPeca->cor    ;
-
-	return PEC_CondRetOK ;
-
-} /* Fim função: PEC  &Obtem cor */
+	} /* Fim função: PEC Destroi Peca */
 
 
 /***************************************************************************
 *
-*  Função: PEC  &Obtem final
+*  Função: PEC Obtem cor
 *  ****/
 
-PEC_CondRet PEC_ObtemFinal ( PEC_Peca * pPeca , int * final )
-{
-	if(pPeca==NULL)
+	PEC_CondRet PEC_ObterCor ( PEC_tpPeca * pPeca , int * pCor )
 	{
-		return PEC_CondRetNaoExiste;
-	}
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
 
-	* final  = pPeca->final  ;
+		* pCor    = pPeca->cor    ;
 
-	return PEC_CondRetOK ;
+		return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Obtem final */
+	} /* Fim função: PEC  Obtem cor */
 
 
 /***************************************************************************
 *
-*  Função: PEC  &Obtem inicio
+*  Função: PEC Obtem final
 *  ****/
 
-PEC_CondRet PEC_ObtemInicio ( PEC_Peca * pPeca , int * inicio)
-{
-	if(pPeca==NULL)
+	PEC_CondRet PEC_ObterFinal ( PEC_tpPeca * pPeca , int * pFinal )
 	{
-		return PEC_CondRetNaoExiste;
-	}
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
 
-	* inicio = pPeca->inicio ;
+		* pFinal  = pPeca->final  ;
 
-	return PEC_CondRetOK ;
+		return PEC_CondRetOK ;
 
-} /* Fim função: PEC  &Obtem status */
-
-/***************************************************************************
-*
-*  Função: PEC  &Obtem volta completa
-*  ****/
-
-PEC_CondRet PEC_ObtemVoltaCompleta ( PEC_Peca * pPeca , int * voltaCompleta)
-{
-	if(pPeca==NULL)
-	{
-		return PEC_CondRetNaoExiste;
-	}
-
-	* voltaCompleta = pPeca->voltaCompleta ;
-
-	return PEC_CondRetOK ;
-
-} /* Fim função: PEC  &Obtem volta completa */
+	} /* Fim função: PEC Obtem final */
 
 
 /***************************************************************************
 *
-*  Função: PEC  &Atualiza se a Peca esta na reta final
+*  Função: PEC Obtem inicio
 *  ****/
 
-PEC_CondRet PEC_AtualizaFinalPeca ( PEC_Peca * pPeca , int final) 
-{
-
-	if(pPeca==NULL)
+	PEC_CondRet PEC_ObterInicio ( PEC_tpPeca * pPeca , int * pInicio)
 	{
-		return PEC_CondRetNaoExiste;
-	}
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
 
-	if ( final < 0 || final > 1 )
-	{
-		return PEC_CondRetArgumentoInvalido ;
-	}
+		* pInicio = pPeca->inicio ;
 
-	pPeca->final = final;
+		return PEC_CondRetOK ;
 
-	return PEC_CondRetOK ;
-
-} /* Fim função: PEC  &Atualiza Final Peca */
+	} /* Fim função: PEC Obtem inicio */
 
 /***************************************************************************
 *
-*  Função: PEC  &Atualiza se a Peca deu uma volta
+*  Função: PEC Obtem volta completa
 *  ****/
 
-PEC_CondRet PEC_AtualizaVoltaPeca ( PEC_Peca * pPeca , int voltaCompleta) 
-{
-
-	if(pPeca==NULL)
+	PEC_CondRet PEC_ObterVoltaCompleta ( PEC_tpPeca * pPeca , int * pVoltaCompleta)
 	{
-		return PEC_CondRetNaoExiste;
-	}
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
 
-	if ( voltaCompleta < 0 || voltaCompleta > 1 )
-	{
-		return PEC_CondRetArgumentoInvalido ;
-	}
+		* pVoltaCompleta = pPeca->voltaCompleta ;
 
-	pPeca->voltaCompleta = voltaCompleta;
+		return PEC_CondRetOK ;
 
-	return PEC_CondRetOK ;
+	} /* Fim função: PEC Obtem volta completa */
 
-} /* Fim função: PEC  &Atualiza se a Peca deu uma volta */
 
 /***************************************************************************
 *
-*  Função: PEC  &Atualiza se a Peca esta na casa inicial
+*  Função: PEC Atualiza se a Peca esta na reta final
 *  ****/
 
-PEC_CondRet PEC_AtualizaInicioPeca ( PEC_Peca * pPeca , int inicio) 
-{
-
-	if(pPeca==NULL)
+	PEC_CondRet PEC_AtualizarFinalPeca ( PEC_tpPeca * pPeca , int final) 
 	{
-		return PEC_CondRetNaoExiste;
-	}
 
-	if ( inicio < 0 || inicio > 1 )
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
+
+		if ( final < 0 || final > 1 )
+		{
+			return PEC_CondRetArgumentoInvalido ;
+		}
+
+		pPeca->final = final;
+
+		return PEC_CondRetOK ;
+
+	} /* Fim função: PEC Atualiza Final Peca */
+
+/***************************************************************************
+*
+*  Função: PEC Atualiza se a Peca deu uma volta
+*  ****/
+
+	PEC_CondRet PEC_AtualizarVoltaPeca ( PEC_tpPeca * pPeca , int voltaCompleta) 
 	{
-		return PEC_CondRetArgumentoInvalido ;
-	}
 
-	pPeca->inicio = inicio;
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
 
-	return PEC_CondRetOK ;
+		if ( voltaCompleta < 0 || voltaCompleta > 1 )
+		{
+			return PEC_CondRetArgumentoInvalido ;
+		}
 
-} /* Fim função: PEC  &Atualiza se a Peca esta na casa inicial */
+		pPeca->voltaCompleta = voltaCompleta;
 
-/********** Fim do módulo de implementação: PEC Módulo PECAS **********/
+		return PEC_CondRetOK ;
+
+	} /* Fim função: PEC Atualiza se a Peca deu uma volta */
+
+/***************************************************************************
+*
+*  Função: PEC Atualiza se a Peca esta na casa inicial
+*  ****/
+
+	PEC_CondRet PEC_AtualizarInicioPeca ( PEC_tpPeca * pPeca , int inicio) 
+	{
+
+		if(pPeca==NULL)
+		{
+			return PEC_CondRetNaoExiste;
+		}
+
+		if ( inicio < 0 || inicio > 1 )
+		{
+			return PEC_CondRetArgumentoInvalido ;
+		}
+
+		pPeca->inicio = inicio;
+
+		return PEC_CondRetOK ;
+
+	} /* Fim função: PEC Atualiza se a Peca esta na casa inicial */
+
+/********** Fim do módulo de implementação: PEC Módulo Peça **********/

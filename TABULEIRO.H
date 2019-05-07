@@ -18,6 +18,7 @@
 *
 *  $ED Descrição do módulo
 *     Este módulo implementa um tabuleiro de ludo.
+*	  Podem existir n tabuleiros em operação simultaneamente.
 *     O tabuleiro possui uma cabeça encapsulando o seu estado.
 *     É possivel criar um tabuleiro, deletar um tabuleiro,
 *     inserir peca em um tabuleiro, mover peca de um tabuleiro,
@@ -34,6 +35,12 @@
 #include "LCIRC.H"
 #include "LISTA.H"
 #include "PECAS.H"
+
+/***** Declarações exportadas pelo módulo *****/
+
+/* Tipo referência para um tabuleiro */
+
+typedef struct TAB_tagTabuleiro * TAB_tppTabuleiro;
 
 /***********************************************************************
 *
@@ -75,9 +82,6 @@
    
    } TAB_CondRet ;
 
-/********** Estrutura Encapsulada Pelo Módulo ************************/
-
-typedef struct Tabuleiro * TAB_tpLudo;
 
 /***********************************************************************
 *
@@ -107,7 +111,7 @@ typedef struct Tabuleiro * TAB_tpLudo;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ; 
+TAB_CondRet TAB_CriarTabuleiro( TAB_tppTabuleiro * pTabuleiro ) ; 
 
 /***********************************************************************
 *
@@ -136,7 +140,7 @@ TAB_CondRet TAB_CriaTabuleiro_Ludo( TAB_tpLudo * pTabuleiro ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_DestruirTabuleiro ( TAB_tpLudo pTabuleiro ) ;
+TAB_CondRet TAB_DestruirTabuleiro ( TAB_tppTabuleiro pTabuleiro ) ;
 
 /***********************************************************************
 *
@@ -169,7 +173,7 @@ TAB_CondRet TAB_DestruirTabuleiro ( TAB_tpLudo pTabuleiro ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_ProcuraPeca ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+TAB_CondRet TAB_ProcurarPeca ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) ;
 
 /***********************************************************************
 *
@@ -199,7 +203,7 @@ TAB_CondRet TAB_ProcuraPeca ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, LIS_tppLista *pListaPeca ) ;
+TAB_CondRet TAB_ObterConteudoCasa ( TAB_tppTabuleiro pTabuleiro, LIS_tppLista *pListaPeca ) ;
 
 /***********************************************************************
 *
@@ -233,14 +237,14 @@ TAB_CondRet TAB_ObterPecaCasa ( TAB_tpLudo pTabuleiro, LIS_tppLista *pListaPeca 
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_AvancaCasa ( TAB_tpLudo pTabuleiro , int cor , int n ) ;
+TAB_CondRet TAB_AvancarCasa ( TAB_tppTabuleiro pTabuleiro , int cor , int n ) ;
 
 /***********************************************************************
 *
 *  $FC Função: TAB  &Retira Peça da Casa
 *
 *  $ED Descrição da função
-*		Retira uma determinada peça passada como parâmetro de uma casa.
+*		Retira uma determinada peça passada como parâmetro de sua casa.
 *
 *  $EP Parâmetros
 *		pTabuleiro - ponteiro para tabuleiro passado como referencia.
@@ -269,14 +273,14 @@ TAB_CondRet TAB_AvancaCasa ( TAB_tpLudo pTabuleiro , int cor , int n ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_RetiraPecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+TAB_CondRet TAB_RetirarPecaCasa ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) ;
 
 /***********************************************************************
 *
 *  $FC Função: TAB  &Insere Peça da Casa
 *
 *  $ED Descrição da função
-*		Insere uma determinada peça passada como parâmetro de uma casa.
+*		Insere a peça na casa corrente do tabuleiro.
 *
 *  $EP Parâmetros
 *		pTabuleiro - ponteiro para tabuleiro passado como referencia.
@@ -299,7 +303,7 @@ TAB_CondRet TAB_RetiraPecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_InserePecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
+TAB_CondRet TAB_InserirPecaCasa ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) ;
 
 /***********************************************************************
 *
@@ -330,18 +334,18 @@ TAB_CondRet TAB_InserePecaCasa ( TAB_tpLudo pTabuleiro , PEC_tpPeca pPeca ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_IrCasaSaidaCor ( TAB_tpLudo pTabuleiro , int cor ) ;
+TAB_CondRet TAB_IrCasaSaidaCor ( TAB_tppTabuleiro pTabuleiro , int cor ) ;
 
 /***********************************************************************
 *
 *  $FC Função: TAB  &Eh Casa Final
 *
 *  $ED Descrição da função
-*		Verifica dado um tabuleiro se chegou a casa final.
+*		Verifica se a casa corrente do tabuleiro é a final.
 *
 *  $EP Parâmetros
 *		pTabuleiro - ponteiro para tabuleiro passado como referencia.
-*		n - ponteiro para armazenar resposta, 1 se é casa final e 0 se não é.
+*		pResposta - ponteiro para armazenar resposta, 1 se é casa final e 0 se não é.
 *
 *  $FV Valor retornado
 *		TAB_CondRetOK - se ocorreu tudo certo.
@@ -360,7 +364,7 @@ TAB_CondRet TAB_IrCasaSaidaCor ( TAB_tpLudo pTabuleiro , int cor ) ;
 *
 ***********************************************************************/
 
-TAB_CondRet TAB_EhCasaFinal ( TAB_tpLudo pTabuleiro , int * n ) ;
+TAB_CondRet TAB_VerificaCasaFinal ( TAB_tppTabuleiro pTabuleiro , int * pResposta ) ;
 
 #undef TABULEIRO_EXT
 

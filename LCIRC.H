@@ -2,10 +2,10 @@
 #define LCIRC_
 /***************************************************************************
  *
- *  $MCD Módulo de definição: LST Lista Duplamente Encadeada Circular
+ *  $MCD Módulo de definição: LISCIR Lista Duplamente Encadeada Circular
  *
  *  Arquivo gerado:              LCIRC.h
- *  Letras identificadoras:      LST
+ *  Letras identificadoras:      LISCIR
  *
  *  Projeto: Disciplina INF 1301
  *  Gestor:  DI/ PUC-RIO, Professor Alessandro Garcia
@@ -56,11 +56,11 @@
 
 /* Tipo referência para uma lista */
 
-typedef struct LST_tpCircular * LST_Circular ;
+typedef struct LISCIR_tagListaCircular * LISCIR_tppListaCircular ;
 
 /***********************************************************************
  *
- *  $TC Tipo de dados: LST Condições de retorno
+ *  $TC Tipo de dados: LISCIR Condições de retorno
  *
  *
  *  $ED Descrição do tipo
@@ -71,26 +71,26 @@ typedef struct LST_tpCircular * LST_Circular ;
 
 typedef enum {
     
-    LST_CondRetOK ,
+    LISCIR_CondRetOK ,
 		/* Concluiu corretamente */
     
-    LST_CondRetNaoAchou ,
+    LISCIR_CondRetNaoAchou ,
 		/* Não encontrou o valor procurado */
     
-    LST_CondRetMemoriaCheia ,
+    LISCIR_CondRetMemoriaCheia ,
 		/* Faltou memoria para alocar elemento */
     
-    LST_CondRetListaVazia ,
+    LISCIR_CondRetListaVazia ,
 		/* A lista não contem elementos */
 
-	LST_CondRetListaNaoExiste
+	LISCIR_CondRetListaNaoExiste
 		/* A lista não existe */
     
-} LST_CondRet ;
+} LISCIR_CondRet ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Criar lista
+ *  $FC Função: LISCIR  &Criar lista
  *
  *  $ED Descrição da função
  *     Cria uma lista duplamente encadeada circular genérica.
@@ -103,14 +103,14 @@ typedef enum {
  *					  excluído.
  *
  *  $FV Valor retornado
- *     LST_CondRetOK			- se ocorreu tudo certo
- *	   LST_CondRetMemoriaCheia	- se faltou memoria
+ *     LISCIR_CondRetOK			- se ocorreu tudo certo
+ *	   LISCIR_CondRetMemoriaCheia	- se faltou memoria
  *
  *  $EAE Assertivas de entrada
  *		Deve existir memória para a criação da lista
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			A lista é criada e referenciada por pLista
  *		SE NAO
  *			A lista não é criada
@@ -118,12 +118,12 @@ typedef enum {
  *
  ***********************************************************************/
 
-LST_CondRet LST_CriaLista ( LST_Circular * pLista,
+LISCIR_CondRet LISCIR_CriarLista ( LISCIR_tppListaCircular * pLista,
                            void ( * ExcluirValor ) ( void *pValor ) );
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Remover elemento
+ *  $FC Função: LISCIR  &Remover elemento
  *
  *  $ED Descrição da função
  *     Remove o elemento procurado da lista dada.
@@ -131,13 +131,13 @@ LST_CondRet LST_CriaLista ( LST_Circular * pLista,
  *
  *  $EP Parâmetros
  *     pLista		- ponteiro para a lista.
- *     elemento		- ponteiro para elemento que se deseja retirar da lista.
+ *     pElemento		- ponteiro para elemento que se deseja retirar da lista.
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- se removeu corretamente
- *     LST_CondRetNaoAchou			- se elemento não foi encontrado
- *     LST_CondRetListaVazia        - se não há elemento na lista
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- se removeu corretamente
+ *     LISCIR_CondRetNaoAchou			- se elemento não foi encontrado
+ *     LISCIR_CondRetListaVazia        - se não há elemento na lista
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
@@ -145,7 +145,7 @@ LST_CondRet LST_CriaLista ( LST_Circular * pLista,
  *		O elemento procurado deve estar na lista
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			O elemento é removido
  *			O elemento corrente é o elemento anterior ao que foi removido
  *			Caso nao exista elemento anterior, a lista fica vazia
@@ -155,11 +155,11 @@ LST_CondRet LST_CriaLista ( LST_Circular * pLista,
  *
  ***********************************************************************/
 
-LST_CondRet LST_RemoveElemento ( LST_Circular pLista, void * elemento  ) ;
+LISCIR_CondRet LISCIR_ExcluirElemento ( LISCIR_tppListaCircular pLista, void * pElemento  ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Destruir Lista
+ *  $FC Função: LISCIR  &Destruir Lista
  *
  *  $ED Descrição da função
  *     Destrói a lista fornecida.
@@ -168,26 +168,26 @@ LST_CondRet LST_RemoveElemento ( LST_Circular pLista, void * elemento  ) ;
  *     pLista     - ponteiro para a lista na qual deve ser destruida.
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- destruiu lista sem problemas.
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- destruiu lista sem problemas.
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			A lista é destruida
  *			A memoria alocada é liberada
- *		SE LST_CondRetListaNaoExiste
+ *		SE LISCIR_CondRetListaNaoExiste
  *			Nada acontece
  *
  ***********************************************************************/
 
-LST_CondRet LST_DestruirLista ( LST_Circular pLista ) ;
+LISCIR_CondRet LISCIR_DestruirLista ( LISCIR_tppListaCircular pLista ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Esvaziar lista
+ *  $FC Função: LISCIR  &Esvaziar lista
  *
  *  $ED Descrição da função
  *     Elimina todos os elementos, sem eliminar a lista
@@ -196,15 +196,15 @@ LST_CondRet LST_DestruirLista ( LST_Circular pLista ) ;
  *     pLista - ponteiro para a lista a ser esvaziada
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- esvaziou lista sem problemas.
- *	   LST_CondRetListaVazia		- lista em questao ja estava vazia
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- esvaziou lista sem problemas.
+ *	   LISCIR_CondRetListaVazia		- lista em questao ja estava vazia
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente  (pLista != NULL)
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			Todos os elementos da lista são removidos
  *			A memoria alocada para os elementos deve ser liberada
  *			A lista fica vazia
@@ -213,42 +213,42 @@ LST_CondRet LST_DestruirLista ( LST_Circular pLista ) ;
  *
  ***********************************************************************/
 
-LST_CondRet LST_EsvaziarLista ( LST_Circular pLista ) ;
+LISCIR_CondRet LISCIR_EsvaziarLista ( LISCIR_tppListaCircular pLista ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Procurar elemento na lista
+ *  $FC Função: LISCIR  &Procurar elemento na lista
  *
  *  $ED Descrição da função
  *     Procura o elemento desejado e o deixa na posição corrente.
  *
  *  $EP Parâmetros
  *     pLista		- ponteiro para a lista onde procura
- *     *valor		- ponteiro pra o endereço do elemento desejado
+ *     * pValor		- ponteiro pra o endereço do elemento desejado
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- se encontrou o elemento.
- *     LST_CondRetNaoAchou			- se o elemento não foi encontrado.
- *     LST_CondRetListaVazia        - se a lista está vazia
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- se encontrou o elemento.
+ *     LISCIR_CondRetNaoAchou			- se o elemento não foi encontrado.
+ *     LISCIR_CondRetListaVazia        - se a lista está vazia
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente  (pLista != NULL)
  *		valor deve ser um ponteiro que esta armazenado na lista
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			O elemento corrente é o elemento com o valor procurado
  *		SE NAO
  *			Nada acontece
  *
  ***********************************************************************/
 
-LST_CondRet LST_BuscaElemento ( LST_Circular pLista , void * valor ) ;
+LISCIR_CondRet LISCIR_ProcurarValor ( LISCIR_tppListaCircular pLista , void * pValor ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Inserir elemento à esquerda
+ *  $FC Função: LISCIR  &Inserir elemento à esquerda
  *
  *  $ED Descrição da função
  *     Insere novo elemento antes do elemento corrente.
@@ -256,20 +256,20 @@ LST_CondRet LST_BuscaElemento ( LST_Circular pLista , void * valor ) ;
  *
  *  $EP Parâmetros
  *     pLista - ponteiro para a lista onde deve ser inserido o elemento
- *     *valor - ponteiro para o valor do novo elemento
- *              Pode ser NULL
+ *     * pValor - ponteiro para o valor do novo elemento
+ *                Pode ser NULL
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- se a inserção ocorreu perfeitamente.
- *     LST_CondRetMemoriaCheia		- se não possui memória suficiente para inserir
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- se a inserção ocorreu perfeitamente.
+ *     LISCIR_CondRetMemoriaCheia		- se não possui memória suficiente para inserir
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
  *		Deve existir memoria para inserir o novo elemento
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			O elemento é inserido antes do elemento corrente
  *			Caso a lista esteja vazia, o elemento inserido é o primeiro da lista
  *			Elemento inserido se torna o novo corrente
@@ -278,11 +278,11 @@ LST_CondRet LST_BuscaElemento ( LST_Circular pLista , void * valor ) ;
  *
  ***********************************************************************/
 
-LST_CondRet LST_InsereElemEsquerda ( LST_Circular pLista , void * valor  ) ;
+LISCIR_CondRet LISCIR_InserirElementoAntes ( LISCIR_tppListaCircular pLista , void * pValor  ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Inserir elemento à direita
+ *  $FC Função: LISCIR  &Inserir elemento à direita
  *
  *  $ED Descrição da função
  *     Insere novo elemento após o elemento corrente.
@@ -290,20 +290,20 @@ LST_CondRet LST_InsereElemEsquerda ( LST_Circular pLista , void * valor  ) ;
  *
  *  $EP Parâmetros
  *     pLista - ponteiro para a lista onde deve ser inserido o elemento
- *     *valor - ponteiro para o valor do novo elemento
- *              Pode ser NULL
+ *     * pValor - ponteiro para o valor do novo elemento
+ *                Pode ser NULL
  *
  *  $FV Valor retornado
- *     LST_CondRetOK           - se a inserção ocorreu perfeitmente.
- *     LST_CondRetMemoriaCheia - se não possui memória suficiente para inserir
- *	   LST_CondRetListaNaoExiste - se lista nao existe
+ *     LISCIR_CondRetOK           - se a inserção ocorreu perfeitmente.
+ *     LISCIR_CondRetMemoriaCheia - se não possui memória suficiente para inserir
+ *	   LISCIR_CondRetListaNaoExiste - se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
  *		Deve existir memoria para inserir o novo elemento
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			O elemento é inserido depois do elemento corrente
  *			Caso a lista esteja vazia, o elemento inserido é o primeiro da lista
  *			Elemento inserido se torna o novo corrente
@@ -312,29 +312,29 @@ LST_CondRet LST_InsereElemEsquerda ( LST_Circular pLista , void * valor  ) ;
  *
  ***********************************************************************/
 
-LST_CondRet LST_InsereElemDireita ( LST_Circular pLista , void * valor ) ;
+LISCIR_CondRet LISCIR_InserirElementoApos ( LISCIR_tppListaCircular pLista , void * pValor ) ;
 
 /***********************************************************************
  *
- *  $FC Função: LST  &Obter valor
+ *  $FC Função: LISCIR  &Obter valor
  *
  *  $ED Descrição da função
  *     Obtem o valor contido no elemento corrente da lista.
  *
  *  $EP Parâmetros
  *     pLista   - ponteiro para a lista de onde se quer o valor
- *     * valor - ponteiro para armazenar o valor desejado
+ *     * ppValor - ponteiro para armazenar o valor desejado
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- se o elemento corrente existe
- *     LST_CondRetListaVazia		- se a lista estiver vazia
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- se o elemento corrente existe
+ *     LISCIR_CondRetListaVazia		- se a lista estiver vazia
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			O valor do elemento corrente da lista é armazenado no
  *			parâmetro valor
  *		SE NAO
@@ -342,7 +342,7 @@ LST_CondRet LST_InsereElemDireita ( LST_Circular pLista , void * valor ) ;
  *
  ***********************************************************************/
 
-LST_CondRet LST_ObterValor ( LST_Circular pLista , void ** valor ) ;
+LISCIR_CondRet LISCIR_ObterValor ( LISCIR_tppListaCircular pLista , void ** ppValor ) ;
 
 /***********************************************************************
  *
@@ -359,15 +359,15 @@ LST_CondRet LST_ObterValor ( LST_Circular pLista , void ** valor ) ;
  *     num    - o número de elementos a andar
  *
  *  $FV Valor retornado
- *     LST_CondRetOK				- se 'num' elementos tiverem sido andados
- *     LST_CondRetListaVazia		- se a lista está vazia
- *	   LST_CondRetListaNaoExiste	- se lista nao existe
+ *     LISCIR_CondRetOK				- se 'num' elementos tiverem sido andados
+ *     LISCIR_CondRetListaVazia		- se a lista está vazia
+ *	   LISCIR_CondRetListaNaoExiste	- se lista nao existe
  *
  *  $EAE Assertivas de entrada
  *		pLista deve ser uma lista existente (pLista != NULL)
  *
  *  $EAE Assertivas de saída
- *		SE LST_CondRetOK
+ *		SE LISCIR_CondRetOK
  *			Novo elemento corrente é o elemento corrente antigo mais o
  *			deslocamento de "num" elementos
  *		SE NAO
@@ -375,11 +375,11 @@ LST_CondRet LST_ObterValor ( LST_Circular pLista , void ** valor ) ;
  *
  ***********************************************************************/
 
-LST_CondRet LST_AvancarElementoCorrente ( LST_Circular pLista , int num ) ;
+LISCIR_CondRet LISCIR_AvancarElementoCorrente ( LISCIR_tppListaCircular pLista , int num ) ;
 
 #undef LCIRC_EXT
 
-/****** Fim do módulo de definição: LST Módulo Lista Circular ******/
+/****** Fim do módulo de definição: LISCIR Módulo Lista Circular ******/
 
 #else
 #endif

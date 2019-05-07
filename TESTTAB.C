@@ -29,24 +29,24 @@
 #include	"GENERICO.H"
 #include	"LERPARM.H"
 
-
-#define INICIALIZAR_CONTEXTO_CMD	"=inicializarcontexto"
-#define CRIAR_TAB_LUDO_CMD          "=criartab"        
-#define PROCURA_PECA_CMD            "=procurarpeca"     
-#define OBTER_PECA_CASA_CMD         "=obterpecacasa"   
-#define AVANCA_CASA_CMD             "=avancarcasa"      
-#define RETIRA_PECA_CASA_CMD        "=retirapecacasa"  
-#define INSERE_PECA_CASA_CMD        "=inserirpecacasa"  
-#define IR_CASA_SAIDA_COR_CMD       "=ircasasaidacor"         
-#define DESTRUIR_TAB_CMD            "=destruirtab"     
-#define EH_CASA_FINAL_CMD           "=ehcasafinal"
-
-
 #define DIM_PECAS 6
 
-PEC_tpPeca vtPecas[DIM_PECAS];
+PEC_tppPeca vtPecas[DIM_PECAS];
 
 typedef void * pVoid ;
+
+/* Tabela dos nomes dos comandos de teste específicos */
+
+#define INICIALIZAR_CONTEXTO_CMD	"=inicializarcontexto"
+#define CRIAR_TAB_CMD				"=criartab"        
+#define PROCURAR_PECA_CMD			"=procurarpeca"     
+#define OBTER_CONTEUDO_CASA_CMD		"=obterconteudocasa"   
+#define AVANCAR_CASA_CMD            "=avancarcasa"      
+#define RETIRAR_PECA_CASA_CMD       "=retirapecacasa"  
+#define INSERIR_PECA_CASA_CMD       "=inserirpecacasa"  
+#define IR_CASA_SAIDA_COR_CMD       "=ircasasaidacor"         
+#define DESTRUIR_TAB_CMD            "=destruirtab"     
+#define VERIFICA_CASA_FINAL_CMD     "=verificacasafinal"
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
@@ -55,234 +55,239 @@ typedef void * pVoid ;
 *  $FC Função: TTAB &Testar tabuleiro
 *
 *  $ED Descrição da função
-*     Testa as funçoes de manipulação de um tabuleiro
+*     Efetua os diversos comandos de teste específicos para o módulo
+*     tabuleiro sendo testado.
+*
+*  $EP Parâmetros
+*     $P ComandoTeste - String contendo o comando
+*
+*  $FV Valor retornado
+*     Ver TST_tpCondRet definido em TST_ESPC.H
 *
 *     Comandos disponíveis:
 *
 *     =criartab                        CondRetEsp
-*     =procurapeca                     IndPeca Avanco CondRetEsp
-*     =obterpecacasa                   IndPeca CondRetEsp
-*	  =avancacasa   				   CondRetEsp
+*     =procurarpeca                    IndPeca Avanco CondRetEsp
+*     =obterconteudocasa               IndPeca CondRetEsp
+*	  =avancarcasa   				   CondRetEsp
 *	  =retirapecacasa				   IndPeca CondRetEsp
-*	  =inserepecacasa   			   CondRetEsp
+*	  =inserirpecacasa   			   CondRetEsp
 *	  =ircasasaidacor   			   CondRetEsp
-*	  =lancardado   				   CondRetEsp
 *	  =destruirtab   				   CondRetEsp
-*     =ehcasafinal                     IndPeca CondRetEsp
+*     =verificacasafinal               IndPeca CondRetEsp
 *	  =inicializarcontexto
 *
 ***********************************************************************/
 
-/***********************************************************************/
 
-TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
-{
-	int tab           =-1 ;
-	int ret           =-1 ;
-	int avanco        =-1 ;
-	int CondRetEsp    =-1 ;
-	int CondRetObtido =-1 ;
-	int numLidos      =-1 ;
-	int indPeca       =-1 ;
-	int cor           =-1 ;
-	int valor             ;
-	int i                 ;
-	int casaFinal         ;
+	TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
+	{
+		int tab           =-1 ;
+		int ret           =-1 ;
+		int avanco        =-1 ;
+		int CondRetEsp    =-1 ;
+		int CondRetObtido =-1 ;
+		int numLidos      =-1 ;
+		int indPeca       =-1 ;
+		int cor           =-1 ;
+		int valor             ;
+		int i                 ;
+		int casaFinal         ;
 
-	static TAB_tpLudo pTabuleiro = NULL;
+		static TAB_tppTabuleiro pTabuleiro = NULL;
 	
-	static PEC_tpPeca pPeca1 = NULL;
-	static PEC_tpPeca pPeca2 = NULL;
-	static PEC_tpPeca pPeca3 = NULL;
-	static PEC_tpPeca pPeca4 = NULL;
-	static PEC_tpPeca pPecaNULL = NULL;
-	static PEC_tpPeca pPecaPerdida = NULL;
+		static PEC_tppPeca pPeca1 = NULL;
+		static PEC_tppPeca pPeca2 = NULL;
+		static PEC_tppPeca pPeca3 = NULL;
+		static PEC_tppPeca pPeca4 = NULL;
+		static PEC_tppPeca pPecaNULL = NULL;
+		static PEC_tppPeca pPecaPerdida = NULL;
 
-	LIS_tppLista listaPecas = NULL;
+		LIS_tppLista listaPecas = NULL;
 
-	/* Tratar: inicializar contexto */
+		/* Tratar: inicializar contexto */
 
-	if( strcmp( ComandoTeste , INICIALIZAR_CONTEXTO_CMD ) == 0 )
-	{
-		PEC_CriaPeca(&pPeca1, PEC_Vermelho);
-		PEC_CriaPeca(&pPeca2, PEC_Azul);
-		PEC_CriaPeca(&pPeca3, PEC_Amarelo);
-		PEC_CriaPeca(&pPeca4, PEC_Verde);
-		PEC_CriaPeca(&pPecaPerdida, PEC_Vermelho);
-
-		PEC_AtualizaInicioPeca(pPecaPerdida, 0);
-
-		vtPecas[0] = pPecaNULL;
-		vtPecas[1] = pPeca1;
-		vtPecas[2] = pPeca2;
-		vtPecas[3] = pPeca3;
-		vtPecas[4] = pPeca4;
-		vtPecas[5] = pPecaPerdida;
-
-		return TST_CondRetOK;
-
-	} /* fim ativa: Tratar: inicializar contexto */
-
-	/* Testar Criar Tabuleiro */
-
-	if( strcmp( ComandoTeste , CRIAR_TAB_LUDO_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "i", &CondRetEsp) ;
-		if( numLidos != 1 )
+		if( strcmp( ComandoTeste , INICIALIZAR_CONTEXTO_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			PEC_CriarPeca(&pPeca1, PEC_Vermelho);
+			PEC_CriarPeca(&pPeca2, PEC_Azul);
+			PEC_CriarPeca(&pPeca3, PEC_Amarelo);
+			PEC_CriarPeca(&pPeca4, PEC_Verde);
+			PEC_CriarPeca(&pPecaPerdida, PEC_Vermelho);
 
-		CondRetObtido = TAB_CriaTabuleiro_Ludo ( &pTabuleiro ) ;
+			PEC_AtualizarInicioPeca(pPecaPerdida, 0);
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao criar tabuleiro") ;
+			vtPecas[0] = pPecaNULL;
+			vtPecas[1] = pPeca1;
+			vtPecas[2] = pPeca2;
+			vtPecas[3] = pPeca3;
+			vtPecas[4] = pPeca4;
+			vtPecas[5] = pPecaPerdida;
 
+			return TST_CondRetOK;
 
-	} /* fim ativa: Criar Tabuleiro */
+		} /* fim ativa: Tratar: inicializar contexto */
 
+		/* Testar Criar Tabuleiro */
 
-	/* Testar Procurar Peça */
-
-	else if( strcmp( ComandoTeste , PROCURA_PECA_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
-		if( numLidos != 2 )
+		if( strcmp( ComandoTeste , CRIAR_TAB_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "i", &CondRetEsp) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_ProcuraPeca ( pTabuleiro, vtPecas [indPeca] ) ;
+			CondRetObtido = TAB_CriarTabuleiro ( &pTabuleiro ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao procurar peça") ;
-
-
-	} /* fim ativa: Procurar Peça */
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao criar tabuleiro") ;
 
 
-	/* Testar Obter peça casa */
+		} /* fim ativa: Criar Tabuleiro */
 
-	else if( strcmp( ComandoTeste , OBTER_PECA_CASA_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
-		if( numLidos != 1 )
+
+		/* Testar Procurar Peça */
+
+		else if( strcmp( ComandoTeste , PROCURAR_PECA_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
+			if( numLidos != 2 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_ObterPecaCasa ( pTabuleiro, &listaPecas ) ;
+			CondRetObtido = TAB_ProcurarPeca ( pTabuleiro, vtPecas [indPeca] ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Obter peça casa") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao procurar peça") ;
 
 
-	} /* fim ativa: Obter peça casa */
+		} /* fim ativa: Procurar Peça */
 
-	/* Testar Eh Casa Final */
 
-	else if( strcmp( ComandoTeste , EH_CASA_FINAL_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
-		if( numLidos != 1 )
+		/* Testar Obter peça casa */
+
+		else if( strcmp( ComandoTeste , OBTER_CONTEUDO_CASA_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_EhCasaFinal ( pTabuleiro, &casaFinal ) ;
+			CondRetObtido = TAB_ObterConteudoCasa ( pTabuleiro, &listaPecas ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao verificar Eh Casa Final") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Obter peça casa") ;
 
 
-	} /* fim ativa: Eh Casa Final */
+		} /* fim ativa: Obter peça casa */
 
-	/* Testar Avança casa */
+		/* Testar Eh Casa Final */
 
-	else if( strcmp( ComandoTeste , AVANCA_CASA_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "iii", &cor, &avanco, &CondRetEsp ) ;
-		if( numLidos != 3 )
+		else if( strcmp( ComandoTeste , VERIFICA_CASA_FINAL_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_AvancaCasa ( pTabuleiro, cor, avanco ) ;
+			CondRetObtido = TAB_VerificaCasaFinal ( pTabuleiro, &casaFinal ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Avançar casa") ;
-
-
-	} /* fim ativa: Avança casa */
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao verificar Eh Casa Final") ;
 
 
-	/* Testar Retira peça casa */
+		} /* fim ativa: Eh Casa Final */
 
-	else if( strcmp( ComandoTeste , RETIRA_PECA_CASA_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
-		if( numLidos != 2 )
+		/* Testar Avança casa */
+
+		else if( strcmp( ComandoTeste , AVANCAR_CASA_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "iii", &cor, &avanco, &CondRetEsp ) ;
+			if( numLidos != 3 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_RetiraPecaCasa ( pTabuleiro, vtPecas [indPeca] ) ;
+			CondRetObtido = TAB_AvancarCasa ( pTabuleiro, cor, avanco ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Retirar peça casa") ;
-
-
-	} /* fim ativa: Retirar peça casa */
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Avançar casa") ;
 
 
-	/* Testar Insere peça casa */
+		} /* fim ativa: Avança casa */
 
-	else if( strcmp( ComandoTeste , INSERE_PECA_CASA_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
-		if( numLidos != 2 )
+
+		/* Testar Retira peça casa */
+
+		else if( strcmp( ComandoTeste , RETIRAR_PECA_CASA_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
+			if( numLidos != 2 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_InserePecaCasa ( pTabuleiro, vtPecas [indPeca] ) ;
+			CondRetObtido = TAB_RetirarPecaCasa ( pTabuleiro, vtPecas [indPeca] ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
-
-
-	} /* fim ativa: Insere peça casa */
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Retirar peça casa") ;
 
 
-	/* Testar Ir Casa Saida Cor */
+		} /* fim ativa: Retirar peça casa */
 
-	else if( strcmp( ComandoTeste , IR_CASA_SAIDA_COR_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "ii", &cor, &CondRetEsp ) ;
-		if( numLidos != 2 )
+
+		/* Testar Insere peça casa */
+
+		else if( strcmp( ComandoTeste , INSERIR_PECA_CASA_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
+			if( numLidos != 2 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_IrCasaSaidaCor ( pTabuleiro, cor ) ;
+			CondRetObtido = TAB_InserirPecaCasa ( pTabuleiro, vtPecas [indPeca] ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
 
 
-	} /* fim ativa: Ir Casa Saida Cor */
+		} /* fim ativa: Insere peça casa */
 
-	/* Testar Destruir tabuleiro */
 
-	else if( strcmp( ComandoTeste , DESTRUIR_TAB_CMD ) == 0 )
-	{
-		numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
-		if( numLidos != 1 )
+		/* Testar Ir Casa Saida Cor */
+
+		else if( strcmp( ComandoTeste , IR_CASA_SAIDA_COR_CMD ) == 0 )
 		{
-			return TST_CondRetParm;
-		}
+			numLidos = LER_LerParametros( "ii", &cor, &CondRetEsp ) ;
+			if( numLidos != 2 )
+			{
+				return TST_CondRetParm;
+			}
 
-		CondRetObtido = TAB_DestruirTabuleiro ( pTabuleiro ) ;
+			CondRetObtido = TAB_IrCasaSaidaCor ( pTabuleiro, cor ) ;
 
-		return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Destruir tabuleiro") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
 
 
-	} /* fim ativa: Destruir tabuleiro */
+		} /* fim ativa: Ir Casa Saida Cor */
 
-    return TST_CondRetNaoConhec ;
+		/* Testar Destruir tabuleiro */
 
-}  /* Fim função: TTAB &Testar tabuleiro */
+		else if( strcmp( ComandoTeste , DESTRUIR_TAB_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
 
-/********** Fim do módulo de implementação: TTAB Teste lista de símbolos **********/
+			CondRetObtido = TAB_DestruirTabuleiro ( pTabuleiro ) ;
+
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Destruir tabuleiro") ;
+
+
+		} /* fim ativa: Destruir tabuleiro */
+
+		return TST_CondRetNaoConhec ;
+
+	}  /* Fim função: TTAB &Testar tabuleiro */
+
+/********** Fim do módulo de implementação: TTAB Teste tabuleiro **********/
