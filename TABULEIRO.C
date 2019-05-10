@@ -555,7 +555,7 @@
 			}
 		}
 		else
-			*cond = 0 ;
+			*pResposta = 0 ;
 
 		return TAB_CondRetOK ;
 
