@@ -47,7 +47,7 @@
 =ircasasaidacor Vermelho TabuleiroNaoExiste
 
 ==Verificar se é casa final de um tabuleiro que nao existe
-=ehcasafinal TabuleiroNaoExiste
+=verificacasafinal TabuleiroNaoExiste
 
 ==Criar tabuleiro
 =criartab OK
