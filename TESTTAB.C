@@ -82,16 +82,12 @@ typedef void * pVoid ;
 
 	TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 	{
-		int tab           =-1 ;
-		int ret           =-1 ;
 		int avanco        =-1 ;
 		int CondRetEsp    =-1 ;
 		int CondRetObtido =-1 ;
 		int numLidos      =-1 ;
 		int indPeca       =-1 ;
 		int cor           =-1 ;
-		int valor             ;
-		int i                 ;
 		int casaFinal         ;
 
 		static TAB_tppTabuleiro pTabuleiro = NULL;
