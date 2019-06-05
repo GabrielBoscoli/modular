@@ -23,9 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
- 
-#include "LISTA.H"
-#include "LCIRC.H"
 
 #define TABULEIRO_OWN
 #include "TABULEIRO.H"
@@ -419,7 +416,6 @@
     
 		IrInicioLista(casa->conteudo);
 		LIS_ProcurarValor(casa->conteudo, (void *) pPeca);
-		/* LIS_ExcluirElemento(casa->conteudo); */
 
 		PEC_AtualizarFinalPeca ( pPeca , 0) ;
 

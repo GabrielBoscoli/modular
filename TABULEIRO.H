@@ -32,9 +32,9 @@
     #define TABULEIRO_EXT extern
 #endif
 
-#include "LCIRC.H"
+#include "LISCIR.H"
 #include "LISTA.H"
-#include "PECAS.H"
+#include "PECA.H"
 
 /***** Declarações exportadas pelo módulo *****/
 

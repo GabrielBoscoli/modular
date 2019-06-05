@@ -2,6 +2,7 @@
 // Autor:     Gabriel Boscoli
 // Data:      10/05/2019
 // Propósito: Testar todas as operações do módulo peca. 
+//
 
 
 ==Inicializando valores
@@ -91,3 +92,5 @@
 
 ==Destruir peca com sucesso
 =destruirpeca OK
+
+//fim

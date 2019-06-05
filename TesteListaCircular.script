@@ -2,6 +2,7 @@
 // Autor:     Gabriel Boscoli
 // Data:      10/05/2019
 // Propósito: Testar todas as operações do módulo lista circular. 
+//
 
 ==Inicializar valores
 =declararparm OK int 0
@@ -85,3 +86,5 @@
 
 ==Destruir lista com sucesso
 =destruirlista OK
+
+//fim
