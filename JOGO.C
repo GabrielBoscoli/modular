@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "PECA.H"
 #include "TABULEIRO.H"
@@ -26,7 +27,8 @@
 
 #define MIN_JOGADORES 1
 #define MAX_JOGADORES 4
-#define MAX_PECAS 	  4
+#define NUM_PECAS 	  4
+#define TAMANHO_MAX_INPUT 81
 
 /***********************************************************************
 *
@@ -36,7 +38,7 @@
 
 typedef struct Jogador{
 
-	char nome[81];
+	char nome[TAMANHO_MAX_INPUT];
 	/* Nome do Jogador */
 
 	int cor;
@@ -81,7 +83,7 @@ void DefineJogadores ( int numeroJogadores , JOGO_Jogador* vetorJogador );
 
 void CriarPecaJogador ( JOGO_Jogador* jogador );
 
-int VerificaComandoValido ( char comando , int* dado );
+int VerificaComandoValido ( char* comando , int* dado );
 
 int ExisteMovimentoPossivel ( JOGO_Jogador jogador , TAB_tppTabuleiro tabuleiro , int dado );
 
@@ -103,6 +105,14 @@ int QuantidadePecaCasaSaidaComMesmaCor (TAB_tppTabuleiro tabuleiro , int cor );
 
 void DestruirPecaJogador( JOGO_Jogador* jogador );
 
+int InputEhDigito ( char* string );
+
+char InputEhCaracter ( char* string );
+
+void TransformaInputEmMinusculo ( char* string );
+
+void RemoverNovaLinha(char* string);
+
 /*****  Código da função principal do módulo  *****/
 
 int main ()
@@ -113,25 +123,22 @@ int main ()
 int Ludo (void)
 {
 	int i;
-	int dado     	;
-	int possuiVencedor     	;
-	int cor = 0  	;
-	int indPeca;
-	int numJogadores = 0;
+	int dado;
+	int possuiVencedor;
+	int numJogadores;
 	int pecaComida;
-	char digito ;
+	char digito;
+	char input[TAMANHO_MAX_INPUT];
 
 	JOGO_Jogador* vtJogadores ; 
-	PEC_tppPeca peca ;
 	TAB_tppTabuleiro  pTabuleiro  ;
 
-	PEC_CondRet pecasRetorno     ;
 	TAB_CondRet tabuleiroRetorno ;
 
 	printf("\n Bem-vindo ao Jogo de Ludo.\n");
 	printf(" Para saber as regras do jogo, por favor, verifique a especificacao de requisitos do projeto.\n\n");
     
-    numJogadores = DefineNumeroJogadores();
+	numJogadores = DefineNumeroJogadores();
 	vtJogadores = (JOGO_Jogador*) malloc ( numJogadores * sizeof (JOGO_Jogador));
 	DefineJogadores(numJogadores, vtJogadores);
 
@@ -139,8 +146,8 @@ int Ludo (void)
 	
 	if ( tabuleiroRetorno != TAB_CondRetOK )
 	{
-		printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO !!\n\n"); 
-		scanf("%d");
+		printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO!!!\n\n"); 
+		scanf("%s");
 		exit(1);
 	}
 
@@ -148,7 +155,7 @@ int Ludo (void)
 	printf(" Tabuleiro:\n");
 	TAB_ExibeTabuleiro();
 	TAB_ExibeLegendaTabuleiro();
-	printf("\n\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
+	printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
 	possuiVencedor = 0 ;
 
 	while ( !possuiVencedor ) {
@@ -157,11 +164,13 @@ int Ludo (void)
 			dado = 0;
 			pecaComida = 0;
 			printf( " VEZ DO JOGADOR : %s\n" , vtJogadores[i].nome ) ;
-			scanf ( " %c" , &digito ) ;
-			while ( !VerificaComandoValido( digito, &dado ) || !dado)
+			fgets( input, TAMANHO_MAX_INPUT, stdin );
+			RemoverNovaLinha( input );
+			while ( !VerificaComandoValido( input, &dado ) || !dado)
 			{
-				printf("\n\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
-				scanf ( " %c" , &digito ) ;
+				printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
+				fgets( input, TAMANHO_MAX_INPUT, stdin );
+				RemoverNovaLinha( input );
 			}
 
 			if ( ExisteMovimentoPossivel(vtJogadores[i], pTabuleiro, dado) )
@@ -206,7 +215,7 @@ int Ludo (void)
 	/*
 	DesenhaPlacar( vtPecas, vtJogadores , num_jogadores );
 
-    for (i = 0 ; i < MAX_PECAS * num_jogadores ; i++ ) 
+    for (i = 0 ; i < NUM_PECAS * num_jogadores ; i++ ) 
     {
     	PecasRetorno = PEC_DestroiPeca ( vtPecas[i] );
     	switch ( PecasRetorno ) 
@@ -245,14 +254,20 @@ int Ludo (void)
 
 int DefineNumeroJogadores()
 {
-	int jogadores;
+	char input[TAMANHO_MAX_INPUT];
+	int jogadores = -1;
 	printf(" Digite a quantidade de jogadores: ");
 	while(1)
 	{
-		scanf("%d", &jogadores);
+		fgets( input, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( input );
+		if ( InputEhDigito( input ) )
+		{
+			jogadores = atoi( input );
+		}
 		if( jogadores < MIN_JOGADORES || jogadores > MAX_JOGADORES )
 		{
-			printf(" Por favor, digite um numero entre 2 e 4.\n");
+			printf(" Por favor, digite um numero entre %d e %d.\n", MIN_JOGADORES, MAX_JOGADORES);
 		}
 		else
 		{
@@ -264,6 +279,7 @@ int DefineNumeroJogadores()
 
 void DefineJogadores( int numeroJogadores, JOGO_Jogador* vetorJogador )
 {
+	char input[TAMANHO_MAX_INPUT];
 	int i;
 	int j;
 	int corValida = 1;
@@ -271,7 +287,8 @@ void DefineJogadores( int numeroJogadores, JOGO_Jogador* vetorJogador )
 	for(i = 0; i < numeroJogadores; i++)
 	{
 		printf(" Digite o nome do jogador %i: ", i + 1);
-		scanf(" %80[^\n]", vetorJogador[i].nome);
+		fgets( vetorJogador[i].nome, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( vetorJogador[i].nome );
 		printf("\n");
 		printf(" Digite a cor de %s: \n", vetorJogador[i].nome);
 		printf(" 0 - Vermelho\n");
@@ -280,7 +297,16 @@ void DefineJogadores( int numeroJogadores, JOGO_Jogador* vetorJogador )
 		printf(" 3 - Azul\n ");
 		while(1)
 		{
-			scanf(" %d", &cor);
+			fgets( input, TAMANHO_MAX_INPUT, stdin );
+			RemoverNovaLinha( input );
+			if( InputEhDigito( input ) )
+			{
+				cor = atoi( input );
+			}
+			else
+			{
+				cor = -1;
+			}
 			if( cor >= 0 && cor <= 3 )
 			{
 				for( j = 0; j < i; j++)
@@ -313,8 +339,8 @@ void DefineJogadores( int numeroJogadores, JOGO_Jogador* vetorJogador )
 void CriarPecaJogador( JOGO_Jogador* jogador )
 {
 	int i;
-	jogador->pecas = (PEC_tppPeca*) malloc (MAX_PECAS * sizeof(PEC_tppPeca));
-	for ( i = 0; i < MAX_PECAS; i++)
+	jogador->pecas = (PEC_tppPeca*) malloc (NUM_PECAS * sizeof(PEC_tppPeca));
+	for ( i = 0; i < NUM_PECAS; i++)
 	{
 		if(PEC_CriarPeca(&(jogador->pecas[i]), jogador->cor != PEC_CondRetOK))
 		{
@@ -330,7 +356,7 @@ void CriarPecaJogador( JOGO_Jogador* jogador )
 void DestruirPecaJogador( JOGO_Jogador* jogador )
 {
 	int i;
-	for ( i = 0; i < MAX_PECAS; i++)
+	for ( i = 0; i < NUM_PECAS; i++)
 	{
 		if( PEC_DestruirPeca( jogador->pecas[i] ) != PEC_CondRetOK )
 		{
@@ -345,50 +371,66 @@ void DestruirPecaJogador( JOGO_Jogador* jogador )
 	return;
 }
 
-int VerificaComandoValido( char comando, int* dado )
+int VerificaComandoValido( char* comando, int* dado )
 {
-	char resposta;
-	if ( comando == 'd' || comando == 'D' )
+	char resposta[21];
+	char caracter = InputEhCaracter( comando );
+
+	if ( caracter == NULL )
+	{
+		printf(" Por favor, digite apenas um caractere.\n");
+		return 0;
+	}
+
+	caracter = tolower( caracter );
+
+	if ( caracter == 'd' )
 	{
 		*dado = JogarDado();
 		return 1;
 	}
-	else if ( comando == 'c' || comando == 'C' )
+	else if ( caracter == 'c' )
 	{
 		ExibeComandosPossiveis();
 		return 1;
 	}
-	else if ( comando == 't' || comando == 'T' )
+	else if ( caracter == 't' )
 	{
 		printf(" Tabuleiro:\n");
 		TAB_ExibeTabuleiro();
 		return 1;
 	}
-	else if ( comando == 'l' || comando == 'L' )
+	else if ( caracter == 'l' )
 	{
 		TAB_ExibeLegendaTabuleiro();
 		return 1;
 	}
-	else if ( comando == 's' || comando == 'S' )
+	else if ( caracter == 's' )
 	{
 		printf( " Tem certeza que deseja sair do jogo?\n"
 				" Digite 's', no caso afirmativo\n"
-				" Digite qualquer outra letra, no caso negativo\n");
-		scanf(" %c", &resposta);
-		if ( resposta == 's' || resposta == 'S' )
+				" Digite qualquer outra coisa, no caso negativo\n");
+		fgets( resposta, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( resposta );
+		caracter = InputEhCaracter( resposta );
+		caracter = tolower( caracter );
+		if ( caracter == 's' )
 		{
 			printf("Obrigado por jogar");
 			exit(0);
 		}
 		return 1;
 	}
-	else if ( comando == 'r' || comando == 'R' )
+	else if ( caracter == 'r' )
 	{
 		printf( " Tem certeza que deseja reiniciar a partida?\n"
 				" Digite 's', no caso afirmativo\n"
-				" Digite qualquer outra letra, no caso negativo\n");
-		scanf(" %c", &resposta);
-		if ( resposta == 's' || resposta == 'S' )
+				" Digite qualquer outra coisa, no caso negativo\n");
+		fgets( resposta, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( resposta );
+		caracter = InputEhCaracter( resposta );
+		caracter = tolower( caracter );
+		if ( caracter == 's' )
 		{
 			printf("Partida reiniciado...\n");
 			Ludo();/* REVER ------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -445,7 +487,7 @@ int ExisteMovimentoPossivel(JOGO_Jogador jogador, TAB_tppTabuleiro tabuleiro, in
 		}
 	}
 
-	for ( i = 0; i < MAX_PECAS; i++ )
+	for ( i = 0; i < NUM_PECAS; i++ )
 	{
 		retornoTabuleiro = TAB_ProcurarPeca(tabuleiro, jogador.pecas[i]);
 		PEC_ObterVolta(jogador.pecas[i], &volta);
@@ -466,7 +508,7 @@ int ExistePecaCasaInicial(JOGO_Jogador jogador)
 {
 	int i;
 	int estaNaCasaInicial;
-	for( i = 0; i < MAX_PECAS; i++ )
+	for( i = 0; i < NUM_PECAS; i++ )
 	{
 		PEC_ObterInicio(jogador.pecas[i], &estaNaCasaInicial);
 		if( estaNaCasaInicial )
@@ -509,6 +551,7 @@ int QuantidadePecaCasaSaidaComMesmaCor(TAB_tppTabuleiro tabuleiro, int cor)
 
 void EscolhePecaParaMovimentar(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* jogador, int dado)
 {
+	char input[TAMANHO_MAX_INPUT];
 	int indPeca;
 	int movimentoPossivel;
 	printf(" Escolha uma peca para movimentar:\n");
@@ -519,9 +562,17 @@ void EscolhePecaParaMovimentar(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* jogador
 	movimentoPossivel = 0;
 	while(!movimentoPossivel)
 	{
-		scanf(" %d", &indPeca);
-		printf("spielberg -> %d\n", 'd');
-		if(indPeca < 1 || indPeca > MAX_PECAS)
+		fgets( input, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( input );
+		if( InputEhDigito( input ) )
+		{
+			indPeca = atoi( input );
+		}
+		else
+		{
+			indPeca = -1;
+		}
+		if(indPeca < 1 || indPeca > NUM_PECAS)
 		{
 			printf(" Por favor, digite um numero entre 1 e 4.\n");
 		}
@@ -599,7 +650,7 @@ void ExibePosicaoDasPecas(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* vetorJogador
 	{
 		jogador = vetorJogadores[i];
 		printf(" Disposicao das pecas de %s:\n", jogador.nome);
-		for( j = 0; j < MAX_PECAS; j++ )
+		for( j = 0; j < NUM_PECAS; j++ )
 		{
 			printf(" Peca %d - Casa ", j + 1);
 
@@ -637,7 +688,7 @@ int VerificaSeVenceu( TAB_tppTabuleiro tabuleiro, JOGO_Jogador jogador )
 {
 	int i;
 	int casaFinal;
-	for ( i = 0; i < MAX_PECAS; i++ )
+	for ( i = 0; i < NUM_PECAS; i++ )
 	{
 		TAB_ProcurarPeca(tabuleiro, jogador.pecas[i]);
 		TAB_VerificaCasaFinal(tabuleiro, &casaFinal);
@@ -689,6 +740,58 @@ int ComePecaOponenteSePossivel(TAB_tppTabuleiro tabuleiro, int cor)
 	return contador;
 }
 
+int InputEhDigito(char* string)
+{
+	int i;
+	int tamanho;
+	tamanho = strlen(string);
+	for ( i = 0; i < tamanho; i++ )
+	{
+		if ( !isdigit( string[i] ) )
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
+
+char InputEhCaracter(char* string)
+{
+	int tamanho;
+	char caracter;
+	tamanho = strlen(string);
+	if( tamanho == 1 )
+	{
+		caracter = string[0];
+		return caracter;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+void TransformaInputEmMinusculo(char* string)
+{
+	int i;
+	int tamanho;
+	tamanho = strlen(string);
+	for ( i = 0; i < tamanho; i++ )
+	{
+		string[i] = tolower(string[i]);
+	}
+	string[i] = '\0';
+	return;
+}
+
+void RemoverNovaLinha(char* string)
+{
+	if ((strlen(string) > 0) && (string[strlen (string) - 1] == '\n'))
+	{
+        string[strlen (string) - 1] = '\0';
+	}
+}
+
 
 /*
 
@@ -738,7 +841,7 @@ static int VerificaVencedor ( PEC_tppPeca * pPecas, int cor, JOGO_Jogador * vtJo
 {
 	int i , final ;
 	PEC_CondRet PecasRetorno ;
-	for ( i = cor * MAX_PECAS ; i < (cor * MAX_PECAS) + MAX_PECAS ; i++ ) {
+	for ( i = cor * NUM_PECAS ; i < (cor * NUM_PECAS) + NUM_PECAS ; i++ ) {
 		PecasRetorno = PEC_ObtemFinal ( pPecas[i] , &final ) ;
 		if ( final != 1 )
 			return 0 ;
@@ -963,7 +1066,7 @@ static void MostraMovimentosValidos ( int *mapa )
 {
 	int i ; 
 	printf("PECAS QUE PODEM SER MOVIDAS : ");
-	for ( i = 0 ; i < MAX_PECAS ; i++ )
+	for ( i = 0 ; i < NUM_PECAS ; i++ )
 	{
 		if ( mapa[i] == 1 )
 			printf( "P%d " , i ) ;
@@ -974,14 +1077,14 @@ static void MostraMovimentosValidos ( int *mapa )
 static void ZeraMapa ( int *mapa )
 {
 	int i ; 
-	for ( i = 0 ; i < MAX_PECAS ; i++ )
+	for ( i = 0 ; i < NUM_PECAS ; i++ )
 		mapa[i] = 0 ;
 }
 
 static int TemMovimento ( int *mapa )
 {
 	int i ;
-	for ( i = 0 ; i < MAX_PECAS ; i++ )
+	for ( i = 0 ; i < NUM_PECAS ; i++ )
 		if ( mapa[i] == 1 )
 			return 1 ;
 	return 0 ;
