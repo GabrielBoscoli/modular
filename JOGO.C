@@ -127,7 +127,6 @@ int Ludo (void)
 	int possuiVencedor;
 	int numJogadores;
 	int pecaComida;
-	char digito;
 	char input[TAMANHO_MAX_INPUT];
 
 	JOGO_Jogador* vtJogadores ; 
@@ -342,7 +341,7 @@ void CriarPecaJogador( JOGO_Jogador* jogador )
 	jogador->pecas = (PEC_tppPeca*) malloc (NUM_PECAS * sizeof(PEC_tppPeca));
 	for ( i = 0; i < NUM_PECAS; i++)
 	{
-		if(PEC_CriarPeca(&(jogador->pecas[i]), jogador->cor != PEC_CondRetOK))
+		if(PEC_CriarPeca( &( jogador->pecas[i] ), jogador->cor ) != PEC_CondRetOK )
 		{
 			printf(" ERRO AO CRIAR PECA!!!!");
 			scanf("%d");
@@ -644,6 +643,7 @@ void ExibePosicaoDasPecas(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* vetorJogador
 	int i;
 	int j;
 	int numeroCasa;
+	int casaFinal;
 	TAB_CondRet tabuleiroRetorno;
 	JOGO_Jogador jogador;
 	for ( i = 0; i < numeroJogadores; i++ )
@@ -661,7 +661,16 @@ void ExibePosicaoDasPecas(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* vetorJogador
 				tabuleiroRetorno = TAB_ObterNumeroCasa(tabuleiro, &numeroCasa);
 				if ( tabuleiroRetorno == TAB_CondRetOK )
 				{
-					printf("%d\n", numeroCasa);
+					printf("%d", numeroCasa);
+					TAB_VerificaCasaFinal(tabuleiro, &casaFinal);
+					if( casaFinal )
+					{
+						printf(" (Casa Final)\n");
+					}
+					else
+					{
+						printf("\n");
+					}
 				}
 				else
 				{
