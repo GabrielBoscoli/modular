@@ -10,6 +10,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão     Autor        Data         Observações
+*	   3.00       gb       14/06/2019   ajustes e leves mudanças
 *      2.00       gb       28/04/2019   término, revisão e aperfeiçoamento
 *      1.00       gb       26/04/2019   início desenvolvimento, implementação
 *										de funções básicas
@@ -67,6 +68,9 @@
  
 		LIS_tppLista retaFinal ;
 			/* Ponteiro para a reta final */
+
+		int numeroCasa ;
+			/* Numero correspondente a casa */
  
 	} tagCasaTabuleiro ;
 
@@ -80,12 +84,26 @@
 
 	#define BRANCO 5
 		/* define a cor branco como o inteiro 5 */
+
+	#define NUM_CORES 4
+		/* define a quantidade de cores no tabuleiro
+				sem contar o branco, que é neutro */
+	
+	#define NUM_CASAS_BRANCAS_ENTRE_CASAS_SAIDA 12
+		/* define a quantidade de casas brancas, ou
+			seja, neutras, entre casas de saidas */
+
+	#define NUM_CASAS_RETA_FINAL 6
+		/* define a quantidade de casas na reta final */
+
+	#define NUMERO_CASAS_TRAJETO_CIRCULAR 52
+		/* define o numero de casas no trajeto circular */
  
 /***** Protótipo das funções encapsuladas no módulo *****/
  
-	static tagCasaTabuleiro *CriaCasa ( LIS_tppLista retaFinal, int cor ) ;
+	static tagCasaTabuleiro *CriaCasa ( LIS_tppLista retaFinal, int cor , int numeroCasa ) ;
 
-	static void IrRetaFinalCor ( TAB_tpTabuleiro *pTabuleiro , int cor ) ;
+	static void IrInicioRetaFinalCor ( TAB_tpTabuleiro *pTabuleiro , int cor ) ;
  
 	static void LiberarCasa ( tagCasaTabuleiro *pCasa ) ;
  
@@ -99,6 +117,12 @@
 	TAB_CondRet TAB_CriarTabuleiro( TAB_tpTabuleiro **pTabuleiro )  
 	{   
 		int i, k , j ;
+
+		int numeroCasa = 1;
+
+		int numeroTotalCasasTrajetoCircular = NUMERO_CASAS_TRAJETO_CIRCULAR;
+
+		int numeroCasaRetaFinal = numeroTotalCasasTrajetoCircular + 1;
  
 		LISCIR_tppListaCircular pListaCirc ;
  
@@ -124,13 +148,14 @@
 			return TAB_CondRetFaltouMemoria ;
 		} 
  
-		for( i = 0 ; i < 4 ; i++ )
+		for( i = 0 ; i < NUM_CORES ; i++ )
 		{
          
-			for( k = 0; k < 12 ; k++ )
+			for( k = 0; k < NUM_CASAS_BRANCAS_ENTRE_CASAS_SAIDA ; k++ )
 			{
  
-				casa = CriaCasa ( NULL, BRANCO ) ;
+				casa = CriaCasa ( NULL, BRANCO, numeroCasa) ;
+				numeroCasa++;
 
 				if ( casa == NULL )
 				{
@@ -148,7 +173,8 @@
  
 			pListaSimples =  LIS_CriarLista( ( pFunc ) LiberarCasa) ;
 
-			casa = CriaCasa ( pListaSimples, i ) ;
+			casa = CriaCasa ( pListaSimples, i , numeroCasa) ;
+			numeroCasa++;
 
 			if ( casa == NULL )
 			{
@@ -163,10 +189,12 @@
 				return TAB_CondRetFaltouMemoria ;
 			}
 
-			for ( j = 0 ; j < 6 ; j++ )
+			for ( j = 0 ; j < NUM_CASAS_RETA_FINAL ; j++ )
 			{
  
-				casa = CriaCasa ( NULL, i ) ;
+				casa = CriaCasa ( NULL, i , numeroCasaRetaFinal) ;
+				numeroCasaRetaFinal++;
+
 				if ( casa == NULL )
 				{
 					return TAB_CondRetFaltouMemoria ;
@@ -238,7 +266,7 @@
 		if(status == 1)
 		{
 			PEC_ObterCor ( pPeca , &cor ) ;
-			IrRetaFinalCor ( pTabuleiro , cor ) ;
+			IrInicioRetaFinalCor ( pTabuleiro , cor ) ;
 
 			LISCIR_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
 			lista_simples = casa->retaFinal ;
@@ -247,7 +275,7 @@
 			do{
 
 				aux = (tagCasaTabuleiro*) LIS_ObterValor ( lista_simples ) ;
-				IrInicioLista(aux->conteudo);
+				IrInicioLista( aux->conteudo );
 
 				if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK) 
 				{
@@ -265,8 +293,7 @@
 		aux = casa ;
     
 		do {
-
-			IrInicioLista(aux->conteudo);
+			IrInicioLista( aux->conteudo );
 
 			if ( LIS_ProcurarValor(aux->conteudo, (void*) pPeca) == LIS_CondRetOK ) 
 			{
@@ -294,7 +321,7 @@
 		LISCIR_tppListaCircular lista_circular ;
 		LIS_tppLista lista_simples ;
 
-		if (pTabuleiro == NULL)
+		if ( pTabuleiro == NULL )
 		{
 			return TAB_CondRetTabuleiroNaoExiste;
 		}
@@ -305,10 +332,14 @@
 		if ( pTabuleiro->estaNaRetaFinal  ) 
 		{
 			lista_simples = casa->retaFinal ;
-			casa = (tagCasaTabuleiro*) LIS_ObterValor ( lista_simples ) ;
+			casa = ( tagCasaTabuleiro* ) LIS_ObterValor ( lista_simples ) ;
 		}/* se estiver na reta final */
 
 		*pListaPeca = casa->conteudo ;
+		if ( *pListaPeca == NULL )
+		{
+			return TAB_CondRetConteudoNulo;
+		}
 
 		return TAB_CondRetOK ; 
 
@@ -319,19 +350,20 @@
 *  Função: TAB Avança Casa
 *  ****/
 
-	TAB_CondRet TAB_AvancarCasa ( TAB_tpTabuleiro *pTabuleiro , int cor , int n )
+	TAB_CondRet TAB_AvancarCasa ( TAB_tpTabuleiro *pTabuleiro , int cor , int n , int volta )
 	{
 		tagCasaTabuleiro *casa ;
 		LISCIR_tppListaCircular lista_circular ;
 		LIS_tppLista lista_simples ;
 		LIS_tpCondRet retorno_lis ;
+		int controle = 0;
 
 		if (pTabuleiro == NULL)
 		{
 			return TAB_CondRetTabuleiroNaoExiste;
 		}
 
-		if ( cor < 0 || cor > 3 )
+		if ( cor < 0 || cor > NUM_CORES - 1 )
 		{
 			return TAB_CondRetCorInvalida ;
 		}
@@ -346,7 +378,6 @@
     
 		if ( pTabuleiro->estaNaRetaFinal  ) 
 		{
-
 			lista_simples = casa->retaFinal ;
 			retorno_lis = LIS_AvancarElementoCorrente ( lista_simples , n ) ;
 			if ( retorno_lis == LIS_CondRetFimLista )
@@ -357,7 +388,14 @@
 
 		}/* se estiver na reta final */
 
-		while ( casa->cor != cor && n != 0) 
+		if( casa->cor == cor && n > 0 && volta)
+		{
+			LISCIR_AvancarElementoCorrente ( lista_circular , 1 ) ;
+			LISCIR_ObterValor ( lista_circular , ( ppVoid ) &casa ) ;
+			--n;
+		}
+
+		while ( casa->cor != cor && n != 0 ) 
 		{
 
 			LISCIR_AvancarElementoCorrente ( lista_circular , 1 ) ;
@@ -416,12 +454,13 @@
     
 		IrInicioLista(casa->conteudo);
 		LIS_ProcurarValor(casa->conteudo, (void *) pPeca);
+		LIS_ExcluirElemento(casa->conteudo);
 
-		PEC_AtualizarFinalPeca ( pPeca , 0) ;
+		PEC_AtualizarFinalPeca ( pPeca , 0 ) ;
 
-		PEC_AtualizarInicioPeca ( pPeca, 1) ;
+		PEC_AtualizarInicioPeca ( pPeca, 1 ) ;
 
-		PEC_AtualizarVoltaPeca ( pPeca, 0) ;
+		PEC_AtualizarVoltaPeca ( pPeca, 0 ) ;
 
 		return TAB_CondRetOK ;
 
@@ -432,7 +471,7 @@
 *  Função: TAB Insere uma peça na casa
 *  ****/
 
-	TAB_CondRet TAB_InserirPecaCasa ( TAB_tpTabuleiro *pTabuleiro , PEC_tppPeca pPeca ) 
+	TAB_CondRet TAB_InserirPecaCasa ( TAB_tpTabuleiro *pTabuleiro , PEC_tppPeca pPeca , int volta ) 
 	{
 		LISCIR_tppListaCircular lista_circular ;
 		LIS_tppLista lista_simples ;
@@ -458,9 +497,19 @@
 		{
 			lista_simples = casa->retaFinal ;
 			casa = (tagCasaTabuleiro*)LIS_ObterValor ( lista_simples ) ;
+			PEC_AtualizarFinalPeca ( pPeca, 1 );
 		}/* se o corrente estiver na reta final */
 
 		PEC_AtualizarInicioPeca ( pPeca, 0 ) ;
+
+		if ( volta )
+		{
+			PEC_AtualizarVoltaPeca ( pPeca, 1 ) ;
+		}
+		else
+		{
+			PEC_AtualizarVoltaPeca ( pPeca, 0 ) ;
+		}
 
 		LIS_InserirElementoApos(casa->conteudo, (void *) pPeca);
 
@@ -483,16 +532,16 @@
 			return TAB_CondRetTabuleiroNaoExiste;
 		}
 
-		if ( cor < 0 || cor > 3 )
+		if ( cor < 0 || cor > NUM_CORES - 1 )
 		{
 			return TAB_CondRetCorInvalida ;
 		}
 
 		lista_circular = pTabuleiro->casas ;
 
-		IrRetaFinalCor ( pTabuleiro , cor ) ;
+		IrInicioRetaFinalCor ( pTabuleiro , cor ) ;
     
-		LISCIR_AvancarElementoCorrente ( lista_circular , 2 ) ;
+		//LISCIR_AvancarElementoCorrente ( lista_circular , 2 ) ;
 
 		return TAB_CondRetOK ;
 
@@ -556,6 +605,154 @@
 		return TAB_CondRetOK ;
 
 	}  /* Fim função: TAB Verifica se é casa final */
+
+/***************************************************************************
+*
+*  Função: TAB Exibe Tabuleiro
+*  ****/
+
+	TAB_CondRet TAB_ExibeTabuleiro ( )
+	{
+		printf(					" .-----------------------.---.---.---.-----------------------.\n" 
+                                " |                       |23 |24 |25 |                       |\n" 
+                                " |                       |---+---+---.                       |\n" 
+								" |                       |22 |59 |26 |--> CSY                |\n" 
+                                " |                       |---+---+---.                       |\n" 
+                                " |                       |21 |60 |27 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                       |20 |61 |28 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                       |19 |62 |29 |                       |\n" 
+                                " |    CSR                |---+---+---|                       |\n" 
+                                " |     |                 |18 |63 |30 |                       |\n" 
+                                " |---.---.---.---.---.---+---+---+---+---.---.---.---.---.---|\n" 
+                                " |12 |13 |14 |15 |16 |17 |   |64 |   |31 |32 |33 |34 |35 |36 |\n" 
+                                " |---+---+---+---+---+---+---+---+---+---+---+---+---+---+---|\n" 
+                                " |11 |53 |54 |55 |56 |57 |58 |   |70 |69 |68 |67 |66 |65 |37 |\n" 
+                                " |---+---+---+---+---+---+---+---+---+---+---+---+---+---+---|\n" 
+								" |10 | 9 | 8 | 7 | 6 | 5 |   |76 |   |43 |42 |41 |40 |39 |38 |\n" 
+                                " |---^---^---^---^---^---+---+---+---+---^---^---^---^---^---|\n" 
+                                " |                       | 4 |75 |44 |                 |     |\n" 
+                                " |                       |---+---+---|                CSG    |\n" 
+                                " |                       | 3 |74 |45 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                       | 2 |73 |46 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                       | 1 |72 |47 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                CSB <--|52 |71 |48 |                       |\n" 
+                                " |                       |---+---+---|                       |\n" 
+                                " |                       |51 |50 |49 |                       |\n" 
+								" ^-----------------------^---^---^---^-----------------------^\n" );
+
+		return TAB_CondRetOK ;
+
+	}  /* Fim função: TAB Exibe Tabuleiro */
+
+/***************************************************************************
+*
+*  Função: TAB Exibe Legenda do Tabuleiro
+*  ****/
+
+	TAB_CondRet TAB_ExibeLegendaTabuleiro ( )
+	{
+		printf(" Legenda: \n"
+			" Os numeros nas casa servem como uma forma de identificacao.\n"
+			" CSB - casa numero 52: casa de saida de cor azul (Blue).\n"
+			" CSR - casa numero 13: casa de saida de cor vermelha (Red).\n"
+			" CSY - casa numero 26: casa de saida de cor amarela (Yellow).\n"
+			" CSG - casa numero 39: casa de saida de cor verde (Green).\n"
+			" Casas de numero 71 a 76: reta final de cor azul, sendo a casa 76 a casa final.\n"
+			" Casas de numero 53 a 58: reta final de cor vermelha, sendo a casa 58 a casa final.\n"
+			" Casas de numero 59 a 64: reta final de cor amarela, sendo a casa 64 a casa final.\n"
+			" Casas de numero 65 a 70: reta final de cor verde, sendo a casa 70 a casa final.\n"
+			" As demais casas fazem parte do trajeto circular e nao possuem funcao especifica.\n");
+
+		return TAB_CondRetOK ;
+
+	}  /* Fim função: TAB Exibe Legenda do Tabuleiro */
+
+/***************************************************************************
+*
+*  Função: TAB Obter Numero de uma Casa
+*  ****/
+
+	TAB_CondRet TAB_ObterNumeroCasa( TAB_tpTabuleiro *pTabuleiro, int* pNumeroCasa )
+	{
+		tagCasaTabuleiro *casa ;
+		LISCIR_tppListaCircular listaCircular ;
+		LIS_tppLista listaSimples ;
+
+		if (pTabuleiro == NULL)
+		{
+			return TAB_CondRetTabuleiroNaoExiste;
+		}
+
+		listaCircular = pTabuleiro->casas ;
+		if ( LISCIR_ObterValor ( listaCircular , ( ppVoid ) &casa ) != LIS_CondRetOK )
+		{
+			return TAB_CondRetTrajetoCircularInexistente;
+		}
+
+		if ( pTabuleiro->estaNaRetaFinal )
+		{
+			listaSimples = casa->retaFinal;
+			casa = (tagCasaTabuleiro*) LIS_ObterValor(listaSimples);
+		}
+
+		if ( casa == NULL )
+		{
+			return TAB_CondRetCasaNula;
+		}
+
+		*pNumeroCasa = casa->numeroCasa;
+		return TAB_CondRetOK ;
+
+	}  /* Fim função: TAB Obter Numero de uma Casa */
+
+/***************************************************************************
+*
+*  Função: TAB Verifica se é casa de saida
+*  ****/
+
+	TAB_CondRet TAB_VerificaCasaSaida ( TAB_tpTabuleiro *pTabuleiro , int *pResposta )
+	{
+		tagCasaTabuleiro *casa ;
+		LISCIR_tppListaCircular listaCircular ;
+
+		if ( pTabuleiro == NULL )
+		{
+			return TAB_CondRetTabuleiroNaoExiste;
+		}
+
+		if ( pTabuleiro->estaNaRetaFinal )
+		{
+			*pResposta = 0;
+		}
+		else
+		{
+			listaCircular = pTabuleiro->casas ;
+			if( LISCIR_ObterValor ( listaCircular , ( ppVoid ) &casa ) != LIS_CondRetOK )
+			{
+				return TAB_CondRetTrajetoCircularInexistente;
+			}
+			if ( casa == NULL )
+			{
+				return TAB_CondRetCasaNula;
+			}
+			if ( casa->retaFinal != NULL )
+			{
+				*pResposta = 1;
+			}
+			else
+			{
+				*pResposta = 0;
+			}
+		}
+
+		return TAB_CondRetOK ;
+
+	}  /* Fim função: TAB Verifica se é casa de saida */
  
  
 /****************  Código das funções encapsuladas no módulo  **********************/
@@ -565,7 +762,7 @@
 *  Função: TAB Criar Casa
 *  ****/
 
-	static tagCasaTabuleiro * CriaCasa ( LIS_tppLista retaFinal , int cor )
+	static tagCasaTabuleiro * CriaCasa ( LIS_tppLista retaFinal , int cor, int numeroCasa )
 	{
 		tagCasaTabuleiro *nv ;
 
@@ -578,13 +775,15 @@
 			return NULL ;
 		}
 
-		pListaConteudo = LIS_CriarLista( ( pFunc ) PEC_DestruirPeca) ;
+		pListaConteudo = LIS_CriarLista( /*( pFunc ) PEC_DestruirPeca*/ NULL) ;
  
 		nv->cor = cor ;
  
 		nv->retaFinal = retaFinal ;
  
 		nv->conteudo = pListaConteudo ;
+
+		nv->numeroCasa = numeroCasa;
  
 		return nv ;
 
@@ -596,7 +795,7 @@
 *  Função: TAB Ir Reta Final Cor
 *  ****/
 
-	static void IrRetaFinalCor ( TAB_tpTabuleiro *pTabuleiro , int cor )
+	static void IrInicioRetaFinalCor ( TAB_tpTabuleiro *pTabuleiro , int cor )
 	{
 		tagCasaTabuleiro *casa ;
 		LISCIR_tppListaCircular lista_circular ;

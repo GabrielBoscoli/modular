@@ -12,6 +12,7 @@
 *
 * $HA Histórico de evolução:
 *     Versão    Autor       Data          Observações
+*	   3.00      gb      15/06/2019   ajustes e leves mudanças
 *	   2.00      gb      24/04/2019   término, revisão e aperfeiçoamento
 *      1.00      gb      22/04/2019   início desenvolvimento, implementação de
 *									  funções básicas
@@ -242,14 +243,15 @@ PEC_CondRet PEC_ObterInicio ( PEC_tppPeca pPeca , int * pInicio ) ;
 
 /***********************************************************************
 *
-*  $FC Função: PEC  &Obtem volta completa
+*  $FC Função: PEC  &Obtem volta
 *
 *  $ED Descrição da função
-*		Dada uma peça, informa se realizou uma volta completa.
+*		Dada uma peça, informa se ela está realizando uma volta ou se ainda
+*		nao se moveu.
 *
 *  $EP Parametros
-*		pPeca - peça que procura saber a volta completa
-*		pVoltaCompleta - ponteiro passado para receber a volta completa
+*		pPeca - peça que procura saber a volta
+*		pVolta - ponteiro passado para receber a volta
 *
 *  $FV Valor retornado
 *		PEC_CondRetOK - se ocorreu tudo certo
@@ -260,14 +262,14 @@ PEC_CondRet PEC_ObterInicio ( PEC_tppPeca pPeca , int * pInicio ) ;
 *
 *  $EAE Assertivas de saída
 *		SE PEC_CondRetOK
-*			voltaCompleta é 0 caso a peca tenha realizado uma volta e 1 caso contrario
+*			volta é 0 caso a peca ainda não se moveu e 1 caso contrario
 *		SE PEC_CondRetNaoExiste
-*			A variavel voltaCompleta continua com seu valor original
+*			A variavel volta continua com seu valor original
 *
 *
 ***********************************************************************/
 
-PEC_CondRet PEC_ObterVoltaCompleta ( PEC_tppPeca pPeca , int * pVoltaCompleta ) ;
+PEC_CondRet PEC_ObterVolta ( PEC_tppPeca pPeca , int * pVolta ) ;
 
 /***********************************************************************
 *

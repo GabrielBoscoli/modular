@@ -10,6 +10,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão     Autor        Data         Observações
+*	   3.00       gb       15/06/2019   ajustes e leves mudanças
 *      2.00       gb       24/04/2019   término, revisão e aperfeiçoamento
 *      1.00       gb       22/04/2019   início desenvolvimento, implementação
 *										de funções básicas
@@ -22,9 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "PECA.H"
 #define	 PECA_OWN
+#include "PECA.H"
 #undef	 PECA_OWN
+
+#define NUM_CORES 4
 
 /***********************************************************************
 *
@@ -38,7 +41,7 @@
 	typedef struct PEC_tagPeca {
 
 		int cor ;
-			/* Cor definida entre 0 e 3 */
+			/* Cor definida entre 0 e NUM_CORES - 1 */
 
 		int final;
 			/* Se a peça está na reta final do jogo (1) ou não (0) */
@@ -46,8 +49,8 @@
 		int inicio;
 			/* Se a peça está nas casas iniciais (1) ou não (0) */
 
-		int voltaCompleta;
-			/* Se a peça já completou uma volta (1) ou não (0) */
+		int volta;
+			/* Se a peça esta realizando uma volta (1) ou se ainda não se moveu (0) */
 
 	} PEC_tpPeca;
 
@@ -60,7 +63,7 @@
 
 	PEC_CondRet PEC_CriarPeca ( PEC_tpPeca ** pPeca, int cor )
 	{
-		if ( cor < 0 || cor > 3 )
+		if ( cor < 0 || cor > NUM_CORES - 1 )
 		{
 			return PEC_CondRetCorInvalida ;
 		}
@@ -75,7 +78,7 @@
 		(*pPeca)->cor    = cor ;
 		(*pPeca)->final  = 0   ;
 		(*pPeca)->inicio = 1 ;
-		(*pPeca)->voltaCompleta = 0 ;
+		(*pPeca)->volta = 0 ;
 
 		return PEC_CondRetOK ;
 
@@ -105,7 +108,7 @@
 
 	PEC_CondRet PEC_ObterCor ( PEC_tpPeca * pPeca , int * pCor )
 	{
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
@@ -124,7 +127,7 @@
 
 	PEC_CondRet PEC_ObterFinal ( PEC_tpPeca * pPeca , int * pFinal )
 	{
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
@@ -143,7 +146,7 @@
 
 	PEC_CondRet PEC_ObterInicio ( PEC_tpPeca * pPeca , int * pInicio)
 	{
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
@@ -156,21 +159,21 @@
 
 /***************************************************************************
 *
-*  Função: PEC Obtem volta completa
+*  Função: PEC Obtem volta
 *  ****/
 
-	PEC_CondRet PEC_ObterVoltaCompleta ( PEC_tpPeca * pPeca , int * pVoltaCompleta)
+	PEC_CondRet PEC_ObterVolta ( PEC_tpPeca * pPeca , int * pVolta)
 	{
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
 
-		* pVoltaCompleta = pPeca->voltaCompleta ;
+		* pVolta = pPeca->volta ;
 
 		return PEC_CondRetOK ;
 
-	} /* Fim função: PEC Obtem volta completa */
+	} /* Fim função: PEC Obtem volta */
 
 
 /***************************************************************************
@@ -181,7 +184,7 @@
 	PEC_CondRet PEC_AtualizarFinalPeca ( PEC_tpPeca * pPeca , int final) 
 	{
 
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
@@ -202,20 +205,20 @@
 *  Função: PEC Atualiza se a Peca deu uma volta
 *  ****/
 
-	PEC_CondRet PEC_AtualizarVoltaPeca ( PEC_tpPeca * pPeca , int voltaCompleta) 
+	PEC_CondRet PEC_AtualizarVoltaPeca ( PEC_tpPeca * pPeca , int volta) 
 	{
 
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
 
-		if ( voltaCompleta < 0 || voltaCompleta > 1 )
+		if ( volta < 0 || volta > 1 )
 		{
 			return PEC_CondRetArgumentoInvalido ;
 		}
 
-		pPeca->voltaCompleta = voltaCompleta;
+		pPeca->volta = volta;
 
 		return PEC_CondRetOK ;
 
@@ -229,7 +232,7 @@
 	PEC_CondRet PEC_AtualizarInicioPeca ( PEC_tpPeca * pPeca , int inicio) 
 	{
 
-		if(pPeca==NULL)
+		if(pPeca == NULL)
 		{
 			return PEC_CondRetNaoExiste;
 		}
