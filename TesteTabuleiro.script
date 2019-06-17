@@ -28,6 +28,9 @@
 =declararparm Azul int 3
 =declararparm Fucsia int 4
 
+=declararparm FazVolta int 1
+=declararparm NaoFazVolta int 0
+
 ==Inicializar contexto de teste
 =inicializarcontexto
 
@@ -41,19 +44,27 @@
 =obterconteudocasa TabuleiroNaoExiste
 
 ==Avancar casa em um tabuleiro que nao existe
-=avancarcasa Vermelho 1 TabuleiroNaoExiste
+=avancarcasa Vermelho 1 FazVolta TabuleiroNaoExiste
+=avancarcasa Vermelho 1 NaoFazVolta TabuleiroNaoExiste
 
 ==Retirar peca de um tabuleiro que nao existe
 =retirapecacasa PecaNULL TabuleiroNaoExiste
 
 ==Inserir peca em um tabuleiro que nao existe
-=inserirpecacasa PecaNULL TabuleiroNaoExiste
+=inserirpecacasa PecaNULL NaoFazVolta TabuleiroNaoExiste
+=inserirpecacasa PecaNULL FazVolta TabuleiroNaoExiste
 
 ==Ir para a casa de saida de um tabuleiro que nao existe
 =ircasasaidacor Vermelho TabuleiroNaoExiste
 
 ==Verificar se é casa final de um tabuleiro que nao existe
 =verificacasafinal TabuleiroNaoExiste
+
+==Obter numero da casa de um tabuleiro que nao existe
+=obternumerocasa TabuleiroNaoExiste
+
+==Verificar se é casa de saida de um tabuleiro que nao existe
+=verificacasasaida TabuleiroNaoExiste
 
 ==Criar tabuleiro
 =criartab OK
@@ -65,7 +76,8 @@
 =procurarpeca PecaNULL PecaNaoExiste
 
 ==Inserir peca que não existe
-=inserirpecacasa PecaNULL PecaNaoExiste
+=inserirpecacasa PecaNULL NaoFazVolta PecaNaoExiste
+=inserirpecacasa PecaNULL FazVolta PecaNaoExiste
 
 ==Procura peca que esta na casa inicial
 =procurarpeca Peca1 PecaCasaInicial
@@ -77,26 +89,28 @@
 =obterconteudocasa OK
 
 ==Avancar casa com peca de cor invalida
-=avancarcasa Turquesa 32 CorInvalida
-=avancarcasa Fucsia 6 CorInvalida
+=avancarcasa Turquesa 32 FazVolta CorInvalida
+=avancarcasa Turquesa 32 NaoFazVolta CorInvalida
+=avancarcasa Fucsia 6 FazVolta CorInvalida
+=avancarcasa Fucsia 6 NaoFazVolta CorInvalida
 
 ==Avanca casa e chegar no fim do tabuleiro
-=avancarcasa Vermelho 203 FimTabuleiro
-=avancarcasa Azul 1122 FimTabuleiro
-=avancarcasa Verde 78 FimTabuleiro
-=avancarcasa Amarelo 324 FimTabuleiro
+=avancarcasa Vermelho 203 NaoFazVolta FimTabuleiro
+=avancarcasa Azul 1122 FazVolta FimTabuleiro
+=avancarcasa Verde 78 NaoFazVolta FimTabuleiro
+=avancarcasa Amarelo 324 FazVolta FimTabuleiro
 
 ==Avancar casa com sucesso
-=avancarcasa Vermelho 2 OK
-=avancarcasa Azul 4 OK
-=avancarcasa Verde 5 OK
-=avancarcasa Amarelo 17 OK
+=avancarcasa Vermelho 2 NaoFazVolta OK
+=avancarcasa Azul 4 FazVolta OK
+=avancarcasa Verde 5 NaoFazVolta OK
+=avancarcasa Amarelo FazVolta 17 OK
 
 ==Avancar casa com valor invalido
-=avancarcasa Vermelho -2 AvancoInvalido
-=avancarcasa Azul -4 AvancoInvalido
-=avancarcasa Verde -5 AvancoInvalido
-=avancarcasa Amarelo -17 AvancoInvalido
+=avancarcasa Vermelho -2 NaoFazVolta AvancoInvalido
+=avancarcasa Azul -4 FazVolta AvancoInvalido
+=avancarcasa Verde -5 NaoFazVolta AvancoInvalido
+=avancarcasa Amarelo -17 FazVolta AvancoInvalido
 
 ==Retirar peca que esta na casa inicial
 =retirapecacasa Peca1 PecaCasaInicial
@@ -118,10 +132,10 @@
 =verificacasafinal OK
 
 ==Insere peca com sucesso
-=inserirpecacasa Peca1 OK
-=inserirpecacasa Peca2 OK
-=inserirpecacasa Peca3 OK
-=inserirpecacasa Peca4 OK
+=inserirpecacasa Peca1 FazVolta OK
+=inserirpecacasa Peca2 NaoFazVolta OK
+=inserirpecacasa Peca3 FazVolta OK
+=inserirpecacasa Peca4 NaoFazVolta OK
 
 ==Retira peca com sucesso
 =retirapecacasa Peca1 OK
@@ -134,6 +148,28 @@
 
 ==Procura uma peca que esta perdida
 =procurarpeca PecaPerdida NaoEncontrouPeca
+
+==A partir da casa inicial de mesmo cor, avancar
+=ircasasaidacor Vermelho OK
+=avancarcasa Vermelho 7 NaoFazVolta FimTabuleiro
+=avancarcasa Vermelho 7 FazVolta OK
+
+==A partir da casa inicial de cor diferente, avancar
+=ircasasaidacor Azul OK
+=avancarcasa Vermelho 7 NaoFazVolta OK
+=avancarcasa Vermelho 7 FazVolta OK
+
+==Obter numero da casa com sucesso
+=obternumerocasa OK
+
+==Verificar casa de saida com sucesso
+=verificacasasaida OK
+
+==Exibir representacao grafica do tabuleiro
+=exibetabuleiro OK
+
+==Exibir legenda do tabuleiro
+=exibelegenda OK
 
 ==Destruir tabuleiro
 =destruirtab OK

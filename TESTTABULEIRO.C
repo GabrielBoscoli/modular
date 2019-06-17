@@ -10,6 +10,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão   Autor         Data         Observações
+*	   3.00      gb      17/06/2019   ajustes e leves mudanças
 *      2.00      gb      30/04/2019   finalização desenvolvimento
 *      1.00      gb      29/04/2019   início desenvolvimento
 *
@@ -47,6 +48,10 @@ typedef void * pVoid ;
 #define IR_CASA_SAIDA_COR_CMD       "=ircasasaidacor"         
 #define DESTRUIR_TAB_CMD            "=destruirtab"     
 #define VERIFICA_CASA_FINAL_CMD     "=verificacasafinal"
+#define OBTER_NUMERO_CASA_CMD		"=obternumerocasa"
+#define VERIFICA_CASA_SAIDA_CMD		"=verificacasasaida"
+#define EXIBE_TABULEIRO_CMD			"=exibetabuleiro"
+#define EXIBE_LEGENDA_TABULEIRO_CMD	"=exibelegenda"
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
@@ -67,14 +72,18 @@ typedef void * pVoid ;
 *     Comandos disponíveis:
 *
 *     =criartab                        CondRetEsp
-*     =procurarpeca                    IndPeca Avanco CondRetEsp
+*     =procurarpeca                    IndPeca CondRetEsp
 *     =obterconteudocasa               IndPeca CondRetEsp
-*	  =avancarcasa   				   CondRetEsp
+*	  =avancarcasa   				   Cor Avanco Volta CondRetEsp
 *	  =retirapecacasa				   IndPeca CondRetEsp
-*	  =inserirpecacasa   			   CondRetEsp
-*	  =ircasasaidacor   			   CondRetEsp
+*	  =inserirpecacasa   			   IndPeca Volta CondRetEsp
+*	  =ircasasaidacor   			   Cor CondRetEsp
 *	  =destruirtab   				   CondRetEsp
-*     =verificacasafinal               IndPeca CondRetEsp
+*     =verificacasafinal               CondRetEsp
+*     =obternumerocasa                 CondRetEsp
+*     =verificacasasaida			   CondRetEsp
+*	  =exibetabuleiro
+*     =exibelegenda
 *	  =inicializarcontexto
 *
 ***********************************************************************/
@@ -89,6 +98,9 @@ typedef void * pVoid ;
 		int indPeca       =-1 ;
 		int cor           =-1 ;
 		int casaFinal         ;
+		int casaSaida		  ;
+		int volta			  ;
+		int numeroCasa		  ;
 
 		static TAB_tppTabuleiro pTabuleiro = NULL;
 	
@@ -172,12 +184,12 @@ typedef void * pVoid ;
 
 			CondRetObtido = TAB_ObterConteudoCasa ( pTabuleiro, &listaPecas ) ;
 
-			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Obter peça casa") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Obter conteudo da casa") ;
 
 
 		} /* fim ativa: Obter peça casa */
 
-		/* Testar Eh Casa Final */
+		/* Testar Verifica Casa Final */
 
 		else if( strcmp( ComandoTeste , VERIFICA_CASA_FINAL_CMD ) == 0 )
 		{
@@ -189,22 +201,22 @@ typedef void * pVoid ;
 
 			CondRetObtido = TAB_VerificaCasaFinal ( pTabuleiro, &casaFinal ) ;
 
-			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao verificar Eh Casa Final") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao verificar casa final") ;
 
 
-		} /* fim ativa: Eh Casa Final */
+		} /* fim ativa: Verifica Casa Final */
 
 		/* Testar Avança casa */
 
 		else if( strcmp( ComandoTeste , AVANCAR_CASA_CMD ) == 0 )
 		{
-			numLidos = LER_LerParametros( "iii", &cor, &avanco, &CondRetEsp ) ;
-			if( numLidos != 3 )
+			numLidos = LER_LerParametros( "iiii", &cor, &avanco, &volta, &CondRetEsp ) ;
+			if( numLidos != 4 )
 			{
 				return TST_CondRetParm;
 			}
 
-			CondRetObtido = TAB_AvancarCasa ( pTabuleiro, cor, avanco ) ;
+			CondRetObtido = TAB_AvancarCasa ( pTabuleiro, cor, avanco , volta) ;
 
 			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Avançar casa") ;
 
@@ -234,13 +246,13 @@ typedef void * pVoid ;
 
 		else if( strcmp( ComandoTeste , INSERIR_PECA_CASA_CMD ) == 0 )
 		{
-			numLidos = LER_LerParametros( "ii", &indPeca, &CondRetEsp ) ;
-			if( numLidos != 2 )
+			numLidos = LER_LerParametros( "iii", &indPeca, &volta, &CondRetEsp ) ;
+			if( numLidos != 3 )
 			{
 				return TST_CondRetParm;
 			}
 
-			CondRetObtido = TAB_InserirPecaCasa ( pTabuleiro, vtPecas [indPeca] ) ;
+			CondRetObtido = TAB_InserirPecaCasa ( pTabuleiro, vtPecas [indPeca], volta ) ;
 
 			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
 
@@ -260,7 +272,7 @@ typedef void * pVoid ;
 
 			CondRetObtido = TAB_IrCasaSaidaCor ( pTabuleiro, cor ) ;
 
-			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao Inserir peça casa") ;
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao ir para casa de saida da cor") ;
 
 
 		} /* fim ativa: Ir Casa Saida Cor */
@@ -281,6 +293,74 @@ typedef void * pVoid ;
 
 
 		} /* fim ativa: Destruir tabuleiro */
+
+		/* Testar Obter Numero Casa */
+
+		else if( strcmp( ComandoTeste , OBTER_NUMERO_CASA_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
+
+			CondRetObtido = TAB_ObterNumeroCasa ( pTabuleiro, &numeroCasa ) ;
+
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao obter numero da casa") ;
+
+
+		} /* fim ativa: Obter Numero Casa */
+
+		/* Testar Verifica Casa Saida */
+
+		else if( strcmp( ComandoTeste , VERIFICA_CASA_SAIDA_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
+
+			CondRetObtido = TAB_VerificaCasaSaida ( pTabuleiro, &casaSaida ) ;
+
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao verificar casa de saida") ;
+
+
+		} /* fim ativa: Verifica Casa Saida */
+
+		/* Testar Exibe Tabuleiro */
+
+		else if( strcmp( ComandoTeste , EXIBE_TABULEIRO_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
+
+			CondRetObtido = TAB_ExibeTabuleiro ( ) ;
+
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao exibir tabuleiro") ;
+
+
+		} /* fim ativa: Exibe Tabuleiro */
+
+		/* Testar Exibe Legenda Tabuleiro */
+
+		else if( strcmp( ComandoTeste , EXIBE_LEGENDA_TABULEIRO_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "i", &CondRetEsp ) ;
+			if( numLidos != 1 )
+			{
+				return TST_CondRetParm;
+			}
+
+			CondRetObtido = TAB_ExibeLegendaTabuleiro ( ) ;
+
+			return TST_CompararInt ( CondRetEsp, CondRetObtido, "Retorno errado ao exibir legenda do tabuleiro") ;
+
+
+		} /* fim ativa: Exibe Legenda Tabuleiro */
 
 		return TST_CondRetNaoConhec ;
 
