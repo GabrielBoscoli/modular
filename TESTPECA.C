@@ -10,6 +10,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão   Autor         Data          Observações
+*      3.00     gb       17/06/2019   ajustes e leves mudanças
 *      2.00     gb       25/04/2019   término desenvolvimento
 *      1.00     gb       23/04/2019   início desenvolvimento
 *
@@ -25,7 +26,7 @@
 #include    <malloc.h>
 #include    <stdlib.h>
 
-#include    "PECA.h"
+#include    "PECA.H"
 
 #include	"TST_ESPC.H"
 #include    "GENERICO.H"
@@ -177,7 +178,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
 
          } /* fim ativa: Testar Obter Inicio */
 
-		 /* Testar Obter Volta Completa */
+		 /* Testar Obter Volta */
 
          else if ( strcmp( ComandoTeste , OBTER_VOLTA_CMD ) == 0 )
          {
@@ -189,12 +190,12 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = PEC_ObterVoltaCompleta( peca, &auxiliar ) ;
+            CondRetObtido = PEC_ObterVolta( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao obter status." ) ;
 
-         } /* fim ativa: Testar Obter Volta Completa */
+         } /* fim ativa: Testar Obter Volta */
 
 		/* Testar Atualiza Final Peca */
 
