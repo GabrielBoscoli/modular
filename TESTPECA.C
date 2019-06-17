@@ -134,7 +134,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_ObterCor( peca, &cor ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao obter status." ) ;
+                     "Condicao de retorno errada ao obter cor." ) ;
 
          } /* fim ativa: Testar Obter Cor */
 
@@ -154,7 +154,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_ObterFinal( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao obter status." ) ;
+                     "Condicao de retorno errada ao obter final." ) ;
 
          } /* fim ativa: Testar Obter Final */
 
@@ -174,7 +174,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_ObterInicio( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao obter status." ) ;
+                     "Condicao de retorno errada ao obter inicio." ) ;
 
          } /* fim ativa: Testar Obter Inicio */
 
@@ -193,7 +193,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_ObterVolta( peca, &auxiliar ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao obter status." ) ;
+                     "Condicao de retorno errada ao obter volta." ) ;
 
          } /* fim ativa: Testar Obter Volta */
 
@@ -213,7 +213,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_AtualizarFinalPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao Atualiza Peca." ) ;
+                     "Condicao de retorno errada ao atualizar final." ) ;
 
          } /* fim ativa: Testar Atualiza Final Peca */
 
@@ -233,7 +233,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_AtualizarInicioPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao Atualiza Peca." ) ;
+                     "Condicao de retorno errada ao atualizar inicio." ) ;
 
          } /* fim ativa: Testar Atualiza Inicio Peca */
 
@@ -253,7 +253,7 @@ TST_tpCondRet TST_EfetuarComando( char * ComandoTeste )
             CondRetObtido = PEC_AtualizarVoltaPeca( peca, auxiliar) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
-                     "Condicao de retorno errada ao Atualiza Peca." ) ;
+                     "Condicao de retorno errada ao atualizar volta." ) ;
 
          } /* fim ativa: Testar Atualiza Volta Peca */
 
