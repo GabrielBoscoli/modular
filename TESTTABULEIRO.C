@@ -73,7 +73,7 @@ typedef void * pVoid ;
 *
 *     =criartab                        CondRetEsp
 *     =procurarpeca                    IndPeca CondRetEsp
-*     =obterconteudocasa               IndPeca CondRetEsp
+*     =obterconteudocasa               CondRetEsp
 *	  =avancarcasa   				   Cor Avanco Volta CondRetEsp
 *	  =retirapecacasa				   IndPeca CondRetEsp
 *	  =inserirpecacasa   			   IndPeca Volta CondRetEsp
@@ -82,8 +82,8 @@ typedef void * pVoid ;
 *     =verificacasafinal               CondRetEsp
 *     =obternumerocasa                 CondRetEsp
 *     =verificacasasaida			   CondRetEsp
-*	  =exibetabuleiro
-*     =exibelegenda
+*	  =exibetabuleiro				   CondRetEsp
+*     =exibelegenda					   CondRetEsp
 *	  =inicializarcontexto
 *
 ***********************************************************************/
