@@ -232,8 +232,8 @@ TAB_CondRet TAB_ObterConteudoCasa ( TAB_tppTabuleiro pTabuleiro, LIS_tppLista *p
 *		cor - informação da cor da peca que pretende avancar. 
 *		n - numero inteiro de casas a ser avançadas.
 *		volta - inteiro de controle para, caso a casa corrente seja
-*				uma casa de saida, decidir se deve fazer a volta (!= 0) ou
-*				então entrar direto na reta final (0)
+*				uma casa de saida com mesma cor, decidir se deve 
+*				fazer a volta (!= 0) ou então entrar direto na reta final (0)
 *
 *  $FV Valor retornado
 *		TAB_CondRetOK - se ocorreu tudo certo.
