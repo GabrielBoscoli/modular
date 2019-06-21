@@ -4,14 +4,17 @@
  *  Arquivo gerado:              JOGO.c
  *  Letras identificadoras:      JOGO
  *
- *  Projeto: INF 1301 / Jogo de Ludo (ou Furbica)
- *  Gestor:  Professor Alessandro Garcia
- *  Autores: lr, dcr, rvc
+ *  Projeto: Disciplina INF 1301
+ *  Gestor:  DI/PUC-RIO, Professor Alessandro Garcia
+ *  Autores: gb - Gabriel Boscoli
  *
  *  $HA Histórico de evolução:
- *     Versão |  Autores   |      Data     |    Observações
- *       2    | lr,dcr,rvc |  01/dez/2016  | término desenvolvimento
- *       1    | lr,dcr,rvc |  25/nov/2016  | início desenvolvimento
+ *     Versão    Autores        Data          Observações
+ *     2.00        gb        20/06/2019   término desenvolvimento
+ *     1.00        gb        19/06/2019   início desenvolvimento
+ *
+ *  $ED Descrição do módulo
+ *	  Este módulo contém a implementação de uma partida de Ludo.
  *
  ***************************************************************************/
 
@@ -53,37 +56,13 @@ typedef struct Jogador{
 
 int Ludo (void);
 
-static int JogarDado ( void );
-
-static void DesenhaPlacar ( PEC_tppPeca * pPecas , JOGO_Jogador * vtJogadores, int num_jogadores );
-
-static void ordenaRanking ( JOGO_Jogador *vtJogadores , int *qtdfim , int n ) ;
-
-static int VerificaVencedor ( PEC_tppPeca * pPecas, int num_jogadores, JOGO_Jogador * vtJogadores );
-
-static int ValidaMovimento ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca , int n ) ;
-
-static void RealizaMovimento ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca , int n ) ;
-
-static int ValidaInsercao ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) ;
-
-static void InserePecaJogo ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) ;
-
-static int ObtemOrdemJogador ( void ) ;
-
-static void MostraMovimentosValidos ( int *mapa ) ;
-
-static void ZeraMapa ( int *mapa ) ;
-
-static int TemMovimento ( int *mapa ) ;
-
 int DefineNumeroJogadores();
 
 void DefineJogadores ( int numeroJogadores , JOGO_Jogador* vetorJogador );
 
 void CriarPecaJogador ( JOGO_Jogador* jogador );
 
-int VerificaComandoValido ( char* comando , int* dado );
+int VerificaComandoValido ( char* comando , int* dado , JOGO_Jogador* vtJogadores , int quantidadeJogadores , TAB_tppTabuleiro pTabuleiro );
 
 int ExisteMovimentoPossivel ( JOGO_Jogador jogador , TAB_tppTabuleiro tabuleiro , int dado );
 
@@ -113,6 +92,8 @@ void TransformaInputEmMinusculo ( char* string );
 
 void RemoverNovaLinha(char* string);
 
+void LiberarMemoria( JOGO_Jogador* vtJogadores, int quantidadeJogadores, TAB_tppTabuleiro pTabuleiro );
+
 /*****  Código da função principal do módulo  *****/
 
 int main ()
@@ -134,118 +115,85 @@ int Ludo (void)
 
 	TAB_CondRet tabuleiroRetorno ;
 
-	printf("\n Bem-vindo ao Jogo de Ludo.\n");
-	printf(" Para saber as regras do jogo, por favor, verifique a especificacao de requisitos do projeto.\n\n");
+	do {
+
+		printf("\n Bem-vindo ao Jogo de Ludo.\n");
+		printf(" Para saber as regras do jogo, por favor, verifique a especificacao de requisitos do projeto.\n\n");
     
-	numJogadores = DefineNumeroJogadores();
-	vtJogadores = (JOGO_Jogador*) malloc ( numJogadores * sizeof (JOGO_Jogador));
-	DefineJogadores(numJogadores, vtJogadores);
+		numJogadores = DefineNumeroJogadores();
+		vtJogadores = (JOGO_Jogador*) malloc ( numJogadores * sizeof (JOGO_Jogador));
+		DefineJogadores(numJogadores, vtJogadores);
 
-    tabuleiroRetorno = TAB_CriarTabuleiro( &pTabuleiro ) ;
+		tabuleiroRetorno = TAB_CriarTabuleiro( &pTabuleiro ) ;
 	
-	if ( tabuleiroRetorno != TAB_CondRetOK )
-	{
-		printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO!!!\n\n"); 
-		scanf("%s");
-		exit(1);
-	}
+		if ( tabuleiroRetorno != TAB_CondRetOK )
+		{
+			printf("\n\n\tMEMORIA INSUFICIENTE PARA CRIAR TABULEIRO!!!\n\n"); 
+			scanf("%s");
+			exit(1);
+		}
 
-	printf("\n\n----------------------------------------------------INICIO DO JOGO----------------------------------------------------\n\n");
-	printf(" Tabuleiro:\n");
-	TAB_ExibeTabuleiro();
-	TAB_ExibeLegendaTabuleiro();
-	printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
-	possuiVencedor = 0 ;
+		printf("\n\n----------------------------------------------------INICIO DO JOGO----------------------------------------------------\n\n");
+		printf(" Tabuleiro:\n");
+		TAB_ExibeTabuleiro();
+		TAB_ExibeLegendaTabuleiro();
+		printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
+		possuiVencedor = 0 ;
 
-	while ( !possuiVencedor ) {
-		for ( i = 0 ; i < numJogadores && possuiVencedor != 1 ; i++ ) 
-		{	
-			dado = 0;
-			pecaComida = 0;
-			printf( " VEZ DO JOGADOR : %s\n" , vtJogadores[i].nome ) ;
-			fgets( input, TAMANHO_MAX_INPUT, stdin );
-			RemoverNovaLinha( input );
-			while ( !VerificaComandoValido( input, &dado ) || !dado)
-			{
-				printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
+		while ( !possuiVencedor ) {
+			for ( i = 0 ; i < numJogadores && possuiVencedor != 1 ; i++ ) 
+			{	
+				dado = 0;
+				pecaComida = 0;
+				printf( " VEZ DO JOGADOR : %s\n" , vtJogadores[i].nome ) ;
 				fgets( input, TAMANHO_MAX_INPUT, stdin );
 				RemoverNovaLinha( input );
-			}
-
-			if ( ExisteMovimentoPossivel(vtJogadores[i], pTabuleiro, dado) )
-			{
-				EscolhePecaParaMovimentar(pTabuleiro, &(vtJogadores[i]), dado);
-				pecaComida = ComePecaOponenteSePossivel(pTabuleiro, vtJogadores[i].cor);
-			}
-			else
-			{
-				printf(" Voce nao pode realizar nenhum movimento\n\n");
-			}
-
-			ExibePosicaoDasPecas(pTabuleiro, vtJogadores, numJogadores);
-
-			possuiVencedor = VerificaSeVenceu(pTabuleiro, vtJogadores[i]);
-
-			if ( dado == 6 )
-			{
-				printf(" Voce pode jogar o dado novamente!!!\n\n");
-				--i;
-			}
-			else if ( pecaComida )
-			{
-				printf(" Voce comeu %d peca(s) e pode jogar o dado novamente!!!\n\n", pecaComida);
-				--i;
-			}
-				
-		} 
-	}
-
-	for ( i = 0; i < numJogadores; i++ )
-	{
-		DestruirPecaJogador( &(vtJogadores[i]) );
-	}
-
-	printf(" Parabens, %s. Voce eh o grande campeao!!!\n", vtJogadores[--i].nome);
-	free( vtJogadores );
-	TAB_DestruirTabuleiro( pTabuleiro );
-	
-	scanf("%d");
-	return 0;
-	/*
-	DesenhaPlacar( vtPecas, vtJogadores , num_jogadores );
-
-    for (i = 0 ; i < NUM_PECAS * num_jogadores ; i++ ) 
-    {
-    	PecasRetorno = PEC_DestroiPeca ( vtPecas[i] );
-    	switch ( PecasRetorno ) 
-			{
-				case PEC_CondRetOK :
-					break ;
-				case PEC_CondRetNaoExiste : {
-					printf("\n\n\tPECA NAO EXISTE !!\n\n");
-					exit(1);
+				while ( !VerificaComandoValido( input, &dado, vtJogadores, numJogadores, pTabuleiro ) || !dado)
+				{
+					printf("\n DIGITE A LETRA - D - PARA JOGAR O DADO OU ENTAO DIGITE - C - PARA VISUALIZAR TODOS OS COMANDOS VALIDOS\n\n");
+					fgets( input, TAMANHO_MAX_INPUT, stdin );
+					RemoverNovaLinha( input );
 				}
-				default :
-					printf("\n\n\tERRO INESPERADO !!\n\n");
-					exit(1);
-			}
-    }
 
-    TabuleiroRetorno = TAB_DestruirTabuleiro ( pTabuleiro ) ; 
+				if ( ExisteMovimentoPossivel(vtJogadores[i], pTabuleiro, dado) )
+				{
+					EscolhePecaParaMovimentar(pTabuleiro, &(vtJogadores[i]), dado);
+					pecaComida = ComePecaOponenteSePossivel(pTabuleiro, vtJogadores[i].cor);
+				}
+				else
+				{
+					printf(" Voce nao pode realizar nenhum movimento\n\n");
+				}
 
-	printf("\n\n");
-	printf("\t\t__/\\\\\\\\\\\\\\\\\\_________________________________________\n"); 
-	printf("\t\t _\\/\\\\///////////___________________________________________\n"); 
-	printf("\t\t  _\\/\\\\______________/\\\\___________________________________\n"); 
-	printf("\t\t   _\\/\\\\\\\\\\\\_____\\///_____/\\\\\\__/\\\\\\_______________\n"); 
-	printf("\t\t    _\\/\\\\///////_______/\\\\__/\\\\\\///\\\\\\///\\\\__________\n"); 
-	printf("\t\t     _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); 
-	printf("\t\t      _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); 
-	printf("\t\t       _\\/\\\\____________\\/\\\\_\\/\\\\__\\//\\\\___\\/\\\\_______\n"); 
-	printf("\t\t        _\\///______________\\///_ _\\///____\\////_____\\////________\n"); 
-	printf("\n\n");
+				ExibePosicaoDasPecas(pTabuleiro, vtJogadores, numJogadores);
 
-	return 0;*/
+				possuiVencedor = VerificaSeVenceu(pTabuleiro, vtJogadores[i]);
+
+				if ( dado == 6 )
+				{
+					printf(" Voce pode jogar o dado novamente!!!\n\n");
+					--i;
+				}
+				else if ( pecaComida )
+				{
+					printf(" Voce comeu %d peca(s) e pode jogar o dado novamente!!!\n\n", pecaComida);
+					--i;
+				}
+				
+			} 
+		}
+
+		printf(" Parabens, %s. Voce eh o grande campeao!!!\n\n", vtJogadores[--i].nome);
+	
+		LiberarMemoria( vtJogadores, numJogadores, pTabuleiro );
+
+		printf(" Para jogar novamente, digite a letra - S -\n Caso contrario, digite qualquer coisa para sair.\n" );
+		fgets( input, TAMANHO_MAX_INPUT, stdin );
+		RemoverNovaLinha( input );
+
+	} while ( strcmp ( input, "s" ) == 0 || strcmp ( input, "S" ) == 0 );
+
+	return 0;
 
 }    /* Fim função: MAIN */
 
@@ -344,7 +292,7 @@ void CriarPecaJogador( JOGO_Jogador* jogador )
 		if(PEC_CriarPeca( &( jogador->pecas[i] ), jogador->cor ) != PEC_CondRetOK )
 		{
 			printf(" ERRO AO CRIAR PECA!!!!");
-			scanf("%d");
+			scanf("%s");
 			exit(1);
 		}
 	}
@@ -360,7 +308,7 @@ void DestruirPecaJogador( JOGO_Jogador* jogador )
 		if( PEC_DestruirPeca( jogador->pecas[i] ) != PEC_CondRetOK )
 		{
 			printf(" ERRO AO DESTRUIR PECA!!!!");
-			scanf("%d");
+			scanf("%s");
 			exit(1);
 		}
 	}
@@ -370,7 +318,7 @@ void DestruirPecaJogador( JOGO_Jogador* jogador )
 	return;
 }
 
-int VerificaComandoValido( char* comando, int* dado )
+int VerificaComandoValido( char* comando, int* dado, JOGO_Jogador* vtJogadores, int quantidadeJogadores, TAB_tppTabuleiro pTabuleiro )
 {
 	char resposta[21];
 	char caracter = InputEhCaracter( comando );
@@ -416,23 +364,8 @@ int VerificaComandoValido( char* comando, int* dado )
 		if ( caracter == 's' )
 		{
 			printf("Obrigado por jogar");
+			LiberarMemoria( vtJogadores, quantidadeJogadores, pTabuleiro );
 			exit(0);
-		}
-		return 1;
-	}
-	else if ( caracter == 'r' )
-	{
-		printf( " Tem certeza que deseja reiniciar a partida?\n"
-				" Digite 's', no caso afirmativo\n"
-				" Digite qualquer outra coisa, no caso negativo\n");
-		fgets( resposta, TAMANHO_MAX_INPUT, stdin );
-		RemoverNovaLinha( resposta );
-		caracter = InputEhCaracter( resposta );
-		caracter = tolower( caracter );
-		if ( caracter == 's' )
-		{
-			printf("Partida reiniciado...\n");
-			Ludo();/* REVER ------------------------------------------------------------------------------------------------------------------------------------------*/
 		}
 		return 1;
 	}
@@ -445,11 +378,10 @@ int VerificaComandoValido( char* comando, int* dado )
 
 void ExibeComandosPossiveis()
 {
-	printf( " Digite a letra - T - para exibir o tabuleiro\n"
-			" Digite a letra - L - para exibir a legenda do tabuleiro\n"
-			" Digite a letra - S - para sair do jogo\n"
-			" Digite a letra - R - para reiniciar a partida\n"
-			" Digite a letra - D - para jogar o dado\n");
+	printf( " Digite a letra - T - para exibir o Tabuleiro\n"
+			" Digite a letra - L - para exibir a Legenda do tabuleiro\n"
+			" Digite a letra - S - para encerrar a partida e Sair do jogo\n"
+			" Digite a letra - D - para jogar o Dado\n");
 	return;
 }
 
@@ -633,7 +565,7 @@ int MovimentarPecaSePossivel(TAB_tppTabuleiro tabuleiro, PEC_tppPeca peca, int d
 	else
 	{
 		printf(" Erro ao procurar peca no tabuleiro. \n");
-		scanf("%d");
+		scanf("%s");
 		exit(1);
 	}
 }
@@ -684,7 +616,7 @@ void ExibePosicaoDasPecas(TAB_tppTabuleiro tabuleiro, JOGO_Jogador* vetorJogador
 			else
 			{
 				printf("\n ERRO AO PROCURAR PECA!!! %d\n", tabuleiroRetorno);
-				scanf("%d");
+				scanf("%s");
 				exit(1);
 			}
 
@@ -801,303 +733,16 @@ void RemoverNovaLinha(char* string)
 	}
 }
 
-
-/*
-
-static void DesenhaPlacar ( PEC_tppPeca * pPecas , JOGO_Jogador * vtJogadores , int num_jogadores )
+void LiberarMemoria( JOGO_Jogador* vtJogadores, int quantidadeJogadores, TAB_tppTabuleiro pTabuleiro )
 {
-	int i, k, final ;
-	int qtdfim[] = { 0 , 0 , 0 , 0 };
-	PEC_CondRet PecasRetorno ;
-
-	for(i = 0 ; i < num_jogadores ; i++)
+	int i;
+	for ( i = 0; i < quantidadeJogadores; i++ )
 	{
-		for( k = 4 * i ; k < (4 * i) + 4 ; k++ )
-		{
-			PecasRetorno = PEC_ObtemFinal ( pPecas[k] , &final );
-			switch ( PecasRetorno ) 
-			{
-				case PEC_CondRetOK :
-					break ;
-
-				case PEC_CondRetNaoExiste : {
-					printf("\n\n\tPECA NAO EXISTE !!\n\n");
-					exit(1) ;
-				}
-				default : {
-					printf("\n\n\tERRO INESPERADO !!\n\n");
-					exit(1) ;
-				}
-			}
-			
-			if ( final == 1 )
-				qtdfim[i]++ ;
-		}
+		DestruirPecaJogador( &(vtJogadores[i]) );
 	}
-	
-	ordenaRanking ( vtJogadores , qtdfim , num_jogadores ) ;
-
-	for ( i = 0 ; i < num_jogadores ; i++ )
-	{
-		printf("JOGADOR: %s OBTEVE %d PONTOS !!\n", vtJogadores[i].nome ,qtdfim[i] );
-	}
-	printf("\n");
+	free ( vtJogadores );
+	TAB_DestruirTabuleiro ( pTabuleiro );
+	return;
 }
-
-
-
-static int VerificaVencedor ( PEC_tppPeca * pPecas, int cor, JOGO_Jogador * vtJogadores )
-{
-	int i , final ;
-	PEC_CondRet PecasRetorno ;
-	for ( i = cor * NUM_PECAS ; i < (cor * NUM_PECAS) + NUM_PECAS ; i++ ) {
-		PecasRetorno = PEC_ObtemFinal ( pPecas[i] , &final ) ;
-		if ( final != 1 )
-			return 0 ;
-	}
-
-	printf("\n\n");
-	printf("\t\t.----------------------------------------------.\n");
-    printf("\t\t|                                              |\n");
-    printf("\t\t|     PARABENS !!! TEMOS UM VENCEDOR . . .     |\n");
-    printf("\t\t|                                              |\n");
-    printf("\t\t.----------------------------------------------.\n");
-    printf("\n\n");
-	printf("O JOGADOR %s E O VENCEDOR DO JOGO!!!\n\n", vtJogadores[cor].nome ); 
-
-	return 1 ;
-}
-
-
-
-static void ordenaRanking ( JOGO_Jogador * vtJogadores , int *qtdfim , int n ) {		//ordenação descrescente 
-
-	int fim , i ;
-	int menor , aux ;
-
-	JOGO_Jogador jogador_aux ;
-	
-	for ( fim = n - 1 ; fim > 0 ; fim-- ) {
-		menor = 0 ;
-		for ( i = 1 ; i <= fim ; i++ )
-			if ( qtdfim[i] < qtdfim[menor] )
-				menor = i ;
-		
-		aux = qtdfim[fim] ;
-		qtdfim[fim] = qtdfim[menor] ;
-		qtdfim[menor] = aux ; 
-
-		jogador_aux = vtJogadores[fim] ;
-		vtJogadores[fim] = vtJogadores[menor] ;
-		vtJogadores[menor] = jogador_aux ;
-
-	}
-
-}		
-
-static int ValidaMovimento ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca , int n )
-{
-	int cor , cor2 ;
-	int final ;
-	PEC_tppPeca conteudo ;
-	TAB_CondRet TabuleiroRetorno ;
-	PEC_CondRet PecasRetorno ;
-
-	if ( n <= 0 || n > 6 )
-		return 0 ;
-
-	PecasRetorno = PEC_ObtemFinal ( pPeca , &final ) ;
-	if ( PecasRetorno != PEC_CondRetOK ) {
-		printf("\n\n\tPECA NAO EXISTE !!\n\n");
-		exit(1) ;
-	}
-
-	if ( final == 1 )
-		return 0 ;
-
-	TabuleiroRetorno = TAB_ProcuraPeca ( pTabuleiro ,  pPeca ) ;
-	switch ( TabuleiroRetorno ) {
-
-		case TAB_CondRetOK : 
-			break ;
-		
-		case TAB_CondRetNaoEncontrouPeca : {
-			printf("\n\n\tPECA NAO ENCONTRADA !!\n\n");
-			exit(1) ;
-		}
-		case TAB_CondRetPecaMorta : {
-			return 0 ;
-		}
-		default : {
-			printf("\n\n\tERRO INESPERADO !!\n\n");
-			exit(1) ;
-		}
-
-	}
-
-	PEC_ObtemCor ( pPeca , &cor ) ;
-
-	TabuleiroRetorno = TAB_AvancaCasa ( pTabuleiro , cor , n ) ;
-	if ( TabuleiroRetorno == TAB_CondRetFimTabuleiro )
-		return 0 ;
-
-	TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
-	if ( conteudo != NULL ) {
-		PEC_ObtemCor ( conteudo , &cor2 ) ;
-		if ( cor == cor2 )
-			return 0 ;
-	}
-
-	return 1 ;
-}
-
-static void RealizaMovimento ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca , int n )
-{
-	PEC_tppPeca conteudo ;
-	TAB_CondRet TabuleiroRetorno ;
-	int valid , cond , cor ;
-
-	valid = ValidaMovimento ( pTabuleiro , pPeca , n ) ;
-	if ( !valid ) {
-		printf("\n\n\tMOVIMENTO INVALIDO !!\n\n");
-		exit(1) ;
-	}
-
-	TabuleiroRetorno = TAB_RetiraPecaCasa ( pTabuleiro , pPeca ) ; 
-
-	PEC_ObtemCor ( pPeca , &cor ) ;
-	TAB_AvancaCasa ( pTabuleiro , cor , n ) ;
-
-	TAB_EhCasaFinal ( pTabuleiro , &cond ) ;
-	if ( cond )
-		PEC_AtualizaPeca ( pPeca , 1 , 'D' ) ;
-
-	else {
-		TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
-
-		if ( conteudo != NULL )
-			PEC_AtualizaPeca ( conteudo , 0 , 'F' ) ;
-
-		TAB_InserePecaCasa ( pTabuleiro , pPeca ) ;
-	}
-
-
-
-
-}
-
-static int ValidaInsercao ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca ) 
-{
-	int cor , cor2 ;
-	char status ;
-	PEC_tppPeca conteudo ;
-	PEC_CondRet PecasRetorno ;
-	TAB_CondRet TabuleiroRetorno ;
-
-	PecasRetorno = PEC_ObtemStatus ( pPeca , &status ) ;
-	if ( PecasRetorno != PEC_CondRetOK ) {
-		printf("\n\n\tPECA NAO EXISTE !!\n\n");
-		exit(1) ;
-	}
-	if ( status == 'D' )
-		return 0 ;
-
-	PEC_ObtemCor ( pPeca , &cor ) ; 
-
-	TabuleiroRetorno = TAB_IrInicioCor ( pTabuleiro , cor ) ;
-	if ( TabuleiroRetorno != TAB_CondRetOK ) {
-		printf("\n\n\tCOR INVALIDA !!\n\n");
-		exit(1) ;
-	}
-
-	TAB_ObterPecaCasa ( pTabuleiro , &conteudo ) ;
-	if ( conteudo != NULL ) {
-		PEC_ObtemCor ( conteudo , &cor2 ) ;
-		if ( cor == cor2 )
-			return 0 ;
-	}
-
-	return 1 ;
-} 
-
-static void InserePecaJogo ( TAB_tppTabuleiro pTabuleiro , PEC_tppPeca pPeca )
-{
-	int cor , valid ;
-	char status ;
-	TAB_CondRet TabuleiroRetorno ;
-	PEC_CondRet PecasRetorno ;
-
-	valid = ValidaInsercao ( pTabuleiro , pPeca ) ;
-	if ( !valid ) {
-		printf("\n\n\tINSERCAO INVALIDA !!\n\n");
-		exit(1) ;
-	}
-
-	PecasRetorno = PEC_ObtemStatus ( pPeca , &status ) ;
-	if ( PecasRetorno != PEC_CondRetOK ) {
-		printf("\n\n\tPECA NAO EXISTE !!\n\n");
-		exit(1) ;
-	}
-
-	if ( status == 'D' ) {
-		printf("\n\n\tPECA JA INSERIDA !!\n\n");
-		exit(1) ;
-	}
-
-
-	PecasRetorno = PEC_ObtemCor ( pPeca , &cor ) ;
-
-	TabuleiroRetorno = TAB_IrInicioCor ( pTabuleiro , cor ) ;
-	if ( TabuleiroRetorno != TAB_CondRetOK ) {
-		printf("\n\n\tCOR INVALIDA !!\n\n");
-		exit(1) ;
-	}
-
-	TAB_InserePecaCasa ( pTabuleiro , pPeca ) ;
-
-}
-
-static int ObtemOrdemJogador ( void )
-{
-	int num ;
-	printf ( "DIGITE O NUMERO DA PECA QUE DESEJA MOVIMENTAR : " ) ;
-	scanf ( "%d" , &num ) ; 
-	while ( num < 0 || num > 3 ) {
-		printf("\n\n\tNUMERO INVALIDO !!\n\n");
-		printf ( "DIGITE O NUMERO DA PECA QUE DESEJA MOVIMENTAR : " ) ;
-		scanf ( "%d" , &num ) ; 
-	}
-	printf("\n\n");
-	return num ;
-}
-
-static void MostraMovimentosValidos ( int *mapa )
-{
-	int i ; 
-	printf("PECAS QUE PODEM SER MOVIDAS : ");
-	for ( i = 0 ; i < NUM_PECAS ; i++ )
-	{
-		if ( mapa[i] == 1 )
-			printf( "P%d " , i ) ;
-	}
-	printf("\n") ;
-}
-
-static void ZeraMapa ( int *mapa )
-{
-	int i ; 
-	for ( i = 0 ; i < NUM_PECAS ; i++ )
-		mapa[i] = 0 ;
-}
-
-static int TemMovimento ( int *mapa )
-{
-	int i ;
-	for ( i = 0 ; i < NUM_PECAS ; i++ )
-		if ( mapa[i] == 1 )
-			return 1 ;
-	return 0 ;
-}*/
-
 
 /************* Fim do módulo de implementação: JOGO Módulo jogo / Principal ****************/
