@@ -1,0 +1,104 @@
+////////////////////////////////////////////////
+//
+// Arquivo de declaração de contadores
+// Conta módulo Lista Circular marcado
+//
+///////////////////////////////////////////////
+
+LISCIR_CriaLista
+// contador abaixo nao sera exercitado pois é erro de alocacao
+LISCIR_CriaLista_if_erroMalloc\=-2
+LISCIR_CriaLista_pos_if
+LISCIR_CriaLista_pre_return
+LISCIR_ExcluirElemento
+LISCIR_ExcluirElemento_if_listaNaoExiste
+LISCIR_ExcluirElemento_pos_if_listaNaoExiste
+LISCIR_ExcluirElemento_if_erroProcurarValor
+LISCIR_ExcluirElemento_pos_if_erroProcurarValor
+LISCIR_ExcluirElemento_if_elementoNaoUnicoNaLista
+LISCIR_ExcluirElemento_else_elementoUnicoNaLista
+LISCIR_ExcluirElemento_pos_else
+LISCIR_ExcluirElemento_pre_return
+LISCIR_DestruirLista
+LISCIR_DestruirLista_if
+LISCIR_DestruirLista_pos_if
+LISCIR_DestruirLista_pre_return
+LISCIR_EsvaziarLista
+LISCIR_EsvaziarLista_if_listaNaoExiste
+LISCIR_EsvaziarLista_pos_if_listaNaoExiste
+LISCIR_EsvaziarLista_if_listaVazia
+LISCIR_EsvaziarLista_pos_if_listaVazia
+LISCIR_EsvaziarLista_do_while
+LISCIR_EsvaziarLista_pos_do_while
+LISCIR_EsvaziarLista_pre_return
+LISCIR_ProcurarValor
+LISCIR_ProcurarValor_if_listaNaoExiste
+LISCIR_ProcurarValor_pos_if_listaNaoExiste
+LISCIR_ProcurarValor_if_listaVazia
+LISCIR_ProcurarValor_pos_if_listaVazia
+LISCIR_ProcurarValor_do_while
+LISCIR_ProcurarValor_if_encontrouValor
+LISCIR_ProcurarValor_pos_if_encontrouValor
+LISCIR_ProcurarValor_pos_do_while
+LISCIR_InserirElementoAntes
+LISCIR_InserirElementoAntes_if_listaNaoExiste
+LISCIR_InserirElementoAntes_pos_if_listaNaoExiste
+// contador abaixo nao sera exercitado pois é erro de alocacao
+LISCIR_InserirElementoAntes_if_erroCriarElemento\=-2
+LISCIR_InserirElementoAntes_pos_if_erroCriarElemento
+LISCIR_InserirElementoAntes_if_listaVazia
+LISCIR_InserirElementoAntes_else_listaNaoVazia
+LISCIR_InserirElementoAntes_pos_else
+LISCIR_InserirElementoAntes_pre_return
+LISCIR_InserirElementoApos
+LISCIR_InserirElementoApos_if_listaNaoExiste
+LISCIR_InserirElementoApos_pos_if_listaNaoExiste
+// contador abaixo nao sera exercitado pois é erro de alocacao
+LISCIR_InserirElementoApos_if_erroCriarElemento\=-2
+LISCIR_InserirElementoApos_pos_if_erroCriarElemento
+LISCIR_InserirElementoApos_if_listaVazia
+LISCIR_InserirElementoApos_else_listaNaoVazia
+LISCIR_InserirElementoApos_pos_else
+LISCIR_InserirElementoApos_pre_return
+LISCIR_ObterValor
+LISCIR_ObterValor_if_listaNaoExiste
+LISCIR_ObterValor_pos_if_listaNaoExiste
+LISCIR_ObterValor_if_listaVazia
+LISCIR_ObterValor_pos_if_listaVazia
+LISCIR_ObterValor_pre_return
+LISCIR_AvancarElementoCorrente
+LISCIR_AvancarElementoCorrente_if_listaNaoExiste
+LISCIR_AvancarElementoCorrente_pos_if_listaNaoExiste
+LISCIR_AvancarElementoCorrente_if_listaVazia
+LISCIR_AvancarElementoCorrente_pos_if_listaVazia
+LISCIR_AvancarElementoCorrente_if_avancoMaiorQueZero
+LISCIR_AvancarElementoCorrente_while_avancoMaiorQueZero
+LISCIR_AvancarElementoCorrente_else_if_avancoMenorQueZero
+LISCIR_AvancarElementoCorrente_while_avancoMenorQueZero
+LISCIR_AvancarElementoCorrente_pos_else_if
+LISCIR_AvancarElementoCorrente_pre_return
+LiberarElemento
+// contador abaixo nao deve ser exercitado pois serve para interceptar erro
+LiberarElemento_erroListaNULL\=-2
+LiberarElemento_pos_erroListaNULL
+// contador abaixo nao deve ser exercitado pois serve para interceptar erro
+LiberarElemento_erroElementoNULL\=-2
+LiberarElemento_pos_erroElementoNULL
+// rever
+LiberarElemento_if\=-2 
+// rever
+LiberarElemento_pos_if
+LiberarElemento_pre_return
+CriaElemento
+// contador abaixo nao deve ser exercitado pois serve para interceptar erro
+CriaElemento_erroListaNULL\=-2
+CriaElemento_pos_erroListaNULL
+// contador abaixo nao sera exercitado pois é erro de alocacao
+CriaElemento_erroMalloc\=-2
+CriaElemento_pos_erroMalloc
+CriaElemento_pre_return
+LimparCabeca
+// contador abaixo nao deve ser exercitado pois serve para interceptar erro
+LimparCabeca_erro\=-2
+LimparCabeca_pos_erro
+LimparCabeca_pre_return

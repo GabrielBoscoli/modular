@@ -24,6 +24,7 @@
 #include    <stdio.h>
 #include    <stdlib.h>
 
+#include    "CONTA.H"
 #include    "GENERICO.H"
 #include    "LERPARM.H"
 #include    "TST_ESPC.H"

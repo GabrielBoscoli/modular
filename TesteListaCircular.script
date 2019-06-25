@@ -14,6 +14,11 @@
 =declararparm valor2 int 1
 =declararparm valor3 int 2
 
+==Iniciar contagem
+=inicializarcontadores ""
+=lercontadores "ListaCircular"
+=iniciarcontagem
+
 ==Remover elemento de uma lista que nao existe
 =excluirelemento valor1 ListaNaoExiste
 
@@ -80,11 +85,25 @@
 
 ==Avancar elemento corrente com sucesso
 =avancarelementocorrente 1 OK
+=avancarelementocorrente -1 OK
+
+==Excluir elemento de uma lista com mais de um elemento
+=excluirelemento valor2 OK
+
+==Inserir elemento a esquerda de lista nao vazia
+=inserirelementoantes valor2 OK
 
 ==Esvaziar lista com sucesso
 =esvaziarlista OK
 
 ==Destruir lista com sucesso
 =destruirlista OK
+
+==Terminar contagem
+=pararcontagem
+=verificarcontagens 0
+
+==Finalizar
+=terminarcontadores
 
 //fim

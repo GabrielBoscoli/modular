@@ -258,7 +258,7 @@
 *
 *  $EP Parâmetros
 *		numeroJogadores - int com o numero de jogadores da partida
-*		vetorJogador	- vetor com jogadores
+*		vetorJogador	- vetor com jogadores da partida
 *
 *  $EAE Assertivas de entrada
 *		numeroJogadores deve ser um inteiro entre MIN_JOGADORES e MAX_JOGADORES,
@@ -266,8 +266,10 @@
 *
 *  $EAE Assertivas de saida
 *		Caso os dados de entrada estejam fora do padrao, o programa se encerra
-*		Caso tudo ocorra corretamente, os jogadores sao criados, assim como
-*		as suas pecas
+*		Caso tudo ocorra corretamente, 
+*			Os jogadores sao criados, assim como
+*			As pecas dos jogadores sao criadas
+*			A memoria necessária para as pecas é alocada
 *
 ***************************************************************************/
 
@@ -362,8 +364,9 @@
 *  $EAE Assertivas de saida
 *		Caso o valor de entrada esteja fora do padrao, o programa encerra
 *		Caso algum erro ocorra, o programa encerra
-*		Caso tudo ocorra corretamente, as pecas do jogador sao criadas com a
-*		cor correspondente ao jogador
+*		Caso tudo ocorra corretamente, 
+*			As pecas do jogador sao criadas com a cor correspondente ao jogador
+*			O espaco de memoria para as pecas é alocado devidamente
 *
 ***************************************************************************/
 
@@ -405,7 +408,8 @@
 *  $FC Função: JOGO  -Destruir as peças do jogador
 *
 *  $ED Descrição da função
-*		Destroi as pecas de um jogador da partida
+*		Destroi as pecas de um jogador da partida, desalocando a memoria que
+*		estava reservada para elas
 *
 *  $EP Parâmetros
 *		jogador - referencia para um jogador da partida
@@ -417,8 +421,9 @@
 *  $EAE Assertivas de saida
 *		Caso o valor de entrada esteja fora do padrao, o programa encerra
 *		Caso ocorra algum erro, o programa encerra
-*		Caso tudo ocorra corretamente, as peças sao destruidas e a memoria
-*		alocada para elas é liberada
+*		Caso tudo ocorra corretamente, 
+*			As peças sao destruidas
+*			A memoria alocada para as pecas é liberada
 *
 ***************************************************************************/
 
@@ -648,8 +653,11 @@
 *
 *  $EAE Assertivas de saida
 *		Caso os valores de entrada nao sigam o padrao, o programa encerra
-*		Caso pelo menos um movimento seja possivel, 1 é retornado
-*		Caso nenhum movimento seja possivel, 0 é retornado
+*		Caso ocorra tudo corretamente
+*			Se pelo menos um movimento seja possivel, 1 é retornado
+*			Se nenhum movimento seja possivel, 0 é retornado
+*			A casa corrente do tabuleiro permanece a mesma em qualquer caso
+*			A peca continua na casa que estava originalmente em qualquer caso
 *		
 *
 ***************************************************************************/
@@ -733,8 +741,9 @@
 *
 *  $EAE Assertivas de saida
 *		Caso o jogador passado como entrada nao possua pecas, o programa encerra
-*		Caso contrário, se existem pecas na casa de saida, retorna 1
-*		Se nao existem pecas na casa de saida, retorna 0
+*		Caso tudo ocorra corretamente, 
+*			Se existem pecas na casa incial, retorna 1
+*			Se nao existem pecas na casa inicial, retorna 0
 *
 ***************************************************************************/
 
@@ -786,9 +795,9 @@
 *  $EAE Assertivas de saida
 *		Caso os valores de entrada nao estejam seguindo o padrao, o programa encerra
 *		Caso algum erro ocorra, o programa encerra
-*		Caso tudo ocorra corretamente, retorna a quantidade de pecas na casa
-*		de saida com a cor especificada. A casa corrente do tabuleiro se torna
-*		tal casa de saida
+*		Caso tudo ocorra corretamente, 
+*			Retorna a quantidade de pecas na casa de saida com a cor especificada
+*			A casa corrente do tabuleiro se torna tal casa de saida
 *
 ***************************************************************************/
 
@@ -871,9 +880,10 @@
 *
 *  $EAE Assertivas de saida
 *		Caso os valores de entrada nao estejam conforme o padrao, o programa encerra
-*		Caso tudo ocorra corretamente, uma das pecas do jogador irá avancar o valor
-*		contido em dado ou entao irá para a casa de saida de sua cor. A casa corrente
-*		do tabuleiro se torna a casa que a peca atingiu
+*		Caso tudo ocorra corretamente,
+*			Uma das pecas do jogador irá avancar o valor contido em dado
+*			Se a peca estiver na casa inicial, irá para a casa de saida de sua cor
+*			A casa corrente do tabuleiro se torna a casa que a peca atingiu
 *
 ***************************************************************************/
 
@@ -1132,9 +1142,9 @@
 *  $EAE Assertivas de saida
 *		Caso os valores de entrada estejam fora do padrao, o programa encerra
 *		Caso ocorra algum erro, o programa encerra
-*		Caso tudo ocorra corretamente, a disposicao das pecas no tabuleiro é
-*		imprimida na tela e a casa corrente do tabuleiro se torna a casa da
-*		ultima peca do ultimo jogador
+*		Caso tudo ocorra corretamente, 
+*			A disposicao das pecas no tabuleiro é imprimida na tela
+*			A casa corrente do tabuleiro se torna a casa da ultima peca do ultimo jogador
 *
 ***************************************************************************/
 
@@ -1566,8 +1576,10 @@
 *  $EAE Assertivas de saida
 *		Caso os valores de entrada estejam fora do padrao, o programa encerra
 *		Caso ocorra algum erro, o programa encerra
-*		Caso tudo ocorra corretamente, os espacos destinados para os jogadores,
-*		suas pecas e o tabuleiro são desalocados
+*		Caso tudo ocorra corretamente, 
+*			O espaco de memoria alocado para os jogadores é liberado
+*			As pecas dos jogadores sao destruidas, com memoria desalocada
+*			O tabuleiro é destruido, com espaco de memoria alocado liberado
 *
 ***************************************************************************/
 

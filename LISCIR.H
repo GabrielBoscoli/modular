@@ -56,7 +56,7 @@
 
 /* Tipo referência para uma lista */
 
-typedef struct LISCIR_tagListaCircular * LISCIR_tppListaCircular ;
+	typedef struct LISCIR_tagListaCircular * LISCIR_tppListaCircular ;
 
 /***********************************************************************
  *
@@ -69,24 +69,24 @@ typedef struct LISCIR_tagListaCircular * LISCIR_tppListaCircular ;
  *
  ***********************************************************************/
 
-typedef enum {
+	typedef enum {
     
-    LISCIR_CondRetOK ,
-		/* Concluiu corretamente */
+		LISCIR_CondRetOK ,
+			/* Concluiu corretamente */
     
-    LISCIR_CondRetNaoAchou ,
-		/* Não encontrou o valor procurado */
+		LISCIR_CondRetNaoAchou ,
+			/* Não encontrou o valor procurado */
     
-    LISCIR_CondRetMemoriaCheia ,
-		/* Faltou memoria para alocar elemento */
+		LISCIR_CondRetMemoriaCheia ,
+			/* Faltou memoria para alocar elemento */
     
-    LISCIR_CondRetListaVazia ,
-		/* A lista não contem elementos */
+		LISCIR_CondRetListaVazia ,
+			/* A lista não contem elementos */
 
-	LISCIR_CondRetListaNaoExiste
-		/* A lista não existe */
+		LISCIR_CondRetListaNaoExiste
+			/* A lista não existe */
     
-} LISCIR_CondRet ;
+	} LISCIR_CondRet ;
 
 /***********************************************************************
  *
@@ -118,12 +118,12 @@ typedef enum {
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_CriarLista ( LISCIR_tppListaCircular * pLista,
+	LISCIR_CondRet LISCIR_CriarLista ( LISCIR_tppListaCircular * pLista,
                            void ( * ExcluirValor ) ( void *pValor ) );
 
 /***********************************************************************
  *
- *  $FC Função: LISCIR  &Remover elemento
+ *  $FC Função: LISCIR  &Excluir elemento
  *
  *  $ED Descrição da função
  *     Remove o elemento procurado da lista dada.
@@ -155,7 +155,7 @@ LISCIR_CondRet LISCIR_CriarLista ( LISCIR_tppListaCircular * pLista,
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_ExcluirElemento ( LISCIR_tppListaCircular pLista, void * pElemento  ) ;
+	LISCIR_CondRet LISCIR_ExcluirElemento ( LISCIR_tppListaCircular pLista, void * pElemento  ) ;
 
 /***********************************************************************
  *
@@ -183,7 +183,7 @@ LISCIR_CondRet LISCIR_ExcluirElemento ( LISCIR_tppListaCircular pLista, void * p
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_DestruirLista ( LISCIR_tppListaCircular pLista ) ;
+	LISCIR_CondRet LISCIR_DestruirLista ( LISCIR_tppListaCircular pLista ) ;
 
 /***********************************************************************
  *
@@ -213,7 +213,7 @@ LISCIR_CondRet LISCIR_DestruirLista ( LISCIR_tppListaCircular pLista ) ;
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_EsvaziarLista ( LISCIR_tppListaCircular pLista ) ;
+	LISCIR_CondRet LISCIR_EsvaziarLista ( LISCIR_tppListaCircular pLista ) ;
 
 /***********************************************************************
  *
@@ -244,7 +244,7 @@ LISCIR_CondRet LISCIR_EsvaziarLista ( LISCIR_tppListaCircular pLista ) ;
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_ProcurarValor ( LISCIR_tppListaCircular pLista , void * pValor ) ;
+	LISCIR_CondRet LISCIR_ProcurarValor ( LISCIR_tppListaCircular pLista , void * pValor ) ;
 
 /***********************************************************************
  *
@@ -278,7 +278,7 @@ LISCIR_CondRet LISCIR_ProcurarValor ( LISCIR_tppListaCircular pLista , void * pV
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_InserirElementoAntes ( LISCIR_tppListaCircular pLista , void * pValor  ) ;
+	LISCIR_CondRet LISCIR_InserirElementoAntes ( LISCIR_tppListaCircular pLista , void * pValor  ) ;
 
 /***********************************************************************
  *
@@ -312,7 +312,7 @@ LISCIR_CondRet LISCIR_InserirElementoAntes ( LISCIR_tppListaCircular pLista , vo
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_InserirElementoApos ( LISCIR_tppListaCircular pLista , void * pValor ) ;
+	LISCIR_CondRet LISCIR_InserirElementoApos ( LISCIR_tppListaCircular pLista , void * pValor ) ;
 
 /***********************************************************************
  *
@@ -342,7 +342,7 @@ LISCIR_CondRet LISCIR_InserirElementoApos ( LISCIR_tppListaCircular pLista , voi
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_ObterValor ( LISCIR_tppListaCircular pLista , void ** ppValor ) ;
+	LISCIR_CondRet LISCIR_ObterValor ( LISCIR_tppListaCircular pLista , void ** ppValor ) ;
 
 /***********************************************************************
  *
@@ -375,7 +375,7 @@ LISCIR_CondRet LISCIR_ObterValor ( LISCIR_tppListaCircular pLista , void ** ppVa
  *
  ***********************************************************************/
 
-LISCIR_CondRet LISCIR_AvancarElementoCorrente ( LISCIR_tppListaCircular pLista , int num ) ;
+	LISCIR_CondRet LISCIR_AvancarElementoCorrente ( LISCIR_tppListaCircular pLista , int num ) ;
 
 #undef LISCIR_EXT
 
