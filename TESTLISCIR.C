@@ -10,6 +10,7 @@
 *
 *  $HA Histórico de evolução:
 *     Versão      Autor       Data        Observações
+*	   3.00		   gb      26/06/2019   ajustes e modificações leves
 *      2.00        gb      22/04/2019   finalização desenvolvimento
 *      1.00        gb      21/04/2019   início desenvolvimento
 *
@@ -24,7 +25,6 @@
 #include    <stdio.h>
 #include    <stdlib.h>
 
-#include    "CONTA.H"
 #include    "GENERICO.H"
 #include    "LERPARM.H"
 #include    "TST_ESPC.H"
@@ -33,13 +33,14 @@
 
 typedef void ** ppVoid ;
 
-#define VALOR_1 1
-#define VALOR_2 1
-#define VALOR_3 1
+typedef void ( *pFunc ) ( void * ) ;
+
+#define DIM_VALORES 4
 
 /* Tabela dos nomes dos comandos de teste específicos */
             
-#define CRIAR_LISTAC_CMD				"=criarlistac"             
+#define INICIALIZAR_CONTEXTO_CMD		"=inicializarcontexto"
+#define CRIAR_LISTAC_CMD				"=criarlistac"
 #define EXCLUIR_ELEMENTO_CMD            "=excluirelemento"          
 #define DESTRUIR_LISTA_CMD              "=destruirlista"           
 #define ESVAZIAR_LISTA_CMD              "=esvaziarlista"           
@@ -48,6 +49,10 @@ typedef void ** ppVoid ;
 #define INSERIR_ELEMENTO_APOS_CMD       "=inserirelementoapos"      
 #define OBTER_VALOR_CMD                 "=obtervalor"              
 #define AVANCAR_ELEMENTO_CORRENTE_CMD   "=avancarelementocorrente" 
+
+/***** Protótipos das funções encapuladas no módulo *****/
+
+   void DestruirValor( char * pValor ) ;
 
 /*****  Código das funções exportadas pelo módulo  *****/
 
@@ -76,6 +81,7 @@ typedef void ** ppVoid ;
 *     =inserirelementodir                Valor CondRetEsp
 *	  =obtervalor		                 CondRetEsp
 *	  =avancarelementocorrente		   	 Numero CondRetEsp
+*	  =inicializarcontexto
 *
 ***********************************************************************/
 
@@ -86,13 +92,33 @@ typedef void ** ppVoid ;
 		int CondRetEsp    = -1 ;
 		int CondRetObtido = -1 ;
 		int num           = -1 ;
+		int i;
 
 		int indiceValores = -1;
 		int* auxiliar;
 
-		static int valores[3] = {VALOR_1, VALOR_2, VALOR_3};
-
 		static LISCIR_tppListaCircular listaCircular = NULL;
+
+		static char* valores[ DIM_VALORES ];
+
+	/* Tratar: inicializar contexto */
+
+		if( strcmp( ComandoTeste , INICIALIZAR_CONTEXTO_CMD ) == 0 )
+		{
+			numLidos = LER_LerParametros( "", &CondRetEsp) ;
+			if ( numLidos != 0 )
+			{
+				return TST_CondRetParm;
+			}
+
+			for ( i = 0; i < DIM_VALORES; i++ )
+			{
+				valores[i] = ( char * ) malloc ( DIM_VALORES * sizeof ( char ) );
+			}
+
+			return TST_CondRetOK;
+
+		} /* fim ativa: Tratar: inicializar contexto */
 		
 	/* Testar Criar Lista Circular */
 
@@ -106,14 +132,13 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
             
-            CondRetObtido = LISCIR_CriarLista( &listaCircular, NULL ) ;
+            CondRetObtido = LISCIR_CriarLista( &listaCircular, ( pFunc ) DestruirValor ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Criar Lista Circular." ) ;
 
          } /* fim ativa: Testar Criar Lista Circular */
             
-
 	/* Testar Remover Elemento */
 
          else if ( strcmp( ComandoTeste , EXCLUIR_ELEMENTO_CMD ) == 0 )
@@ -126,7 +151,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }    
 
-            CondRetObtido = LISCIR_ExcluirElemento( listaCircular, &valores[indiceValores] ) ;
+            CondRetObtido = LISCIR_ExcluirElemento( listaCircular, valores[indiceValores] ) ;
 			
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Remover Elemento." ) ;
@@ -187,7 +212,7 @@ typedef void ** ppVoid ;
 				return TST_CondRetParm ;
 			}
 
-			CondRetObtido = LISCIR_ProcurarValor( listaCircular, &valores[indiceValores] ) ;
+			CondRetObtido = LISCIR_ProcurarValor( listaCircular, valores[indiceValores] ) ;
     			
 			return TST_CompararInt( CondRetEsp , CondRetObtido ,
                     "Condicao de retorno errada ao Buscar Elemento." ) ;
@@ -207,7 +232,7 @@ typedef void ** ppVoid ;
                  return TST_CondRetParm ;
               }
 
-              CondRetObtido = LISCIR_InserirElementoAntes( listaCircular, (void *) &valores[indiceValores] ) ;
+              CondRetObtido = LISCIR_InserirElementoAntes( listaCircular, (void *) valores[indiceValores] ) ;
 
               return TST_CompararInt( CondRetEsp , CondRetObtido ,
                        "Condicao de retorno errada ao Inserir Elemento a Esquerda." ) ;
@@ -227,7 +252,7 @@ typedef void ** ppVoid ;
                return TST_CondRetParm ;
             }
 
-            CondRetObtido = LISCIR_InserirElementoApos( listaCircular, (void *) &valores[indiceValores] ) ;
+            CondRetObtido = LISCIR_InserirElementoApos( listaCircular, (void *) valores[indiceValores] ) ;
 
             return TST_CompararInt( CondRetEsp , CondRetObtido ,
                      "Condicao de retorno errada ao Inserir Elemento a Direita." ) ;
@@ -276,5 +301,25 @@ typedef void ** ppVoid ;
       return TST_CondRetNaoConhec ;
 
 	} /* Fim função: TLISCIR &Testar lista circular */
+
+/*****  Código das funções encapsuladas no módulo  *****/
+
+/***********************************************************************
+*
+*  $FC Função: TLIS -Destruir valor
+*
+*  $ED Descrição da função
+*		Destroi o elemento e libera a memoria alocada
+*
+***********************************************************************/
+
+   void DestruirValor( char * pValor )
+   {
+
+      free( pValor ) ;
+
+	  return;
+
+   } /* Fim função: TLIS -Destruir valor */
  
 /********** Fim do módulo de implementação: TLISCIR Teste lista circular **********/
